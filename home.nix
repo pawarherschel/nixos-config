@@ -130,6 +130,33 @@
       enable = true;
       enableNushellIntegration = true;
     };
+
+    nushell = 
+    let
+      defaults = {
+        config = builtins.fetchurl {
+          url = "https://raw.githubusercontent.com/nushell/nushell/0.98.0/crates/nu-utils/src/sample_config/default_config.nu";
+          sha256 = "05k136qzz50dvqnsyhx8r38wyvwbjk92p2k0v8hldarc8izwykph";
+        };
+        env = builtins.fetchurl {
+          url = "https://raw.githubusercontent.com/nushell/nushell/0.98.0/crates/nu-utils/src/sample_config/default_env.nu";
+          sha256 = "1dw1b4m3w3rd21n6dc0ijwvmadf5fa4zx0kcbcmbks84mkffnaqd";
+        };
+      };
+    in 
+    {
+      enable = true;
+      configFile.text = (builtins.readFile defaults.config);
+      # extraConfig = ''
+      #   source ~/.local/share/atuin/init.nu
+      #   use ~/.cache/starship/init.nu
+      # '';
+      envFile.text = (builtins.readFile defaults.env);
+      # extraEnv = ''
+      #   mkdir ~/.cache/starship
+      #   starship init nu | save -f ~/.cache/starship/init.nu
+      # '';
+    };
   };
 
   # Let Home Manager install and manage itself.
