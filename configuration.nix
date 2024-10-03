@@ -129,6 +129,8 @@
   #  wget
     gh
     nil
+    nixd
+    # statix
   ];
 
   programs.hyprland.enable = true;

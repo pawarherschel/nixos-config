@@ -106,19 +106,20 @@
         };
       };
       languages = {
-        language-server = {
-          nil = {
-            command = "${pkgs.nil}/bin/nil";
-          };
+        language-server.nil = {
+          command = "${pkgs.nil}/bin/nil";
         };
-        language = 
-        [
+        language-server.nixd = {
+          command = "${pkgs.nixd}/bin/nixd";
+        };
+        
+        language = [
           {
             name = "nix";
             file-types = ["nix"];
             language-servers = [
               "nil"
-              # "nixd"
+              "nixd"
             ];
           }
         ];
