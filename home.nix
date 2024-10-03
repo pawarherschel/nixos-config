@@ -1,6 +1,4 @@
-{ config, pkgs, ... }:
-
-{
+{ config, pkgs, ... }:{
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "ksakura";
@@ -82,7 +80,7 @@
           "keep_primary_selection"
         ];
         editor = {
-          line-number = "relative";        
+          line-number = "relative";
           
           cursor-shape = {
             insert = "bar";
@@ -107,12 +105,26 @@
            };
         };
       };
+      languages = {
+        language-server = {
+          nil = {
+            command = "${pkgs.nil}/bin/nil";
+          };
+        };
+        language = 
+        [
+          {
+            name = "nix";
+            file-types = ["nix"];
+            language-servers = [
+              "nil"
+              # "nixd"
+            ];
+          }
+        ];
+      };
     };
   };
-
-  # programs.nushell = {
-  #   enable = true;
-  # };
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;

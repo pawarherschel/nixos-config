@@ -1,4 +1,3 @@
-# /etc/nixos/flake.nix
 {
   inputs = {
     # NOTE: Replace "nixos-23.11" with that which is in system.stateVersion of
@@ -17,7 +16,7 @@
       system = "x86_64-linux";
       # extraSpecialArgs = {inherit inputs;};
       modules = [ 
-      ./configuration.nix 
+      ./configuration.nix
       
       {
         nix.settings.experimental-features = [
