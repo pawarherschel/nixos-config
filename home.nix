@@ -125,6 +125,11 @@
         ];
       };
     };
+
+    atuin = {
+      enable = true;
+      enableNushellIntegration = true;
+    };
   };
 
   # Let Home Manager install and manage itself.
