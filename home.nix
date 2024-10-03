@@ -71,6 +71,49 @@
     EDITOR = "hx";
   };
 
+  programs = {
+    helix = {
+      enable = true;
+      defaultEditor = true;
+      settings = {
+        theme = "dracula";
+        keys.normal.esc = [
+          "collapse_selection"
+          "keep_primary_selection"
+        ];
+        editor = {
+          line-number = "relative";        
+          
+          cursor-shape = {
+            insert = "bar";
+            normal = "block";
+            select = "underline";
+          };
+          
+          lsp.display-inlay-hints = true;
+          
+          whitespace.render = {
+            space = "all";
+            nbsp = "all";
+            tab = "all";
+            newline = "none";
+            tabpad = "all";
+          };
+
+          indent-guides = {
+            render = true;
+            character = "╎";
+            skip-levels = 1;
+           };
+        };
+      };
+    };
+  };
+
+  # programs.nushell = {
+  #   enable = true;
+  # };
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
