@@ -27,7 +27,7 @@
 
   # Set your time zone.
   # time.timeZone = "America/New_York";
-  time.timeZone = "Europe/London";
+  time.timeZone = "Asia/Kolkata";
 
   #timezoned
   # services.automatic-timezoned.enable = true;
