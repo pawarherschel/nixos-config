@@ -136,6 +136,13 @@
     difftastic
   ];
 
+  fonts = {
+    enableDefaultPackages = true;
+    packages = [
+      pkgs.jetbrains-mono
+    ];
+  };
+
   programs.hyprland.enable = true;
 
   xdg = {

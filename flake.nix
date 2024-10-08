@@ -30,7 +30,7 @@
         home-manager.useGlobalPkgs = true;
         # home-manager.useUserPkgs = true;
         home-manager.users.ksakura = import ./home.nix;
-        home-manager.backupFileExtension = "bk";
+        home-manager.backupFileExtension = "bak";
       }
       ];
     };
