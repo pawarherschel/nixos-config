@@ -51,10 +51,10 @@
   };
 
   # Configure keymap in X11
-  services.xserver = {
-    layout = "us";
-    xkbVariant = "";
-  };
+    services.xserver.xkb = {
+      layout = "us";
+      variant = "";
+    };
 
   services.tailscale.enable = true;
 
@@ -102,6 +102,8 @@
     scdoc
     firefox
     bat
+    ripgrep
+    ripgrep-all
     cargo-cache
     pipewire
     pavucontrol
@@ -131,6 +133,7 @@
     nil
     nixd
     # statix
+    difftastic
   ];
 
   programs.hyprland.enable = true;
