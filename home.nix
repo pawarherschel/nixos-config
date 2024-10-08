@@ -186,7 +186,15 @@
       settings.flags = {};
     };
 
-    
+    gh = {
+      enable = true;
+      settings.editor = "hx";
+      settings = {
+        version = 1;
+        git_protocol = "https";
+        prompt = "enable";
+      };
+    };
   };
 
   
