@@ -176,9 +176,17 @@
         window_padding_width = 15;
       };
     };
+    
     bat = {
       enable = true;
     };
+
+    bottom = {
+      enable = true;
+      settings.flags = {};
+    };
+
+    
   };
 
   
