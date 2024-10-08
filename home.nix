@@ -195,7 +195,17 @@
         prompt = "enable";
       };
     };
+
   };
+
+  services.hyprpaper = {
+      enable = true;
+      settings = {
+        splash = true;
+        preload = "/home/ksakura/wallpaper.png";
+        wallpaper = "eDP-1,/home/ksakura/wallpaper.png";
+      };
+    };
 
   
   wayland.windowManager.hyprland = {
