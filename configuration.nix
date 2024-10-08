@@ -85,8 +85,6 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     kitty
-    kitty-themes
-    mako
     pipewire
     wireplumber
     libsForQt5.polkit-kde-agent
@@ -97,22 +95,15 @@
     rustc
     jq
     coreutils
-    socat
-    gawk
-    scdoc
     firefox
     bat
     ripgrep
     ripgrep-all
     cargo-cache
-    pipewire
     pavucontrol
     wl-clipboard
     xdg-utils
-    cliphist
-    bacon
     gcc
-    eza
     git
     syncthing
     nushell
@@ -126,13 +117,9 @@
     python3
     openvpn
     networkmanager-openvpn
-    # aria
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
     gh
     nil
     nixd
-    # statix
     difftastic
   ];
 
@@ -201,6 +188,6 @@
   system.autoUpgrade = {
     enable = false;
     allowReboot = false; # Do nixos-rebuild switch --upgrade instead
-    channel = "https://channels.nixos.org/nixos-23.11";
+    # channel = "https://channels.nixos.org/nixos-23.11";
   };
 }
