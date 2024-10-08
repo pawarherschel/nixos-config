@@ -199,7 +199,8 @@
 
   };
 
-  services.hyprpaper = {
+  services = {
+    hyprpaper = {
       enable = true;
       settings = {
         splash = true;
@@ -207,6 +208,9 @@
         wallpaper = "eDP-1,/home/ksakura/wallpaper.png";
       };
     };
+
+      syncthing.enable = true;
+  };
 
   
   wayland.windowManager.hyprland = {
