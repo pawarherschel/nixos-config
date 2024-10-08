@@ -1,4 +1,8 @@
-{ config, pkgs, ... }:{
+{
+  config,
+  pkgs,
+  ...
+}: {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "ksakura";
@@ -81,15 +85,15 @@
         ];
         editor = {
           line-number = "relative";
-          
+
           cursor-shape = {
             insert = "bar";
             normal = "block";
             select = "underline";
           };
-          
+
           lsp.display-inlay-hints = true;
-          
+
           whitespace.render = {
             space = "all";
             nbsp = "all";
@@ -102,7 +106,7 @@
             render = true;
             character = "╎";
             skip-levels = 1;
-           };
+          };
         };
       };
       languages = {
@@ -112,7 +116,7 @@
         language-server.nixd = {
           command = "${pkgs.nixd}/bin/nixd";
         };
-        
+
         language = [
           {
             name = "nix";
@@ -132,8 +136,7 @@
       settings.enter_accept = true;
     };
 
-    nushell = 
-    let
+    nushell = let
       defaults = {
         config = builtins.fetchurl {
           url = "https://raw.githubusercontent.com/nushell/nushell/0.98.0/crates/nu-utils/src/sample_config/default_config.nu";
@@ -144,15 +147,14 @@
           sha256 = "1dw1b4m3w3rd21n6dc0ijwvmadf5fa4zx0kcbcmbks84mkffnaqd";
         };
       };
-    in 
-    {
+    in {
       enable = true;
-      configFile.text = (builtins.readFile defaults.config);
+      configFile.text = builtins.readFile defaults.config;
       # extraConfig = ''
       #   source ~/.local/share/atuin/init.nu
       #   use ~/.cache/starship/init.nu
       # '';
-      envFile.text = (builtins.readFile defaults.env);
+      envFile.text = builtins.readFile defaults.env;
       # extraEnv = ''
       #   mkdir ~/.cache/starship
       #   starship init nu | save -f ~/.cache/starship/init.nu
@@ -177,7 +179,7 @@
         window_padding_width = 15;
       };
     };
-    
+
     bat = {
       enable = true;
     };
@@ -196,7 +198,6 @@
         prompt = "enable";
       };
     };
-
   };
 
   services = {
@@ -209,15 +210,14 @@
       };
     };
 
-      syncthing.enable = true;
+    syncthing.enable = true;
   };
 
-  
   wayland.windowManager.hyprland = {
     enable = true;
     settings = {
       "$mainMod" = "SUPER";
-      
+
       monitor = [
         ",highres,auto,auto"
         ",preferred,auto,auto,mirror,eDP-1"
@@ -269,64 +269,63 @@
         };
       };
 
-        animations = {
-          enabled = true;
+      animations = {
+        enabled = true;
 
-          bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
+        bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
 
-          animation = [
-            "windows, 1, 7, myBezier"
-            "windowsOut, 1, 7, default, popin 80%"
-            "border, 1, 10, default"
-            "borderangle, 1, 8, default"
-            "fade, 1, 7, default"
-            "workspaces, 1, 6, default"
-          ];
-        };
-
-        dwindle = {
-          pseudotile = true;
-          preserve_split = true;
-        };
-
-        master = {
-          new_status = "master";
-        };
-
-        misc = {
-          force_default_wallpaper = -1;
-          disable_hyprland_logo = false;
-        };
-
-        input = {
-          kb_layout = "us";
-
-          follow_mouse = 1;
-
-          sensitivity = 0;
-
-          touchpad.natural_scroll = true;
-        };
-
-        gestures.workspace_swipe = false;
-
-        bind = [
-          "$mainMod, Q, exec, $terminal"
-          "$mainMod, F, exec, firefox"
-          "$mainMod, C, killactive,"
-          "$mainMod ALT, F, fullscreen"
-          "$mainMod, S, togglespecialworkspace, magic"
-          "$mainMod SHIFT, S, movetoworkspace, special:magic"
-          "$mainMod SHIFT, 1, movetoworkspace, 1"
+        animation = [
+          "windows, 1, 7, myBezier"
+          "windowsOut, 1, 7, default, popin 80%"
+          "border, 1, 10, default"
+          "borderangle, 1, 8, default"
+          "fade, 1, 7, default"
+          "workspaces, 1, 6, default"
         ];
+      };
 
-        bindm = [
-          "$mainMod, mouse:272, movewindow"
-          "$mainMod, mouse:273, resizewindow"
-        ];
+      dwindle = {
+        pseudotile = true;
+        preserve_split = true;
+      };
 
-        
-        windowrulev2 = ["suppressevent maximize, class:.* "];
+      master = {
+        new_status = "master";
+      };
+
+      misc = {
+        force_default_wallpaper = -1;
+        disable_hyprland_logo = false;
+      };
+
+      input = {
+        kb_layout = "us";
+
+        follow_mouse = 1;
+
+        sensitivity = 0;
+
+        touchpad.natural_scroll = true;
+      };
+
+      gestures.workspace_swipe = false;
+
+      bind = [
+        "$mainMod, Q, exec, $terminal"
+        "$mainMod, F, exec, firefox"
+        "$mainMod, C, killactive,"
+        "$mainMod ALT, F, fullscreen"
+        "$mainMod, S, togglespecialworkspace, magic"
+        "$mainMod SHIFT, S, movetoworkspace, special:magic"
+        "$mainMod SHIFT, 1, movetoworkspace, 1"
+      ];
+
+      bindm = [
+        "$mainMod, mouse:272, movewindow"
+        "$mainMod, mouse:273, resizewindow"
+      ];
+
+      windowrulev2 = ["suppressevent maximize, class:.* "];
     };
   };
 

@@ -1,14 +1,15 @@
 ## Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ config, pkgs, ... }:
-
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  config,
+  pkgs,
+  ...
+}: {
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -32,9 +33,6 @@
   #timezoned
   # services.automatic-timezoned.enable = true;
 
-  
-
-
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -51,10 +49,10 @@
   };
 
   # Configure keymap in X11
-    services.xserver.xkb = {
-      layout = "us";
-      variant = "";
-    };
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "";
+  };
 
   services.tailscale.enable = true;
 
@@ -62,15 +60,15 @@
   users.users.ksakura = {
     isNormalUser = true;
     description = "Kathryn Sakura";
-    extraGroups = [ "networkmanager" "wheel" "audio" "sound" "video" "libvirtd" ];
+    extraGroups = ["networkmanager" "wheel" "audio" "sound" "video" "libvirtd"];
     packages = with pkgs; [];
     shell = pkgs.nushell;
   };
 
-  users.users.kat= {
+  users.users.kat = {
     isNormalUser = true;
     description = "_kat";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = ["networkmanager" "wheel"];
     packages = with pkgs; [];
     # shell = pkgs.nushell;
   };
@@ -84,43 +82,44 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    kitty
-    pipewire
-    wireplumber
-    libsForQt5.polkit-kde-agent
-    hyprpaper
-    helix
-    rustup
-    cargo
-    rustc
-    jq
-    coreutils
-    firefox
-    bat
-    ripgrep
-    ripgrep-all
-    cargo-cache
-    pavucontrol
-    wl-clipboard
-    xdg-utils
-    gcc
-    git
-    syncthing
-    nushell
-    starship
     atuin
-    zellij
+    bat
     bottom
-    ncdu
-    wakeonlan
-    parsec-bin
-    python3
-    openvpn
-    networkmanager-openvpn
+    cargo
+    cargo-cache
+    coreutils
+    difftastic
+    firefox
+    gcc
     gh
+    git
+    helix
+    hyprpaper
+    jq
+    kitty
+    lazygit
+    libsForQt5.polkit-kde-agent
+    ncdu
+    networkmanager-openvpn
     nil
     nixd
-    difftastic
+    nushell
+    openvpn
+    parsec-bin
+    pavucontrol
+    pipewire
+    python3
+    ripgrep
+    ripgrep-all
+    rustc
+    rustup
+    starship
+    syncthing
+    wakeonlan
+    wireplumber
+    wl-clipboard
+    xdg-utils
+    zellij
   ];
 
   fonts = {

@@ -9,30 +9,44 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = inputs@{ self, nixpkgs, home-manager, ... }: {
+  outputs = inputs @ {
+    self,
+    nixpkgs,
+    home-manager,
+    ...
+  }: let
+    system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${system};
+  in {
     # NOTE: 'nixos' is the default hostname set by the installer
     nixosConfigurations.kats-laptop = nixpkgs.lib.nixosSystem {
       # NOTE: Change this to aarch64-linux if you are on ARM
       system = "x86_64-linux";
       # extraSpecialArgs = {inherit inputs;};
-      modules = [ 
-      ./configuration.nix
-      
-      {
-        nix.settings.experimental-features = [
-          "nix-command"
-          "flakes"
-        ];
-      }
-      
-      home-manager.nixosModules.home-manager
-      {
-        home-manager.useGlobalPkgs = true;
-        # home-manager.useUserPkgs = true;
-        home-manager.users.ksakura = import ./home.nix;
-        home-manager.backupFileExtension = "bak";
-      }
+      modules = [
+        ./configuration.nix
+
+        {
+          nix.settings.experimental-features = [
+            "nix-command"
+            "flakes"
+          ];
+        }
+
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          # home-manager.useUserPkgs = true;
+          home-manager.users.ksakura = import ./home.nix;
+          home-manager.backupFileExtension = "bak";
+        }
       ];
     };
+
+    formatter.${system} = pkgs.alejandra;
+    devShell = with pkgs;
+      mkShell {
+        buildInputs = [nil self.formatter.${system}];
+      };
   };
 }
