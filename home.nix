@@ -198,6 +198,19 @@
         prompt = "enable";
       };
     };
+
+    jujutsu = {
+      enable = true;
+      settings = {
+        user = {
+          email = "pawarherschel@gmail.com";
+          name = "Herschel Pawar";
+        };
+        ui = {
+          editor = "hx";
+        };
+      };
+    };
   };
 
   services = {
