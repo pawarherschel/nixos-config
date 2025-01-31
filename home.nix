@@ -206,6 +206,9 @@
           email = "pawarherschel@gmail.com";
           name = "Herschel Pawar";
         };
+        ui = {
+          editor = "hx";
+        };
       };
     };
   };
