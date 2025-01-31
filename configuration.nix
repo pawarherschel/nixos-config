@@ -83,7 +83,6 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     atuin
-    bat
     bottom
     cargo
     cargo-cache
@@ -116,6 +115,7 @@
     starship
     syncthing
     wakeonlan
+    waypipe
     wireplumber
     wl-clipboard
     xdg-utils
