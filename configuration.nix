@@ -88,6 +88,7 @@
     cargo-cache
     coreutils
     difftastic
+    discord
     firefox
     gcc
     gh

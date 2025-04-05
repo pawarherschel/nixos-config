@@ -8,6 +8,8 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    zen-browser.url = "github:pawarherschel/zen-browser-flake";
   };
   outputs = inputs @ {
     self,
@@ -25,6 +27,11 @@
       # extraSpecialArgs = {inherit inputs;};
       modules = [
         ./configuration.nix
+        {
+          environment.systemPackages = [
+            inputs.zen-browser.packages."${system}".specific
+          ];
+        }
 
         {
           nix.settings.experimental-features = [

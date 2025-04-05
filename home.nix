@@ -368,7 +368,7 @@
 
       bind = [
         "$mainMod, Q, exec, $terminal"
-        "$mainMod, F, exec, firefox"
+        "$mainMod, F, exec, zen"
         "$mainMod, C, killactive,"
         "$mainMod ALT, F, fullscreen"
         "$mainMod, S, togglespecialworkspace, magic"
