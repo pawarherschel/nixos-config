@@ -8,7 +8,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     zen-browser = {
       url = "github:pawarherschel/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
