@@ -53,7 +53,7 @@
     };
 
     formatter.${system} = pkgs.alejandra;
-    devShell = with pkgs;
+    devShells.${system}.default = with pkgs;
       mkShell {
         buildInputs = [nil self.formatter.${system}];
       };
