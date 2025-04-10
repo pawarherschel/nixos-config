@@ -12,11 +12,15 @@
       url = "github:pawarherschel/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    determinate = {
+      url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
+    };
   };
   outputs = inputs @ {
     self,
     nixpkgs,
     home-manager,
+    determinate,
     ...
   }: let
     system = "x86_64-linux";
@@ -49,6 +53,8 @@
           home-manager.users.ksakura = import ./home.nix;
           home-manager.backupFileExtension = "bak";
         }
+
+        determinate.nixosModules.default
       ];
     };
 
