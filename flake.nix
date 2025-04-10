@@ -26,7 +26,7 @@
     nixosConfigurations.kats-laptop = nixpkgs.lib.nixosSystem {
       # NOTE: Change this to aarch64-linux if you are on ARM
       system = "x86_64-linux";
-      # extraSpecialArgs = {inherit inputs;};
+      specialArgs = {inherit inputs;};
       modules = [
         ./configuration.nix
         {
