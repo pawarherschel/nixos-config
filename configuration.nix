@@ -98,7 +98,8 @@
     jq
     kitty
     lazygit
-    libsForQt5.polkit-kde-agent
+    # libsForQt5.polkit-kde-agent
+    kdePackages.polkit-kde-agent-1
     ncdu
     networkmanager-openvpn
     nil
@@ -121,6 +122,7 @@
     wl-clipboard
     xdg-utils
     zellij
+    # zen
   ];
 
   fonts = {
@@ -130,8 +132,13 @@
     ];
   };
 
-  programs.hyprland.enable = true;
-
+  # programs.hyprland.enable = true;
+  # Enable the login manager
+  services.displayManager.cosmic-greeter.enable = true;
+  # Enable the COSMIC DE itself
+  services.desktopManager.cosmic.enable = true;
+  # Enable XWayland support in COSMIC
+  services.desktopManager.cosmic.xwayland.enable = true;
   xdg = {
     autostart.enable = true;
     portal = {
