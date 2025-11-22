@@ -8,16 +8,20 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    zen-browser = {
-      url = "github:youwen5/zen-browser-flake";
+    helium-browser = {
+      url = "github:ominit/helium-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    determinate = {
-      url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     };
     stylix = {
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    cosmic-manager = {
+      url = "github:HeitorAugustoLN/cosmic-manager";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
     };
   };
   outputs =
@@ -25,8 +29,8 @@
       self,
       nixpkgs,
       home-manager,
-      determinate,
       stylix,
+      cosmic-manager,
       ...
     }:
     let
@@ -45,17 +49,16 @@
             stylix.enable = true;
             stylix.polarity = "dark";
             stylix.image = ./wallpaper.png;
-            stylix.homeManagerIntegration.autoImport = true;
             stylix.autoEnable = true;
             stylix.fonts.monospace.package = pkgs.jetbrains-mono;
             stylix.fonts.monospace.name = "JetBrainsMono NF Regular";
-            stylix.fonts.sizes.terminal = 15;
+            stylix.fonts.sizes.terminal = 17;
           }
 
           ./configuration.nix
           {
             environment.systemPackages = [
-              inputs.zen-browser.packages."${system}".default
+              inputs.helium-browser.packages."${system}".default
             ];
           }
 
@@ -70,11 +73,12 @@
           {
             home-manager.useGlobalPkgs = true;
             # home-manager.useUserPkgs = true;
-            home-manager.users.ksakura = import ./home.nix;
+            home-manager.users.ksakura.imports = [
+              ./home.nix
+              cosmic-manager.homeManagerModules.cosmic-manager
+            ];
             home-manager.backupFileExtension = "bak";
           }
-
-          determinate.nixosModules.default
         ];
       };
 

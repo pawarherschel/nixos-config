@@ -5,11 +5,35 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
+
+  # services.dnsmasq = {
+  #   enable = true;
+  #   settings = {
+  #     dhcp-option=[
+  #       "3,0.0.0.0"
+  #       "6,0.0.0.0"
+  #     ];
+  #     interface = "enp0s31f6";
+  #     dhcp-range = [
+  #       "192.168.100.2,192.168.100.254"
+  #     ];
+  #     server = [
+  #       "1.1.1.1"
+  #       "8.8.8.8"
+  #     ];
+  #   };
+  # };
+
+  # systemd.services.dnsmasq = {
+  #   requires = ["network-online.target"];
+  #   after = ["network-online.target"];
+  # };
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -60,16 +84,26 @@
   users.users.ksakura = {
     isNormalUser = true;
     description = "Kathryn Sakura";
-    extraGroups = ["networkmanager" "wheel" "audio" "sound" "video" "libvirtd"];
-    packages = with pkgs; [];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "audio"
+      "sound"
+      "video"
+      "libvirtd"
+    ];
+    packages = with pkgs; [ ];
     shell = pkgs.nushell;
   };
 
   users.users.kat = {
     isNormalUser = true;
     description = "_kat";
-    extraGroups = ["networkmanager" "wheel"];
-    packages = with pkgs; [];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
+    packages = with pkgs; [ ];
     # shell = pkgs.nushell;
   };
 
@@ -94,20 +128,12 @@
     gh
     git
     helix
-    hyprpaper
     jq
-    kitty
-    lazygit
-    # libsForQt5.polkit-kde-agent
     kdePackages.polkit-kde-agent-1
     ncdu
     networkmanager-openvpn
-    nil
-    nixd
     nushell
     openvpn
-    parsec-bin
-    pavucontrol
     pipewire
     python3
     ripgrep
@@ -115,14 +141,12 @@
     rustc
     rustup
     starship
-    syncthing
     wakeonlan
     waypipe
     wireplumber
     wl-clipboard
     xdg-utils
     zellij
-    # zen
   ];
 
   fonts = {
@@ -131,6 +155,8 @@
       pkgs.jetbrains-mono
     ];
   };
+
+  programs.kdeconnect.enable = true;
 
   # programs.hyprland.enable = true;
   # Enable the login manager

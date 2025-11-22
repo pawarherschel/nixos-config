@@ -2,7 +2,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "ksakura";
@@ -74,6 +75,11 @@
   };
 
   programs = {
+    cosmic-edit.enable = false;
+    cosmic-ext-calculator.enable = true;
+    cosmic-files.enable = true;
+    cosmic-player.enable = true;
+    
     helix = {
       enable = true;
       defaultEditor = true;
@@ -120,7 +126,7 @@
         language = [
           {
             name = "nix";
-            file-types = ["nix"];
+            file-types = [ "nix" ];
             language-servers = [
               "nil"
               "nixd"
@@ -136,30 +142,33 @@
       settings.enter_accept = true;
     };
 
-    nushell = let
-      defaults = {
-        config = builtins.fetchurl {
-          url = "https://raw.githubusercontent.com/nushell/nushell/0.98.0/crates/nu-utils/src/sample_config/default_config.nu";
-          sha256 = "05k136qzz50dvqnsyhx8r38wyvwbjk92p2k0v8hldarc8izwykph";
+    nushell =
+      let
+        tag = "0.108.0";
+        defaults = {
+          config = builtins.fetchurl {
+            url = "https://raw.githubusercontent.com/nushell/nushell/refs/tags/${tag}/crates/nu-utils/src/default_files/default_config.nu";
+            sha256 = "sha256:018lbv7idyyj9wvc3bb4rlv2avi23i6fllzqq7agwj62pa3zf6s3";
+          };
+          env = builtins.fetchurl {
+            url = "https://raw.githubusercontent.com/nushell/nushell/refs/tags/${tag}/crates/nu-utils/src/default_files/default_env.nu";
+            sha256 = "sha256:09fpv8sa4dh4gjzy0z2cyfi734f0l3ckwp0k9fafg8cl7d1vkn40";
+          };
         };
-        env = builtins.fetchurl {
-          url = "https://raw.githubusercontent.com/nushell/nushell/0.98.0/crates/nu-utils/src/sample_config/default_env.nu";
-          sha256 = "1dw1b4m3w3rd21n6dc0ijwvmadf5fa4zx0kcbcmbks84mkffnaqd";
-        };
+      in
+      {
+        enable = true;
+        configFile.text = builtins.readFile defaults.config;
+        # extraConfig = ''
+        #   source ~/.local/share/atuin/init.nu
+        #   use ~/.cache/starship/init.nu
+        # '';
+        envFile.text = builtins.readFile defaults.env;
+        # extraEnv = ''
+        #   mkdir ~/.cache/starship
+        #   starship init nu | save -f ~/.cache/starship/init.nu
+        # '';
       };
-    in {
-      enable = true;
-      configFile.text = builtins.readFile defaults.config;
-      # extraConfig = ''
-      #   source ~/.local/share/atuin/init.nu
-      #   use ~/.cache/starship/init.nu
-      # '';
-      envFile.text = builtins.readFile defaults.env;
-      # extraEnv = ''
-      #   mkdir ~/.cache/starship
-      #   starship init nu | save -f ~/.cache/starship/init.nu
-      # '';
-    };
 
     starship = {
       enable = true;
@@ -229,7 +238,7 @@
 
     bottom = {
       enable = true;
-      settings.flags = {};
+      settings.flags = { };
     };
 
     gh = {
@@ -268,7 +277,7 @@
 
     syncthing.enable = true;
   };
-
+  wayland.desktopManager.cosmic.enable = true;
   # wayland.windowManager.hyprland = {
   #   enable = true;
   #   settings = {
