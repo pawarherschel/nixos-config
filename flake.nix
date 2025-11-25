@@ -16,13 +16,13 @@
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    cosmic-manager = {
-      url = "github:HeitorAugustoLN/cosmic-manager";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        home-manager.follows = "home-manager";
-      };
-    };
+    # cosmic-manager = {
+    #   url = "github:HeitorAugustoLN/cosmic-manager";
+    #   inputs = {
+    #     nixpkgs.follows = "nixpkgs";
+    #     home-manager.follows = "home-manager";
+    #   };
+    # };
   };
   outputs =
     inputs@{
@@ -30,7 +30,7 @@
       nixpkgs,
       home-manager,
       stylix,
-      cosmic-manager,
+      # cosmic-manager,
       ...
     }:
     let
@@ -52,7 +52,8 @@
             stylix.autoEnable = true;
             stylix.fonts.monospace.package = pkgs.jetbrains-mono;
             stylix.fonts.monospace.name = "JetBrainsMono NF Regular";
-            stylix.fonts.sizes.terminal = 17;
+            stylix.fonts.sizes.terminal = 12;
+            stylix.targets.grub.useWallpaper = true;
           }
 
           ./configuration.nix
@@ -75,7 +76,7 @@
             # home-manager.useUserPkgs = true;
             home-manager.users.ksakura.imports = [
               ./home.nix
-              cosmic-manager.homeManagerModules.cosmic-manager
+              # cosmic-manager.homeManagerModules.cosmic-manager
             ];
             home-manager.backupFileExtension = "bak";
           }

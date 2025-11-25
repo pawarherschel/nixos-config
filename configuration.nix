@@ -116,6 +116,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    ashell
     atuin
     bottom
     cargo
@@ -146,6 +147,7 @@
     wireplumber
     wl-clipboard
     xdg-utils
+    yazi
     zellij
   ];
 
@@ -158,13 +160,13 @@
 
   programs.kdeconnect.enable = true;
 
-  # programs.hyprland.enable = true;
+  programs.hyprland.enable = true;
   # Enable the login manager
-  services.displayManager.cosmic-greeter.enable = true;
+  # services.displayManager.cosmic-greeter.enable = true;
   # Enable the COSMIC DE itself
-  services.desktopManager.cosmic.enable = true;
+  # services.desktopManager.cosmic.enable = true;
   # Enable XWayland support in COSMIC
-  services.desktopManager.cosmic.xwayland.enable = true;
+  # services.desktopManager.cosmic.xwayland.enable = true;
   xdg = {
     autostart.enable = true;
     portal = {
