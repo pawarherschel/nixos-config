@@ -263,22 +263,17 @@
         };
       };
     };
-
-    ashell = {
-      enable = true;
-      systemd.enable = true;
-    };
   };
 
   services = {
-    hyprpaper = {
-      enable = true;
-      settings = {
-        splash = true;
-        # preload = "/home/ksakura/wallpaper.png";
-        # wallpaper = "eDP-1,/home/ksakura/wallpaper.png";
-      };
-    };
+    # hyprpaper = {
+    #   enable = true;
+    #   settings = {
+    #     splash = true;
+    #     # preload = "/home/ksakura/wallpaper.png";
+    #     # wallpaper = "eDP-1,/home/ksakura/wallpaper.png";
+    #   };
+    # };
 
     syncthing.enable = true;
   };

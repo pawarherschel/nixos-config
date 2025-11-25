@@ -12,6 +12,34 @@
     ./hardware-configuration.nix
   ];
 
+  nix.settings.system-features = [
+    "nixos-test"
+    "benchmark"
+    "big-parallel"
+    "kvm"
+    "gccarch-skylake"
+  ];
+
+  nix.settings.cores = 4;
+  nix.settings.max-jobs = 4;
+
+  # nixpkgs.hostPlatform = {
+  #   gcc.arch = "skylake";
+  #   gcc.tune = "skylake";
+  #   system = "x86_64-linux";
+  # };
+
+  boot.kernelPackages = pkgs.linuxPackages_zen.extend (final: prev: {
+    kernel = prev.kernel.overrideAttrs(old: {
+      makeFlags = (old.makeFlags or []) ++ [
+        "KCFLAGS=-march=skylake -mtune=skylake -O2 -pipe"
+        "KCPPFLAGS=-march=skylake -mtune=skylake -O2 -pipe"
+      ];
+
+      modDirVersion = "${old.version}-zen-skylake";
+    });
+  });
+
   # services.dnsmasq = {
   #   enable = true;
   #   settings = {
@@ -79,6 +107,16 @@
   };
 
   services.tailscale.enable = true;
+  services.greetd = {
+    enable = true;
+    useTextGreeter = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --greeting 'meow' --remember --remember-session";
+        user = "greeter";
+      };
+    };
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.ksakura = {
@@ -116,7 +154,6 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    ashell
     atuin
     bottom
     cargo
@@ -149,6 +186,8 @@
     xdg-utils
     yazi
     zellij
+    nh
+    nix-output-monitor
   ];
 
   fonts = {
@@ -160,7 +199,13 @@
 
   programs.kdeconnect.enable = true;
 
-  programs.hyprland.enable = true;
+  services.desktopManager.gnome.enable = true;
+  services.gnome.core-apps.enable = false;
+  services.gnome.core-developer-tools.enable = false;
+  services.gnome.games.enable = false;
+  environment.gnome.excludePackages = with pkgs; [ gnome-tour gnome-user-docs ];
+  
+  # programs.hyprland.enable = true;
   # Enable the login manager
   # services.displayManager.cosmic-greeter.enable = true;
   # Enable the COSMIC DE itself
