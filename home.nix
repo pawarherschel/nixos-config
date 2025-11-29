@@ -83,6 +83,55 @@
     helix = {
       enable = true;
       defaultEditor = true;
+# [language-server.ltex-ls-plus]
+# command = "D:\\ltex-ls-plus-18.5.1\\bin\\ltex-ls-plus.bat"
+# [language-server.ltex-ls-plus.config]
+# ltex.language = "en-GB"
+# ltex.additionalRules.enablePickyRules = true
+# ltex.completionEnabled = true
+# ltex.diagnosticSeverity = "warning"
+# ltex.disabledRules = { "en-GB" = ["EN_QUOTES", "ELLIPSIS"] }
+# ltex.statusBarItem = true
+# 
+# [language-server.marksman]
+# command = "D:\\marksman\\marksman.exe"
+# 
+# [language-server.tinymist]
+# command = "tinymist"
+# [language-server.tinymist.config]
+# preview.background.enabled = true
+# preview.background.args = [
+#   "--data-plane-host=127.0.0.1:23635",
+#   "--invert-colors=never",
+#   "--open",
+# ]
+# tinymist.formatterMode = "typstyle"
+# tinymist.lint.enabled = true
+# tinymist.lint.when = "onType"
+# tinymist.exportPdf = "onSave"
+# tinymist.systemFonts = false
+# tinymist.preview.systemFonts = false
+# tinymist.formatterIndentSize = 3
+# tinymist.completion.triggerOnSnippetPlaceholders = true
+# 
+# 
+# [[language]]
+# name = "markdown"
+# language-servers = ["ltex-ls-plus", "marksman"]
+# formatter = { command = 'deno', args = ["fmt", "-", "--ext", "md"] }
+# auto-format = true
+# 
+# [[language]]
+# name = "toml"
+# formatter = { command = "taplo", args = ["format", "-"] }
+# auto-format = true
+# roots = ["."]
+# 
+# [[language]]
+# name = "typst"
+# language-servers = ["tinymist", "ltex-ls-plus"]
+# formatter.command = "typstyle"
+# auto-format = true
       settings = {
         # theme = "dracula";
         keys.normal.esc = [
