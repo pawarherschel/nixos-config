@@ -20,7 +20,7 @@
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = [
+  home.packages = ([
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
     # pkgs.hello
@@ -37,7 +37,29 @@
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
-  ];
+  ]
+    ++ ( with pkgs; [
+  # The Editor
+  neovim
+
+  # Build Tools (Required for Mason to compile plugins)
+  gcc
+  gnumake
+  unzip
+  wget
+  curl
+  gzip
+  gnutar
+  ripgrep
+  fd
+  
+  # Runtimes (Mason installs the LSPs, but uses these to run them)
+  nodejs_22  # Essential for Copilot, TypeScript, JSON, HTML LSPs
+  python3    # Essential for Python LSPs
+  cargo      # Essential for Rust/Lua tools
+  go         # Essential for Go tools
+  luajit
+]));
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -74,64 +96,109 @@
     EDITOR = "hx";
   };
 
+  xdg.desktopEntries = {
+    helium = {
+      name = "Helium";
+      exec = "${pkgs.helium}/bin/helium %U";
+      genericName = "Web Browser";
+      comment = "Access the Internet";
+      startupNotify = true;
+      terminal = false;
+      icon = "${pkgs.helium}/lib/helium-bin-0.6.7.1/product_logo_256.png";
+      type = "Application";
+      categories = [
+        "Network"
+        "WebBrowser"
+      ];
+      mimeType = [
+        "application/pdf"
+        "application/rdf+xml"
+        "application/rss+xml"
+        "application/xhtml+xml"
+        "application/xhtml_xml"
+        "application/xml"
+        "image/gif"
+        "image/jpeg"
+        "image/png"
+        "image/webp"
+        "text/html"
+        "text/xml"
+        "x-scheme-handler/http"
+        "x-scheme-handler/https"
+      ];
+    };
+  };
+
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "text/html" = "helium.desktop";
+      "x-scheme-handler/http" = "helium.desktop";
+      "x-scheme-handler/https" = "helium.desktop";
+      "x-scheme-handler/about" = "helium.desktop";
+      "x-scheme-handler/unknown" = "helium.desktop";
+      "text/plain" = "helix.desktop";
+    };
+  };
+
   programs = {
     # cosmic-edit.enable = false;
     # cosmic-ext-calculator.enable = true;
     # cosmic-files.enable = true;
     # cosmic-player.enable = true;
-    
+
     helix = {
       enable = true;
       defaultEditor = true;
-# [language-server.ltex-ls-plus]
-# command = "D:\\ltex-ls-plus-18.5.1\\bin\\ltex-ls-plus.bat"
-# [language-server.ltex-ls-plus.config]
-# ltex.language = "en-GB"
-# ltex.additionalRules.enablePickyRules = true
-# ltex.completionEnabled = true
-# ltex.diagnosticSeverity = "warning"
-# ltex.disabledRules = { "en-GB" = ["EN_QUOTES", "ELLIPSIS"] }
-# ltex.statusBarItem = true
-# 
-# [language-server.marksman]
-# command = "D:\\marksman\\marksman.exe"
-# 
-# [language-server.tinymist]
-# command = "tinymist"
-# [language-server.tinymist.config]
-# preview.background.enabled = true
-# preview.background.args = [
-#   "--data-plane-host=127.0.0.1:23635",
-#   "--invert-colors=never",
-#   "--open",
-# ]
-# tinymist.formatterMode = "typstyle"
-# tinymist.lint.enabled = true
-# tinymist.lint.when = "onType"
-# tinymist.exportPdf = "onSave"
-# tinymist.systemFonts = false
-# tinymist.preview.systemFonts = false
-# tinymist.formatterIndentSize = 3
-# tinymist.completion.triggerOnSnippetPlaceholders = true
-# 
-# 
-# [[language]]
-# name = "markdown"
-# language-servers = ["ltex-ls-plus", "marksman"]
-# formatter = { command = 'deno', args = ["fmt", "-", "--ext", "md"] }
-# auto-format = true
-# 
-# [[language]]
-# name = "toml"
-# formatter = { command = "taplo", args = ["format", "-"] }
-# auto-format = true
-# roots = ["."]
-# 
-# [[language]]
-# name = "typst"
-# language-servers = ["tinymist", "ltex-ls-plus"]
-# formatter.command = "typstyle"
-# auto-format = true
+      # [language-server.ltex-ls-plus]
+      # command = "D:\\ltex-ls-plus-18.5.1\\bin\\ltex-ls-plus.bat"
+      # [language-server.ltex-ls-plus.config]
+      # ltex.language = "en-GB"
+      # ltex.additionalRules.enablePickyRules = true
+      # ltex.completionEnabled = true
+      # ltex.diagnosticSeverity = "warning"
+      # ltex.disabledRules = { "en-GB" = ["EN_QUOTES", "ELLIPSIS"] }
+      # ltex.statusBarItem = true
+      #
+      # [language-server.marksman]
+      # command = "D:\\marksman\\marksman.exe"
+      #
+      # [language-server.tinymist]
+      # command = "tinymist"
+      # [language-server.tinymist.config]
+      # preview.background.enabled = true
+      # preview.background.args = [
+      #   "--data-plane-host=127.0.0.1:23635",
+      #   "--invert-colors=never",
+      #   "--open",
+      # ]
+      # tinymist.formatterMode = "typstyle"
+      # tinymist.lint.enabled = true
+      # tinymist.lint.when = "onType"
+      # tinymist.exportPdf = "onSave"
+      # tinymist.systemFonts = false
+      # tinymist.preview.systemFonts = false
+      # tinymist.formatterIndentSize = 3
+      # tinymist.completion.triggerOnSnippetPlaceholders = true
+      #
+      #
+      # [[language]]
+      # name = "markdown"
+      # language-servers = ["ltex-ls-plus", "marksman"]
+      # formatter = { command = 'deno', args = ["fmt", "-", "--ext", "md"] }
+      # auto-format = true
+      #
+      # [[language]]
+      # name = "toml"
+      # formatter = { command = "taplo", args = ["format", "-"] }
+      # auto-format = true
+      # roots = ["."]
+      #
+      # [[language]]
+      # name = "typst"
+      # language-servers = ["tinymist", "ltex-ls-plus"]
+      # formatter.command = "typstyle"
+      # auto-format = true
       settings = {
         # theme = "dracula";
         keys.normal.esc = [
@@ -327,121 +394,121 @@
     syncthing.enable = true;
   };
   # wayland.desktopManager.cosmic.enable = true;
-  wayland.windowManager.hyprland = {
-    enable = true;
-    systemd.enable = true;
-    settings = {
-      "$mainMod" = "SUPER";
+  # wayland.windowManager.hyprland = {
+  #   enable = true;
+  #   systemd.enable = true;
+  #   settings = {
+  #     "$mainMod" = "SUPER";
 
-      monitor = [
-        ",highres,auto,auto"
-        ",preferred,auto,auto,mirror,eDP-1"
-      ];
+  #     monitor = [
+  #       ",highres,auto,auto"
+  #       ",preferred,auto,auto,mirror,eDP-1"
+  #     ];
 
-      xwayland.force_zero_scaling = true;
+  #     xwayland.force_zero_scaling = true;
 
-      "$terminal" = "kitty";
+  #     "$terminal" = "kitty";
 
-      env = [
-        "XCURSOR_SIZE,24"
-        "HYPRCURSOR_SIZE,24"
-        "GDK_SCALE,1"
-      ];
+  #     env = [
+  #       "XCURSOR_SIZE,24"
+  #       "HYPRCURSOR_SIZE,24"
+  #       "GDK_SCALE,1"
+  #     ];
 
-      general = {
-        gaps_in = 2;
-        gaps_out = 8;
+  #     general = {
+  #       gaps_in = 2;
+  #       gaps_out = 8;
 
-        border_size = 2;
+  #       border_size = 2;
 
-        # "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-        # "col.inactive_border" = "rgba(595959aa)";
+  #       # "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
+  #       # "col.inactive_border" = "rgba(595959aa)";
 
-        resize_on_border = false;
+  #       resize_on_border = false;
 
-        allow_tearing = false;
+  #       allow_tearing = false;
 
-        layout = "dwindle";
-      };
+  #       layout = "dwindle";
+  #     };
 
-      decoration = {
-        rounding = 10;
+  #     decoration = {
+  #       rounding = 10;
 
-        active_opacity = 1.0;
-        inactive_opacity = 1.0;
+  #       active_opacity = 1.0;
+  #       inactive_opacity = 1.0;
 
-        # drop_shadow = true;
-        # shadow_range = 4;
-        # shadow_render_power = 3;
-        # "col.shadow" = "rgba(1a1a1aee)";
+  #       # drop_shadow = true;
+  #       # shadow_range = 4;
+  #       # shadow_render_power = 3;
+  #       # "col.shadow" = "rgba(1a1a1aee)";
 
-        blur = {
-          enabled = true;
-          size = 3;
-          passes = 1;
+  #       blur = {
+  #         enabled = true;
+  #         size = 3;
+  #         passes = 1;
 
-          vibrancy = 0.1696;
-        };
-      };
+  #         vibrancy = 0.1696;
+  #       };
+  #     };
 
-      animations = {
-        enabled = true;
+  #     animations = {
+  #       enabled = true;
 
-        bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
+  #       bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
 
-        animation = [
-          "windows, 1, 7, myBezier"
-          "windowsOut, 1, 7, default, popin 80%"
-          "border, 1, 10, default"
-          "borderangle, 1, 8, default"
-          "fade, 1, 7, default"
-          "workspaces, 1, 6, default"
-        ];
-      };
+  #       animation = [
+  #         "windows, 1, 7, myBezier"
+  #         "windowsOut, 1, 7, default, popin 80%"
+  #         "border, 1, 10, default"
+  #         "borderangle, 1, 8, default"
+  #         "fade, 1, 7, default"
+  #         "workspaces, 1, 6, default"
+  #       ];
+  #     };
 
-      dwindle = {
-        pseudotile = true;
-        preserve_split = true;
-      };
+  #     dwindle = {
+  #       pseudotile = true;
+  #       preserve_split = true;
+  #     };
 
-      master = {
-        new_status = "master";
-      };
+  #     master = {
+  #       new_status = "master";
+  #     };
 
-      misc = {
-        # force_default_wallpaper = -1;
-        # disable_hyprland_logo = false;
-      };
+  #     misc = {
+  #       # force_default_wallpaper = -1;
+  #       # disable_hyprland_logo = false;
+  #     };
 
-      input = {
-        kb_layout = "us";
+  #     input = {
+  #       kb_layout = "us";
 
-        follow_mouse = 1;
+  #       follow_mouse = 1;
 
-        sensitivity = 0;
+  #       sensitivity = 0;
 
-        touchpad.natural_scroll = true;
-      };
+  #       touchpad.natural_scroll = true;
+  #     };
 
-      bind = [
-        "$mainMod, Q, exec, $terminal"
-        "$mainMod, F, exec, firefox"
-        "$mainMod, D, exec, discord"
-        "$mainMod, C, killactive,"
-        "$mainMod ALT, F, fullscreen"
-        "$mainMod, S, togglespecialworkspace, magic"
-        "$mainMod SHIFT, S, movetoworkspace, special:magic"
-        "$mainMod SHIFT, 1, movetoworkspace, 1"
-      ];
+  #     bind = [
+  #       "$mainMod, Q, exec, $terminal"
+  #       "$mainMod, F, exec, helium"
+  #       "$mainMod, D, exec, discord"
+  #       "$mainMod, C, killactive,"
+  #       "$mainMod ALT, F, fullscreen"
+  #       "$mainMod, S, togglespecialworkspace, magic"
+  #       "$mainMod SHIFT, S, movetoworkspace, special:magic"
+  #       "$mainMod SHIFT, 1, movetoworkspace, 1"
+  #     ];
 
-      bindm = [
-        "$mainMod, mouse:272, movewindow"
-        "$mainMod, mouse:273, resizewindow"
-      ];
+  #     bindm = [
+  #       "$mainMod, mouse:272, movewindow"
+  #       "$mainMod, mouse:273, resizewindow"
+  #     ];
 
-      windowrulev2 = ["suppressevent maximize, class:.* "];
-    };
-  };
+  #     windowrulev2 = ["suppressevent maximize, class:.* "];
+  #   };
+  # };
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;

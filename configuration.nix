@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
-  config,
+  lib,
   pkgs,
   ...
 }:
@@ -29,16 +29,18 @@
   #   system = "x86_64-linux";
   # };
 
-  boot.kernelPackages = pkgs.linuxPackages_zen.extend (final: prev: {
-    kernel = prev.kernel.overrideAttrs(old: {
-      makeFlags = (old.makeFlags or []) ++ [
-        "KCFLAGS=-march=skylake -mtune=skylake -O2 -pipe"
-        "KCPPFLAGS=-march=skylake -mtune=skylake -O2 -pipe"
-      ];
+  boot.kernelPackages = pkgs.linuxPackages_zen.extend (
+    final: prev: {
+      kernel = prev.kernel.overrideAttrs (old: {
+        makeFlags = (old.makeFlags or [ ]) ++ [
+          "KCFLAGS=-march=skylake -mtune=skylake -O2 -pipe"
+          "KCPPFLAGS=-march=skylake -mtune=skylake -O2 -pipe"
+        ];
 
-      modDirVersion = "${old.version}-zen-skylake";
-    });
-  });
+        modDirVersion = "${old.version}-zen-skylake";
+      });
+    }
+  );
 
   # services.dnsmasq = {
   #   enable = true;
@@ -64,9 +66,14 @@
   # };
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.limine.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.extraModprobeConfig = "options kvm_intel nested=1";
+  boot.plymouth = {
+    enable = true;
+    themePackages = [ pkgs.plymouth-blahaj-theme ];
+    theme = lib.mkForce "blahaj";
+  };
 
   networking.hostName = "kats-laptop"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -130,7 +137,6 @@
       "video"
       "libvirtd"
     ];
-    packages = with pkgs; [ ];
     shell = pkgs.nushell;
   };
 
@@ -141,8 +147,6 @@
       "networkmanager"
       "wheel"
     ];
-    packages = with pkgs; [ ];
-    # shell = pkgs.nushell;
   };
 
   # Enable automatic login for the user.
@@ -153,42 +157,54 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    atuin
-    bottom
-    cargo
-    cargo-cache
-    coreutils
-    difftastic
-    discord
-    firefox
-    gcc
-    gh
-    git
-    helix
-    jq
-    kdePackages.polkit-kde-agent-1
-    ncdu
-    networkmanager-openvpn
-    nushell
-    openvpn
-    pipewire
-    python3
-    ripgrep
-    ripgrep-all
-    rustc
-    rustup
-    starship
-    wakeonlan
-    waypipe
-    wireplumber
-    wl-clipboard
-    xdg-utils
-    yazi
-    zellij
-    nh
-    nix-output-monitor
-  ];
+  environment.systemPackages =
+    with pkgs;
+    [
+      atuin
+      bottom
+      cargo
+      cargo-cache
+      coreutils
+      difftastic
+      discord
+      helium
+      gcc
+      gh
+      git
+      helix
+      jq
+      kdePackages.polkit-kde-agent-1
+      ncdu
+      networkmanager-openvpn
+      nh
+      nix-output-monitor
+      nushell
+      openvpn
+      pipewire
+      python3
+      ripgrep
+      ripgrep-all
+      rustc
+      rustup
+      starship
+      wakeonlan
+      waypipe
+      wireplumber
+      wl-clipboard
+      xdg-utils
+      yazi
+      zellij
+    ]
+    ++ (with pkgs.gnomeExtensions; [
+      app-name-indicator
+      appindicator
+      clipboard-indicator
+      edit-desktop-files
+      emoji-copy
+      gsconnect
+      paperwm
+      xwayland-indicator
+    ]);
 
   fonts = {
     enableDefaultPackages = true;
@@ -197,14 +213,17 @@
     ];
   };
 
-  programs.kdeconnect.enable = true;
+  # programs.kdeconnect.enable = true;
 
   services.desktopManager.gnome.enable = true;
   services.gnome.core-apps.enable = false;
   services.gnome.core-developer-tools.enable = false;
   services.gnome.games.enable = false;
-  environment.gnome.excludePackages = with pkgs; [ gnome-tour gnome-user-docs ];
-  
+  environment.gnome.excludePackages = with pkgs; [
+    gnome-tour
+    gnome-user-docs
+  ];
+
   # programs.hyprland.enable = true;
   # Enable the login manager
   # services.displayManager.cosmic-greeter.enable = true;
@@ -214,15 +233,22 @@
   # services.desktopManager.cosmic.xwayland.enable = true;
   xdg = {
     autostart.enable = true;
+    terminal-exec = {
+      enable = true;
+      settings.default = [ "kitty.desktop" ];
+    };
     portal = {
       enable = true;
-      extraPortals = [
-        pkgs.xdg-desktop-portal
-        pkgs.xdg-desktop-portal-hyprland
+      # xdg-desktop-portal-gtk is a reliable fallback for minimal setups
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-termfilechooser
+        xdg-desktop-portal-gnome
+        xdg-desktop-portal-phosh
       ];
     };
   };
 
+  programs.steam.enable = true;
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
