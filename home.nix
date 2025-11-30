@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }:
 {
@@ -20,46 +21,48 @@
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = ([
-    # # Adds the 'hello' command to your environment. It prints a friendly
-    # # "Hello, world!" when run.
-    # pkgs.hello
+  home.packages = (
+    [
+      # # Adds the 'hello' command to your environment. It prints a friendly
+      # # "Hello, world!" when run.
+      # pkgs.hello
 
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
+      # # It is sometimes useful to fine-tune packages, for example, by applying
+      # # overrides. You can do that directly here, just don't forget the
+      # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
+      # # fonts?
+      # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
 
-    # # You can also create simple shell scripts directly inside your
-    # # configuration. For example, this adds a command 'my-hello' to your
-    # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
-  ]
-    ++ ( with pkgs; [
-  # The Editor
-  neovim
+      # # You can also create simple shell scripts directly inside your
+      # # configuration. For example, this adds a command 'my-hello' to your
+      # # environment:
+      # (pkgs.writeShellScriptBin "my-hello" ''
+      #   echo "Hello, ${config.home.username}!"
+      # '')
+    ]
+    ++ (with pkgs; [
+      # The Editor
+      neovim
 
-  # Build Tools (Required for Mason to compile plugins)
-  gcc
-  gnumake
-  unzip
-  wget
-  curl
-  gzip
-  gnutar
-  ripgrep
-  fd
-  
-  # Runtimes (Mason installs the LSPs, but uses these to run them)
-  nodejs_22  # Essential for Copilot, TypeScript, JSON, HTML LSPs
-  python3    # Essential for Python LSPs
-  cargo      # Essential for Rust/Lua tools
-  go         # Essential for Go tools
-  luajit
-]));
+      # Build Tools (Required for Mason to compile plugins)
+      gcc
+      gnumake
+      unzip
+      wget
+      curl
+      gzip
+      gnutar
+      ripgrep
+      fd
+
+      # Runtimes (Mason installs the LSPs, but uses these to run them)
+      nodejs_22 # Essential for Copilot, TypeScript, JSON, HTML LSPs
+      python3 # Essential for Python LSPs
+      cargo # Essential for Rust/Lua tools
+      go # Essential for Go tools
+      luajit
+    ])
+  );
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -137,6 +140,7 @@
       "x-scheme-handler/https" = "helium.desktop";
       "x-scheme-handler/about" = "helium.desktop";
       "x-scheme-handler/unknown" = "helium.desktop";
+
       "text/plain" = "helix.desktop";
     };
   };

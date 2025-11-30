@@ -13,6 +13,12 @@
       url = "github:nix-community/stylix/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    tt-schemes = {
+      url = "github:tinted-theming/schemes";
+      flake = false;
+    };
+    base16.url = "github:SenchoPens/base16.nix";
+
   };
   outputs =
     inputs@{
@@ -21,6 +27,8 @@
       home-manager,
       stylix,
       helium-browser,
+      tt-schemes,
+      base16,
       ...
     }:
     let
@@ -39,6 +47,54 @@
       );
 
       wallpaper = ./wallpaper.png;
+
+      theme = {
+        # taken from https://archseer.github.io/colibri.vim/swatch.html
+        # Base16
+        base00 = "281733"; # revolver (bg3)
+        base01 = "3B224C"; # midnight (bg2)
+        base02 = "452859"; # bossanova (bg1)
+        base03 = "697C81"; # sirocco (comments)
+        base04 = "5A5977"; # comet (lineNr)
+        base05 = "FFFFFF"; # white (fg1)
+        base06 = "A4A0E8"; # lavender (fg2)
+        base07 = "EBEAFA"; # white lilac (fg???)
+        base08 = "F47868"; # apricot (error)
+        base09 = "EFBA5D"; # honey (special)
+        base0A = "E8DCA0"; # chamois (numbers)
+        base0B = "9FF28F"; # mint (keywords)
+        base0C = "7FB998"; # sinbad (complement 1)
+        base0D = "6F44F0"; # delta (change/info)
+        base0E = "DBBFEF"; # lilac (constants)
+        base0F = "802F00"; # cedar (highlight)
+
+        # Base24
+        base10 = "281733"; # Darker BG (fallback to base00)
+        base11 = "1A0F22"; # Darkest BG (simulated or fallback)
+        base12 = "F22C86"; # minus (remove) - Bright Red
+        base13 = "FFCD1C"; # lightning (warning) - Bright Yellow
+        base14 = "35BF86"; # plus (add) - Bright Green
+        base15 = "5FE7B7"; # turqoise - Bright Cyan
+        base16 = "69A0F3"; # delta (unused CSS variant) - Bright Blue
+        base17 = "3B0FBF"; # diff4 - Bright Purple
+
+        # Alternative
+        almond = "E8AE8B";
+        almond_dark = "ECCDBA";
+        chamois = "D7C25B";
+        comet = "716F94";
+        lavender = "938FDB";
+        lilac = "C590EB";
+        midnight = "846897";
+        midnight_alt = "311D40";
+        mint = "6BC05B";
+        neon = "2CF2F1";
+        silver = "AAAAAA";
+        silver_dark = "CCCCCC";
+        sinbad = "81CECF";
+        tree = "7FB998";
+        white_lilac_bright = "F3F2FC";
+      };
     in
     {
       # NOTE: 'nixos' is the default hostname set by the installer
@@ -49,16 +105,39 @@
         modules = [
           helium-browser-overlay
 
+          base16.nixosModule
           stylix.nixosModules.stylix
           {
             stylix.enable = true;
             stylix.polarity = "dark";
-            # stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-            stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/harmonic16-dark.yaml";
             stylix.autoEnable = true;
             stylix.fonts.monospace.package = pkgs.jetbrains-mono;
             stylix.fonts.monospace.name = "JetBrainsMono NF Regular";
-            stylix.fonts.sizes.terminal = 12;
+            stylix.fonts.sizes.applications = 14;
+            stylix.fonts.sizes.desktop = 14;
+            stylix.opacity.terminal = 0.8;
+            stylix.icons.enable = true;
+            stylix.icons.package = pkgs.adwaita-icon-theme;
+            stylix.icons.light = "Adwaita";
+            stylix.icons.dark = "Adwaita";
+            stylix.base16Scheme = {
+              base00 = theme.base00;
+              base01 = theme.base01;
+              base02 = theme.base02;
+              base03 = theme.base03;
+              base04 = theme.base04;
+              base05 = theme.base05;
+              base06 = theme.base06;
+              base07 = theme.base07;
+              base08 = theme.base08;
+              base09 = theme.base09;
+              base0A = theme.base0A;
+              base0B = theme.base0B;
+              base0C = theme.base0C;
+              base0D = theme.base0D;
+              base0E = theme.base0E;
+              base0F = theme.base0F;
+            };
           }
           (
             {
@@ -73,25 +152,7 @@
               useDidder = !true; # Set to false to skip dithering
 
               # --- 2. PREPARATION ---
-              colors = config.lib.stylix.colors.withHashtag;
-              paletteList = [
-                colors.base00
-                colors.base01
-                colors.base02
-                colors.base03
-                colors.base04
-                colors.base05
-                colors.base06
-                colors.base07
-                colors.base08
-                colors.base09
-                colors.base0A
-                colors.base0B
-                colors.base0C
-                colors.base0D
-                colors.base0E
-                colors.base0F
-              ];
+              paletteList = builtins.attrValues theme;
               lutgenArgs = lib.escapeShellArgs paletteList;
               didderPalette = lib.concatStringsSep " " paletteList;
 
@@ -103,8 +164,8 @@
                   ''
                     lutgen apply "${wallpaper}"\
                            -o smoothed.png \
-                           -n 32 -l 16 \
-                           -L 0.001 -P \
+                           -n 16 -l 16 \
+                           -L 1.0 -P \
                            -- ${lutgenArgs}''
                 else
                   ''cp "${wallpaper}" smoothed.png'';
