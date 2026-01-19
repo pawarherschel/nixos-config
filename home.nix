@@ -21,48 +21,24 @@
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = (
-    [
-      # # Adds the 'hello' command to your environment. It prints a friendly
-      # # "Hello, world!" when run.
-      # pkgs.hello
+  home.packages = ([
+    # # Adds the 'hello' command to your environment. It prints a friendly
+    # # "Hello, world!" when run.
+    # pkgs.hello
 
-      # # It is sometimes useful to fine-tune packages, for example, by applying
-      # # overrides. You can do that directly here, just don't forget the
-      # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-      # # fonts?
-      # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
+    # # It is sometimes useful to fine-tune packages, for example, by applying
+    # # overrides. You can do that directly here, just don't forget the
+    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
+    # # fonts?
+    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
 
-      # # You can also create simple shell scripts directly inside your
-      # # configuration. For example, this adds a command 'my-hello' to your
-      # # environment:
-      # (pkgs.writeShellScriptBin "my-hello" ''
-      #   echo "Hello, ${config.home.username}!"
-      # '')
-    ]
-    ++ (with pkgs; [
-      # The Editor
-      neovim
-
-      # Build Tools (Required for Mason to compile plugins)
-      gcc
-      gnumake
-      unzip
-      wget
-      curl
-      gzip
-      gnutar
-      ripgrep
-      fd
-
-      # Runtimes (Mason installs the LSPs, but uses these to run them)
-      nodejs_22 # Essential for Copilot, TypeScript, JSON, HTML LSPs
-      python3 # Essential for Python LSPs
-      cargo # Essential for Rust/Lua tools
-      go # Essential for Go tools
-      luajit
-    ])
-  );
+    # # You can also create simple shell scripts directly inside your
+    # # configuration. For example, this adds a command 'my-hello' to your
+    # # environment:
+    # (pkgs.writeShellScriptBin "my-hello" ''
+    #   echo "Hello, ${config.home.username}!"
+    # '')
+  ]);
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
@@ -107,7 +83,7 @@
       comment = "Access the Internet";
       startupNotify = true;
       terminal = false;
-      icon = "${pkgs.helium}/lib/helium-bin-0.6.7.1/product_logo_256.png";
+      icon = "${pkgs.helium}/lib/helium-bin-${pkgs.helium.version}/product_logo_256.png";
       type = "Application";
       categories = [
         "Network"
@@ -129,6 +105,19 @@
         "x-scheme-handler/http"
         "x-scheme-handler/https"
       ];
+    };
+    OpenTabletDriver = {
+      name = "OpenTabletDriverGUI";
+      genericName = "Graphics Tablet Driver";
+      exec = "${pkgs.opentabletdriver}/bin/otd-gui";
+      icon = "${pkgs.opentabletdriver}/share/pixmaps/otd.png";
+      comment = "Open source, cross-platform, user-mode tablet driver";
+      categories = [
+        "Utility"
+        "Settings"
+      ];
+      type = "Application";
+      terminal = false;
     };
   };
 
@@ -154,55 +143,6 @@
     helix = {
       enable = true;
       defaultEditor = true;
-      # [language-server.ltex-ls-plus]
-      # command = "D:\\ltex-ls-plus-18.5.1\\bin\\ltex-ls-plus.bat"
-      # [language-server.ltex-ls-plus.config]
-      # ltex.language = "en-GB"
-      # ltex.additionalRules.enablePickyRules = true
-      # ltex.completionEnabled = true
-      # ltex.diagnosticSeverity = "warning"
-      # ltex.disabledRules = { "en-GB" = ["EN_QUOTES", "ELLIPSIS"] }
-      # ltex.statusBarItem = true
-      #
-      # [language-server.marksman]
-      # command = "D:\\marksman\\marksman.exe"
-      #
-      # [language-server.tinymist]
-      # command = "tinymist"
-      # [language-server.tinymist.config]
-      # preview.background.enabled = true
-      # preview.background.args = [
-      #   "--data-plane-host=127.0.0.1:23635",
-      #   "--invert-colors=never",
-      #   "--open",
-      # ]
-      # tinymist.formatterMode = "typstyle"
-      # tinymist.lint.enabled = true
-      # tinymist.lint.when = "onType"
-      # tinymist.exportPdf = "onSave"
-      # tinymist.systemFonts = false
-      # tinymist.preview.systemFonts = false
-      # tinymist.formatterIndentSize = 3
-      # tinymist.completion.triggerOnSnippetPlaceholders = true
-      #
-      #
-      # [[language]]
-      # name = "markdown"
-      # language-servers = ["ltex-ls-plus", "marksman"]
-      # formatter = { command = 'deno', args = ["fmt", "-", "--ext", "md"] }
-      # auto-format = true
-      #
-      # [[language]]
-      # name = "toml"
-      # formatter = { command = "taplo", args = ["format", "-"] }
-      # auto-format = true
-      # roots = ["."]
-      #
-      # [[language]]
-      # name = "typst"
-      # language-servers = ["tinymist", "ltex-ls-plus"]
-      # formatter.command = "typstyle"
-      # auto-format = true
       settings = {
         # theme = "dracula";
         keys.normal.esc = [
@@ -236,11 +176,58 @@
         };
       };
       languages = {
+        language-server.ltex-ls-plus = {
+          # command = "${pkgs.ltex-ls-plus}/bin/ltex-ls-plus";
+          config.ltex = {
+            language = "en-GB";
+            additionalRules.enablePickyRules = true;
+            completionEnabled = true;
+            diagnosticSeverity = "warning";
+            disabledRules."en-GB" = [
+              "EN_QUOTES"
+              "ELLIPSIS"
+            ];
+            statusBarItem = true;
+          };
+        };
+
+        # language-server.marksman.command = "${lib.getExe pkgs.marksman}";
+
+        language-server.tinymist = {
+          config = {
+            typstExtraArgs = [
+              "--features"
+              "html"
+              "slides.typ"
+            ];
+            tinymist = {
+              projectResolution = "lockDatabase";
+              lint.enabled = true;
+              lint.when = "onType";
+              exportPdf = "onSave";
+              systemFonts = false;
+              preview.systemFonts = false;
+              formatterIndentSize = 3;
+              completion.triggerOnSnippetPlaceholders = true;
+              preview = {
+                background.enabled = false;
+                background.args = [
+                  "--invert-colors=never"
+                  "--open"
+                ];
+              };
+            };
+          };
+        };
+
         language-server.nil = {
           command = "${pkgs.nil}/bin/nil";
         };
         language-server.nixd = {
           command = "${pkgs.nixd}/bin/nixd";
+        };
+        language-server.tombi = {
+          command = "${lib.getExe pkgs.tombi}";
         };
 
         language = [
@@ -251,6 +238,125 @@
               "nil"
               "nixd"
             ];
+            formatter = {
+              command = "${lib.getExe pkgs.nixfmt-rfc-style}";
+            };
+            auto-format = true;
+          }
+          {
+            name = "markdown";
+            language-servers = [
+              "ltex-ls-plus"
+              "marksman"
+            ];
+            # formatter = {
+            #   command = "${lib.getExe pkgs.deno}";
+            #   args = [
+            #     "fmt"
+            #     "-"
+            #     "--ext"
+            #     "md"
+            #   ];
+            # };
+            auto-format = true;
+          }
+          {
+            name = "toml";
+            language-servers = [
+              "tombi"
+            ];
+            formatter = {
+              command = "${lib.getExe pkgs.taplo}";
+              args = [
+                "format"
+                "-"
+              ];
+            };
+            auto-format = true;
+            roots = [ "." ];
+          }
+          {
+            name = "typst";
+            language-servers = [
+              "tinymist"
+              # "ltex-ls-plus"
+            ];
+            formatter.command = "${lib.getExe pkgs.typstyle}";
+            auto-format = true;
+            scope = "source.typst";
+            file-types = [
+              "typst"
+              "typ"
+            ];
+            indent = {
+              tab-width = 2;
+              unit = "  ";
+            };
+            comment-token = "//";
+            injection-regex = "typ(st)?";
+            roots = [ "typst.toml" ];
+            auto-pairs = {
+              "(" = ")";
+              "{" = "}";
+              "[" = "]";
+              "$" = "$";
+              "\"" = "\"";
+            };
+          }
+          {
+            name = "javascript";
+            language-servers = [
+              {
+                name = "typescript-language-server";
+                except-features = [ "format" ];
+              }
+              "biome"
+            ];
+            auto-format = true;
+          }
+          {
+            name = "typescript";
+            language-servers = [
+              {
+                name = "typescript-language-server";
+                except-features = [ "format" ];
+              }
+              "biome"
+            ];
+            auto-format = true;
+          }
+          {
+            name = "jsx";
+            language-servers = [
+              {
+                name = "typescript-language-server";
+                except-features = [ "format" ];
+              }
+              "biome"
+            ];
+            auto-format = true;
+          }
+          {
+            name = "tsx";
+            language-servers = [
+              {
+                name = "typescript-language-server";
+                except-features = [ "format" ];
+              }
+              "biome"
+            ];
+            auto-format = true;
+          }
+          {
+            name = "json";
+            language-servers = [
+              {
+                name = "vscode-json-language-server";
+                except-features = [ "format" ];
+              }
+              "biome"
+            ];
+            auto-format = true;
           }
         ];
       };
@@ -279,15 +385,10 @@
       {
         enable = true;
         configFile.text = builtins.readFile defaults.config;
-        # extraConfig = ''
-        #   source ~/.local/share/atuin/init.nu
-        #   use ~/.cache/starship/init.nu
-        # '';
-        envFile.text = builtins.readFile defaults.env;
-        # extraEnv = ''
-        #   mkdir ~/.cache/starship
-        #   starship init nu | save -f ~/.cache/starship/init.nu
-        # '';
+        envFile.text = lib.strings.concatStringsSep "\n" [
+          (builtins.readFile defaults.env)
+          "$env.EDITOR = \"hx\""
+        ];
       };
 
     starship = {
@@ -380,6 +481,7 @@
         };
         ui = {
           editor = "hx";
+          paginate = "never";
         };
       };
     };
