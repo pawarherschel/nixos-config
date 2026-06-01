@@ -1,8 +1,8 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     helium-browser = {
@@ -23,6 +23,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    # wallpapers = {
+    #   url = "github:pawarherschel/wallpapers";
+    #   flake = false;
+    # };
   };
   outputs =
     inputs@{
@@ -35,6 +39,7 @@
       base16,
       fingerprint,
       nixos-hardware,
+      # wallpapers,
       ...
     }:
     let
@@ -78,13 +83,13 @@
                   src = prev.fetchFromGitHub {
                     owner = "oxalica";
                     repo = "nil";
-                    rev = "cd7a6f6d5dc58484e62a8e85677e06e47cf2bd4d";
-                    hash = "sha256-fK4INnIJQNAA8cyjcDRZSPleA+N/STI6I0oBDMZ2r+E=";
+                    rev = "504599f7e555a249d6754698473124018b80d121";
+                    hash = "sha256-18j8X2Nbe0Wg1+7YrWRlYzmjZ5Wq0NCVwJHJlBIw/dc=";
                   };
 
                   cargoDeps = final.rustPlatform.fetchCargoVendor {
                     inherit (finalAttrs) src;
-                    hash = "sha256-wvtCLCvpxbUo7VZPExUI7J+U06jnWBMnVuXqJeL/kOI=";
+                    hash = "sha256-LS2IW4gZ1k6Xl5weMNwxvVA2z56r4rPkjqrkROZTmBw=";
                   };
                 }
               );
@@ -160,7 +165,7 @@
               '';
 
           # --- 2. PIPELINE LOGIC ---
-          wallpapersDir = ./wallpapers;
+          wallpapersDir = ".";
           files = builtins.readDir wallpapersDir;
           pngFiles = lib.filterAttrs (name: type: type == "regular" && lib.hasSuffix ".png" name) files;
 
@@ -311,10 +316,10 @@
             tree = "7FB998";
             white_lilac_bright = "F3F2FC";
           };
-      wallpapers = mkWallpapers {
-        inherit pkgs theme lib;
-        mkName = mkWallpaperName;
-      };
+      # wallpapers = mkWallpapers {
+      #   inherit pkgs theme lib;
+      #   mkName = mkWallpaperName;
+      # };
 
       mkWallpaperConfig =
         {
@@ -328,20 +333,20 @@
           didder = didder;
         };
 
-      wallpaperConfig = mkWallpaperConfig {
-        path = ./wallpapers/062.png;
-        # lutgen = true;
-        # didder = true;
-      };
+      # wallpaperConfig = mkWallpaperConfig {
+      #   path = "${wallpapers}/062.png";
+      #   # lutgen = true;
+      #   # didder = true;
+      # };
 
       # Path Construction:
       # /nix/store/...-processed-wallpapers/wallpapers/04.lutgen.didder.png
-      wallpaper =
-        # This prints the path to stderr during evaluation
-        "${builtins.trace "WALLPAPERS PATH: ${wallpapers}" wallpapers}/wallpapers/"
-        + (mkWallpaperName {
-          inherit (wallpaperConfig) path lutgen didder;
-        });
+      # wallpaper =
+      #   # This prints the path to stderr during evaluation
+      #   "${builtins.trace "WALLPAPERS PATH: ${wallpapers}" wallpapers}/wallpapers/"
+      #   + (mkWallpaperName {
+      #     inherit (wallpaperConfig) path lutgen didder;
+      #   });
     in
     {
       # NOTE: 'nixos' is the default hostname set by the installer
@@ -375,7 +380,7 @@
             stylix.icons.light = "Adwaita";
             stylix.icons.dark = "Adwaita";
             stylix.base16Scheme = theme;
-            stylix.image = wallpaper;
+            # stylix.image = wallpaper;
             # stylix.base16Scheme = {
             #   base00 = theme.base00;
             #   base01 = theme.base01;
@@ -415,88 +420,88 @@
             home-manager.backupFileExtension = "bak";
           }
 
-          (
-            { config, pkgs, ... }:
-            {
-              # 1. Basic Routing & Internet Sharing
-              boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
+          # (
+          #   { config, pkgs, ... }:
+          #   {
+          #     # 1. Basic Routing & Internet Sharing
+          #     boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
 
-              networking.nat = {
-                enable = true;
-                internalInterfaces = [ "enp0s31f6" ];
-                externalInterface = "wlp3s0";
-                forwardPorts = [
-                  # Forward ALVR Ports (Quest -> Laptop -> PC)
-                  {
-                    sourcePort = 9943;
-                    destination = "192.168.100.246:9943";
-                    proto = "tcp";
-                  }
-                  {
-                    sourcePort = 9943;
-                    destination = "192.168.100.246:9943";
-                    proto = "udp";
-                  }
-                  {
-                    sourcePort = 9944;
-                    destination = "192.168.100.246:9944";
-                    proto = "tcp";
-                  }
-                  {
-                    sourcePort = 9944;
-                    destination = "192.168.100.246:9944";
-                    proto = "udp";
-                  }
-                ];
-              };
+          #     networking.nat = {
+          #       enable = true;
+          #       internalInterfaces = [ "enp0s31f6" ];
+          #       externalInterface = "wlp3s0";
+          #       forwardPorts = [
+          #         # Forward ALVR Ports (Quest -> Laptop -> PC)
+          #         {
+          #           sourcePort = 9943;
+          #           destination = "192.168.100.246:9943";
+          #           proto = "tcp";
+          #         }
+          #         {
+          #           sourcePort = 9943;
+          #           destination = "192.168.100.246:9943";
+          #           proto = "udp";
+          #         }
+          #         {
+          #           sourcePort = 9944;
+          #           destination = "192.168.100.246:9944";
+          #           proto = "tcp";
+          #         }
+          #         {
+          #           sourcePort = 9944;
+          #           destination = "192.168.100.246:9944";
+          #           proto = "udp";
+          #         }
+          #       ];
+          #     };
 
-              # 2. Firewall: Trust Cable & Open ALVR on WiFi
-              networking.firewall = {
-                enable = true;
-                trustedInterfaces = [ "enp0s31f6" ];
-                allowedTCPPorts = [
-                  9943
-                  9944
-                ];
-                allowedUDPPorts = [
-                  9943
-                  9944
-                ];
-              };
+          #     # 2. Firewall: Trust Cable & Open ALVR on WiFi
+          #     networking.firewall = {
+          #       enable = true;
+          #       trustedInterfaces = [ "enp0s31f6" ];
+          #       allowedTCPPorts = [
+          #         9943
+          #         9944
+          #       ];
+          #       allowedUDPPorts = [
+          #         9943
+          #         9944
+          #       ];
+          #     };
 
-              # 3. Static IP for Laptop (Gateway)
-              networking.interfaces.enp0s31f6.ipv4.addresses = [
-                {
-                  address = "192.168.100.1";
-                  prefixLength = 24;
-                }
-              ];
-              networking.networkmanager.unmanaged = [ "enp0s31f6" ];
+          #     # 3. Static IP for Laptop (Gateway)
+          #     networking.interfaces.enp0s31f6.ipv4.addresses = [
+          #       {
+          #         address = "192.168.100.1";
+          #         prefixLength = 24;
+          #       }
+          #     ];
+          #     networking.networkmanager.unmanaged = [ "enp0s31f6" ];
 
-              # 4. DHCP Server (Gives PC IP & Internet DNS)
-              services.dnsmasq = {
-                enable = true;
-                resolveLocalQueries = false;
-                settings = {
-                  port = 0;
-                  interface = "enp0s31f6";
-                  dhcp-range = [ "192.168.100.2,192.168.100.254,24h" ];
-                  dhcp-host = "50:eb:f6:76:ab:35,192.168.100.246";
-                  dhcp-option = [
-                    "3,0.0.0.0"
-                    "6,1.1.1.1,8.8.8.8"
-                  ];
-                };
-              };
+          #     # 4. DHCP Server (Gives PC IP & Internet DNS)
+          #     services.dnsmasq = {
+          #       enable = true;
+          #       resolveLocalQueries = false;
+          #       settings = {
+          #         port = 0;
+          #         interface = "enp0s31f6";
+          #         dhcp-range = [ "192.168.100.2,192.168.100.254,24h" ];
+          #         dhcp-host = "50:eb:f6:76:ab:35,192.168.100.246";
+          #         dhcp-option = [
+          #           "3,0.0.0.0"
+          #           "6,1.1.1.1,8.8.8.8"
+          #         ];
+          #       };
+          #     };
 
-              # 5. The "Lie" (Masquerade)
-              # This makes all traffic hitting the PC look like it came from the Laptop.
-              # Critical for bypassing Windows Firewall "Public Network" blocks.
-              networking.firewall.extraCommands = ''
-                iptables -t nat -A POSTROUTING -o enp0s31f6 -j MASQUERADE
-              '';
-            }
-          )
+          #     # 5. The "Lie" (Masquerade)
+          #     # This makes all traffic hitting the PC look like it came from the Laptop.
+          #     # Critical for bypassing Windows Firewall "Public Network" blocks.
+          #     networking.firewall.extraCommands = ''
+          #       iptables -t nat -A POSTROUTING -o enp0s31f6 -j MASQUERADE
+          #     '';
+          #   }
+          # )
         ];
       };
 

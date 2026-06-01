@@ -443,11 +443,11 @@
 
     kitty = {
       enable = true;
-      font = {
-        # package = pkgs.jetbrains-mono;
-        # name = "JetBrainsMono NF Regular";
-        # size = 11;
-      };
+      # font = {
+      #   package = pkgs.jetbrains-mono;
+      #   name = "JetBrainsMono NF Regular";
+      #   size = 11;
+      # };
       settings = {
         window_padding_width = 15;
       };

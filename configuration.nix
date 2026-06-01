@@ -222,7 +222,7 @@
       # tinymist
       nil
       nixd
-      nixfmt-rfc-style
+      nixfmt
       # deno
       taplo
       typstyle
