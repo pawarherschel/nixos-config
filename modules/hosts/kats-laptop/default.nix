@@ -23,7 +23,7 @@
       {
         system.stateVersion = "23.05";
 
-        home-manager.users.ksakura.home.stateVersion = "24.05";
+        home-manager.users.ksakura.home.stateVersion = "26.05";
 
         networking.firewall.trustedInterfaces = [ "enp0s31f6" ];
 

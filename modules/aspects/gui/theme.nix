@@ -63,7 +63,7 @@
     in
     {
       nixos =
-        { pkgs, ... }:
+        { pkgs, lib, ... }:
         {
           imports = [
             inputs.base16.nixosModule
@@ -80,7 +80,11 @@
             polarity = "dark";
             autoEnable = true;
             base16Scheme = colibri;
+            # stylix GNOME module auto-sets these to outdated values; force the correct ones
+            targets.qt.platform = lib.mkForce "qtct";
           };
+
+          qt.platformTheme.name = lib.mkForce "adwaita";
         };
     };
 }
