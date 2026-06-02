@@ -80,6 +80,12 @@
             polarity = "dark";
             autoEnable = true;
             base16Scheme = colibri;
+            targets.qt.platform = "qtct";
+          };
+
+          qt = {
+            enable = true;
+            platformTheme.name = "adwaita";
           };
         };
     };
