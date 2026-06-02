@@ -1,14 +1,26 @@
-# to-kat — Documentation for your NixOS Configuration
+# to-kat — Dendritic Nix Orientation Guide
 
-This folder is a knowledge base for your NixOS config (the `next/` modular structure).
-It's meant for you, Kat, to understand how everything is wired up.
+A handbook for understanding, extending, and maintaining this Dendritic Nix configuration. Written for Kathryn (future you, after months of not touching Nix).
 
-## Files in this folder
+## Suggested Reading Order
 
-| File | What it covers |
-|------|----------------|
-| `adding-new-users.md` | How to add a new user (with or without home-manager) |
-| `adding-new-hosts.md` | How to add a new host/machine |
-| `files-vm-nh-dendritic-defaults.md` | What `vm.nix`, `nh.nix`, `dendritic.nix`, `defaults.nix` do |
-| `aspects-base-cli-gui-hardware-networking-programs-system.md` | What each `aspects/` subdirectory is for and how to use them |
-| `architecture-overview.md` | Big-picture: how the whole thing fits together |
+| # | File | What It Covers |
+|---|---|---|
+| 1 | `architecture-overview.md` | Big-picture: what Dendritic Nix is, how the old layout compares, the new `next/` structure |
+| 2 | `the-den-framework.md` | Core framework concepts: aspects, includes, provides, batteries, perSystem, flake-file |
+| 3 | `files-vm-nh-dendritic-defaults.md` | The four wiring files: `dendritic.nix`, `defaults.nix`, `nh.nix`, `vm.nix` |
+| 4 | `aspects-base-cli-gui-hardware-networking-programs-system.md` | Reference for every aspect directory — what goes where |
+| 5 | `adding-new-hosts.md` | Step-by-step guide for declaring a new host |
+| 6 | `adding-new-users.md` | Step-by-step guide for adding a new user |
+| 7 | `program-aspect-pattern.md` | Templates for creating new program aspects |
+| 8 | `common-tasks.md` | Day-to-day operations: build, switch, test VM, update, add programs |
+| 9 | `GLOSSARY.md` | Alphabetical reference of all terminology |
+
+## Quick Start
+
+If you only have 5 minutes, read files 1–3. They cover the architecture, core concepts, and the four wiring files that make everything work.
+
+## Naming Conventions
+
+- **Files are descriptive, not numbered** — easier to find and reorder later.
+- **`to-kat/`** is a reference folder, not Nix code — nothing in here affects the build.

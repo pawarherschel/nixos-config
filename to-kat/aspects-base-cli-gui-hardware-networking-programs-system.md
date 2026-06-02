@@ -1,267 +1,229 @@
-# What Each `aspects/` Subdirectory Is For
+# Aspect Directory Reference
 
-The `next/modules/aspects/` directory contains reusable configuration modules
-organized by domain. Each subdirectory groups related NixOS + home-manager
-configurations that can be mixed and matched across hosts.
+What goes in each subdirectory under `modules/aspects/`, with a full inventory of every file.
 
 ---
 
-## `aspects/base/` — Foundation (every host gets this)
+## `aspects/base/` — Minimal Foundation
 
-**Contains:** `default.nix`
+**Purpose**: The bare minimum every host needs. Currently: allow unfree packages + all CLI tools.
+
+| File | What It Does |
+|---|---|
+| `default.nix` | `includes = [ den.aspects.cli ]` + `nixpkgs.config.allowUnfree = true` |
+
+If you want to add something that literally every host must have (like a kernel hardening setting or a global environment variable), put it here.
+
+---
+
+## `aspects/cli/` — Terminal Programs & Tools
+
+**Purpose**: Standard replacement for GNU coreutils-adjacent tools, plus essential CLI programs.
+
+| File | What It Does |
+|---|---|
+| `default.nix` | Includes all program aspects below + installs `difftastic`, `ripgrep`, `zellij` as system packages |
+| `nix-helpers.nix` | Installs `nh` and `nix-output-monitor` |
+
+**Note**: Most CLI programs live under `aspects/programs/` and are included here. The `cli/default.nix` include list is:
 
 ```nix
-{ den, ... }:
-{
-  den.aspects.base = {
-    includes = [ den.aspects.cli ];
-    nixos.nixpkgs.config.allowUnfree = true;
+includes = [
+  den.aspects.cli.nix-helpers
+  den.aspects.programs.atuin
+  den.aspects.programs.bat
+  den.aspects.programs.bottom
+  den.aspects.programs.gh
+  den.aspects.programs.helix
+  den.aspects.programs.jujutsu
+  den.aspects.programs.kitty
+  den.aspects.programs.nushell
+  den.aspects.programs.starship
+  den.aspects.programs.syncthing
+];
+```
+
+To add a new CLI program: create it in `programs/`, then add it to this list. See `program-aspect-pattern.md`.
+
+---
+
+## `aspects/gui/` — Graphical Desktop & Display
+
+**Purpose**: Everything graphical — display managers, desktop environments, audio, themes, portals, individual GUI apps.
+
+### Core GUI Infrastructure
+
+| File | What It Does |
+|---|---|
+| `default.nix` | Base GUI layer: includes `greetd`, `kdeconnect`, `pipewire`, `theme`, `xdg` + enables `polkit` |
+| `greetd.nix` | Greetd display manager with `tuigreet` (terminal greeter) |
+| `pipewire.nix` | PipeWire audio/video server (replaces PulseAudio) |
+| `theme.nix` | stylix + base16 theming with custom "colibri" color scheme + JetBrains Mono fonts. **Also declares flake inputs for `stylix`, `tt-schemes`, and `base16`.** |
+| `wayland.nix` | Installs `wl-clipboard` |
+| `xdg.nix` | XDG desktop portal configuration |
+| `kdeconnect.nix` | KDE Connect for phone integration |
+
+### Desktop Environments
+
+| File | What It Does |
+|---|---|
+| `gnome/default.nix` | GNOME desktop. Includes `gui` base + `wayland` + `gnome/astra-monitor`. Disables core-apps, dev-tools, games. Adds GNOME extensions (appindicator, clipboard-indicator, paperwm, etc.) |
+| `gnome/astra-monitor.nix` | Astra Monitor GNOME extension (system resource monitoring) |
+| `cosmic.nix` | COSMIC desktop (Rust-based). Includes `gui` base + `wayland`. |
+
+### GUI Applications
+
+| File | What It Does |
+|---|---|
+| `social.nix` | Discord + Signal Desktop |
+| `steam.nix` | Steam (gaming) |
+| `opentabletdriver.nix` | OpenTabletDriver (drawing tablet support) |
+
+### Using GUI Aspects
+
+Pick **one** DE. For GNOME:
+```nix
+den.aspects.<host>.includes = [ den.aspects.gui.gnome ... ];
+```
+
+For COSMIC:
+```nix
+den.aspects.<host>.includes = [ den.aspects.gui.cosmic ... ];
+```
+
+You can also include individual GUI apps without a full DE (useful for minimal hosts):
+```nix
+den.aspects.<host>.includes = [ den.aspects.gui.steam ];
+```
+
+---
+
+## `aspects/hardware/` — Machine-Specific Hardware Profiles
+
+**Purpose**: Hardware-specific NixOS modules. Only included by hosts that need them.
+
+| File | What It Does |
+|---|---|
+| `t480.nix` | ThinkPad T480 support. Imports `nixos-hardware.nixosModules.lenovo-thinkpad-t480`. |
+
+### Pattern
+
+Hardware aspects import external NixOS modules (like `nixos-hardware`) and declare their own flake input:
+
+```nix
+flake-file.inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
+den.aspects.hardware.t480.nixos.imports = [
+  inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t480
+];
+```
+
+To add a new hardware profile: create a file like `aspects/hardware/framework.nix`, declare the `nixos-hardware` input (it's already declared in `t480.nix`, but you can redeclare — `flake-file` deduplicates), and import the appropriate module.
+
+---
+
+## `aspects/networking/` — Network Configuration
+
+**Purpose**: Network services and clients.
+
+| File | What It Does |
+|---|---|
+| `networkmanager.nix` | NetworkManager (WiFi, Ethernet, VPN plugins) |
+| `openvpn.nix` | OpenVPN client |
+| `tailscale.nix` | Tailscale VPN + installs `tailscale` CLI |
+
+### Pattern
+
+Networking aspects are straightforward NixOS config:
+
+```nix
+den.aspects.networking.tailscale = {
+  nixos = { pkgs, ... }: {
+    environment.systemPackages = [ pkgs.tailscale ];
+    services.tailscale.enable = true;
   };
-}
-```
-
-**What it does:**
-- Enables **unfree packages** (like Discord, Steam, VS Code)
-- Automatically includes `den.aspects.cli` (so CLI tools come for free)
-
-**How to use:** Every host should include `den.aspects.base` in its `includes` list.
-Both `rpi` and `wsl` do this already:
-
-```nix
-den.aspects.my-host.includes = [ den.aspects.base ];
-```
-
-**When to modify:** If you want to add something *every single host* should have.
-Be careful — base is applied to headless servers too.
-
----
-
-## `aspects/cli/` — Command-line tools
-
-**Contains:** `default.nix`, `nix-helpers.nix`
-
-**`default.nix`** defines the CLI aspect, which includes all the program
-configs and adds system packages:
-
-| Included program | What it is |
-|-----------------|------------|
-| `den.aspects.programs.atuin` | Shell history search |
-| `den.aspects.programs.bat` | `cat` with syntax highlighting |
-| `den.aspects.programs.bottom` | System monitor (htop replacement) |
-| `den.aspects.programs.gh` | GitHub CLI |
-| `den.aspects.programs.helix` | Helix editor (Kat's editor) |
-| `den.aspects.programs.jujutsu` | Jujutsu version control (jj) |
-| `den.aspects.programs.kitty` | Kitty terminal emulator |
-| `den.aspects.programs.nushell` | Nushell (Kat's shell) |
-| `den.aspects.programs.starship` | Shell prompt |
-| `den.aspects.programs.syncthing` | File synchronization |
-
-Also installs: `difftastic`, `ripgrep`, `zellij`.
-
-**`nix-helpers.nix`** adds `nh` (nix helper) and `nix-output-monitor`.
-
-**How to use:** Automatically included via `den.aspects.base`. If you only want
-individual programs, import them directly (e.g., `den.aspects.programs.helix`)
-instead of the whole CLI group.
-
----
-
-## `aspects/gui/` — Graphical desktop environment
-
-**Contains:** `default.nix` + many optional sub-modules
-
-**`default.nix`** defines the base GUI aspect — this is the **shared
-infrastructure** any desktop needs:
-
-| Sub-aspect | What it provides |
-|-----------|-----------------|
-| `greetd` | Login manager (tuigreet TUI greeter) |
-| `kdeconnect` | Phone integration (KDE Connect) |
-| `pipewire` | Audio server (PulseAudio replacement) |
-| `theme` | Stylix theming (colibri color scheme, JetBrains Mono font) |
-| `xdg` | XDG portals, autostart, terminal-exec |
-| `polkit` | Authorization (enabled in default.nix) |
-
-**Desktop environments (pick one):**
-
-| DE aspect | Description |
-|----------|-------------|
-| `den.aspects.gui.gnome` | GNOME desktop (includes `den.aspects.gui` + wayland + GNOME extensions) |
-| `den.aspects.gui.cosmic` | COSMIC desktop (includes `den.aspects.gui` + wayland) |
-
-**Other optional GUI modules:**
-
-| Aspect | What it adds |
-|--------|-------------|
-| `den.aspects.gui.social` | Discord + Signal |
-| `den.aspects.gui.steam` | Steam gaming |
-| `den.aspects.gui.opentabletdriver` | Drawing tablet driver |
-| `den.aspects.gui.wayland` | Wayland utilities (wl-clipboard) |
-
-**How to use in a host:**
-
-```nix
-# Full GNOME desktop
-den.aspects.my-host.includes = [
-  den.aspects.base
-  den.aspects.gui.gnome       # pulls in gui + wayland automatically
-  den.aspects.gui.steam       # optional
-];
-```
-
----
-
-## `aspects/hardware/` — Hardware-specific configurations
-
-**Contains:** Individual files per machine/family
-
-| File | Applies to |
-|------|-----------|
-| `t480.nix` | ThinkPad T480 (includes `nixos-hardware` module) |
-
-**Each file should:**
-- Import the relevant `nixos-hardware` module (if available)
-- Set kernel modules, firmware, and hardware-specific options
-
-**To add new hardware:**
-
-1. Create `aspects/hardware/my-machine.nix`:
-
-```nix
-{ inputs, den, ... }:
-{
-  flake-file.inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-
-  den.aspects.hardware.my-machine.nixos.imports = [
-    inputs.nixos-hardware.nixosModules.some-module
-  ];
-}
-```
-
-2. Include it in the host:
-
-```nix
-den.aspects.my-host.includes = [
-  den.aspects.hardware.my-machine
-];
-```
-
----
-
-## `aspects/networking/` — Network services
-
-**Contains:** One file per service
-
-| Aspect | What it enables |
-|--------|----------------|
-| `den.aspects.networking.networkmanager` | NetworkManager (essential for desktops) |
-| `den.aspects.networking.tailscale` | Tailscale VPN (mesh VPN) |
-| `den.aspects.networking.openvpn` | OpenVPN client + NM plugin |
-
-**How to use:**
-
-```nix
-den.aspects.my-host.includes = [
-  den.aspects.networking.networkmanager
-  den.aspects.networking.tailscale
-];
-```
-
----
-
-## `aspects/programs/` — Individual program configurations
-
-**Contains:** One file per program
-
-These are the leaf configs that get pulled in by `cli/` or imported directly.
-
-| File | What it configures |
-|------|-------------------|
-| `atuin.nix` | Shell history search |
-| `bat.nix` | Syntax-highlighted cat |
-| `bottom.nix` | System monitor |
-| `gh.nix` | GitHub CLI |
-| `helium.nix` | Helium browser (privacy-focused) |
-| `helix/` | Helix editor (with per-language configs: nix, json, js, toml, typst) |
-| `jujutsu.nix` | jj version control |
-| `kitty.nix` | Kitty terminal |
-| `nushell.nix` | Nushell shell |
-| `starship.nix` | Prompt |
-| `syncthing.nix` | File sync |
-
-**Pattern for adding a new program:**
-
-```nix
-# aspects/programs/ripgrep.nix
-{ den, ... }:
-{
-  den.aspects.programs.ripgrep.nixos =
-    { pkgs, ... }:
-    {
-      environment.systemPackages = [ pkgs.ripgrep ];
-    };
-}
-```
-
-Then either include it in `cli/default.nix` or import directly in a host.
-
----
-
-## `aspects/system/` — System-level mechanical config
-
-**Contains:** Boot, kernel, and system services
-
-| Aspect | What it configures |
-|--------|-------------------|
-| `system.boot.kernel.zen` | Linux Zen kernel (desktop-optimized) |
-| `system.boot.limine` | Limine bootloader |
-| `system.boot.plymouth` | Boot splash screen (blahaj shark theme 🦈) |
-| `system.fstrim` | SSD TRIM scheduling |
-| `system.no-auto-upgrade` | Disable auto-upgrades |
-| `system.ssh` | SSH server |
-| `system.tmpfs` | tmpfs for `/tmp` |
-| `system.zram` | ZRAM swap compression |
-
-**How to use:** Included from `hosts/<name>/system.nix`:
-
-```nix
-den.aspects.my-host.system = {
-  includes = [
-    den.aspects.system.boot.kernel.zen
-    den.aspects.system.boot.limine
-    den.aspects.system.fstrim
-    den.aspects.system.ssh
-    den.aspects.system.tmpfs
-    den.aspects.system.zram
-  ];
 };
 ```
 
 ---
 
-## Quick Reference: Aspect Relationships
+## `aspects/programs/` — Individual Program Configurations
 
+**Purpose**: One file per program. Each handles both NixOS (system packages) and home-manager (user config).
+
+| File | What It Does |
+|---|---|
+| `atuin.nix` | Shell history with nushell integration |
+| `bat.nix` | `bat` — cat with syntax highlighting |
+| `bottom.nix` | `bottom` — system monitor (like htop) |
+| `gh.nix` | GitHub CLI |
+| `helium.nix` | Helium browser. Includes overlay, system package, desktop entry, MIME associations |
+| `helix/default.nix` | Helix editor. Configures keybindings, cursor, line numbers, indent guides, LSP. Includes language sub-aspects |
+| `helix/javascript.nix` | Helix LSP config for JavaScript |
+| `helix/json.nix` | Helix LSP config for JSON |
+| `helix/markdown.nix` | Helix LSP config for Markdown (currently commented out in includes) |
+| `helix/nix.nix` | Helix LSP config for Nix (nil + nixd). Also installs `deadnix`, `nil`, `nixd`, `nixfmt`, `statix` |
+| `helix/toml.nix` | Helix LSP config for TOML |
+| `helix/typst.nix` | Helix LSP config for Typst |
+| `jujutsu.nix` | `jj` — git-compatible VCS |
+| `kitty.nix` | Kitty terminal emulator |
+| `nushell.nix` | Nushell — modern shell |
+| `starship.nix` | Starship prompt |
+| `syncthing.nix` | Syncthing file synchronization |
+
+### Pattern
+
+The standard program aspect has 3 sections — see `program-aspect-pattern.md` for the template.
+
+Some programs (like `helium`) also include overlay aspects for adding custom packages to nixpkgs.
+
+---
+
+## `aspects/system/` — System-Level Configuration
+
+**Purpose**: Kernel, bootloader, filesystems, system services.
+
+### `system/boot/`
+
+| File | What It Does |
+|---|---|
+| `kernel/zen.nix` | Linux Zen kernel (`linuxPackages_zen`) |
+| `limine.nix` | Limine bootloader |
+| `plymouth.nix` | Plymouth boot splash (currently commented out in kats-laptop includes) |
+
+### Other System Aspects
+
+| File | What It Does |
+|---|---|
+| `fstrim.nix` | Periodic SSD TRIM |
+| `no-auto-upgrade.nix` | Disables automatic NixOS upgrades |
+| `ssh.nix` | OpenSSH server with password + X11 forwarding |
+| `tmpfs.nix` | `/tmp` on tmpfs (80% of RAM, cleaned on boot) |
+| `zram.nix` | ZRAM swap |
+
+---
+
+## `overlays/` — Nixpkgs Overlays (Outside `aspects/`)
+
+**Purpose**: Custom package definitions. Lives outside `aspects/` but aspects reference them via `den.aspects.overlays.<name>`.
+
+| File | What It Does |
+|---|---|
+| `helium.nix` | Adds `helium` browser to nixpkgs from `github:ominit/helium-browser-flake`. |
+| `nil.nix` | Pins `nil` (Nix LSP) to a specific revision with a custom `cargoHash`. |
+
+Overlays declare their own flake inputs, so removing the overlay removes the dependency:
+
+```nix
+# helium.nix
+flake-file.inputs.helium-browser = {
+  url = "github:ominit/helium-browser-flake";
+  inputs.nixpkgs.follows = "nixpkgs";
+};
+
+den.aspects.overlays.helium.nixos.nixpkgs.overlays = [
+  (final: prev: { helium = helium-browser.packages.${prev.system}.helium; })
+];
 ```
-base ──────────────────────────────────────────► includes cli
-  │                                                 │
-  │                                                 ├── atuin
-  │                                                 ├── bat
-  │                                                 ├── bottom
-  │                                                 ├── gh
-  │  host ───► includes base + gui.gnome + ...      ├── helix
-  │              │                                   ├── jujutsu
-  │              ├── gui ───► greetd                  ├── kitty
-  │              │           pipewire                 ├── nushell
-  │              │           theme                    ├── starship
-  │              │           xdg                      └── syncthing
-  │              │
-  │              ├── gui.gnome ──► wayland
-  │              ├── networking.networkmanager
-  │              ├── hardware.t480
-  │              └── system ──► boot.kernel.zen
-  │                             boot.limine
-  │                             fstrim
-  │                             ssh
-  │                             tmpfs
-  │                             zram
-```
+
+Then `programs/helium.nix` includes it: `includes = [ den.aspects.overlays.helium ]`.

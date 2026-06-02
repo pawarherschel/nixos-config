@@ -1,155 +1,175 @@
-# Adding New Hosts
+# Adding a New Host
 
-## Where hosts are defined
+Step-by-step guide for adding a new machine to this configuration.
 
-Hosts require changes in **2–3 places**:
+## Step 1: Create the Host Directory
 
-### 1. `modules/hosts/default.nix` — Register the host and its users
+```bash
+mkdir -p modules/hosts/<hostname>
+```
 
-Add a new host entry under the appropriate architecture:
+## Step 2: Create the Host Aspect
+
+Create `modules/hosts/<hostname>/default.nix`:
+
+```nix
+# <hostname> — <short description>
+{ den, ... }:
+{
+  den.aspects.<hostname> = {
+    includes = [
+      den.aspects.base
+      # den.aspects.gui.gnome     ← uncomment for graphical hosts
+      # den.aspects.gui.cosmic    ← alternative DE
+      # den.aspects.hardware.t480 ← add hardware profiles
+      # den.aspects.networking.* ← add networking
+      # den.aspects.programs.*   ← add extra programs not in cli
+    ];
+
+    nixos =
+      { pkgs, ... }:
+      {
+        system.stateVersion = "23.05"; # ← set to the NixOS version at install time
+      };
+  };
+}
+```
+
+### What to Include
+
+| Type of Host | Typical Includes |
+|---|---|
+| **Minimal CLI** (WSL, RPi) | `den.aspects.base` only |
+| **Desktop/Laptop** | `base` + `gui.gnome` or `gui.cosmic` + hardware profile + networking |
+| **Headless Server** | `base` + `system.ssh` + `system.zram` + maybe specific services |
+
+### Host-Specific Sub-Aspects
+
+For complex hosts, split into sub-files (like `kats-laptop` does):
+
+```
+hosts/<hostname>/
+├── default.nix     ← aspect includes + stateVersion + systemPackages
+├── hardware.nix    ← fileSystems, kernelModules, CPU settings
+├── locale.nix      ← timezone, i18n, keyboard layout
+└── system.nix      ← bootloader, kernel, kernel tuning, extra settings
+```
+
+Each sub-file declares its own aspect:
+
+```nix
+# hosts/<hostname>/hardware.nix
+{ den, lib, ... }:
+{
+  den.aspects.<hostname>.hardware.nixos = {
+    fileSystems."/" = { device = "..."; fsType = "ext4"; };
+    ...
+  };
+}
+```
+
+Then include them in the main aspect:
+
+```nix
+den.aspects.<hostname>.includes = [
+  den.aspects.<hostname>.hardware
+  den.aspects.<hostname>.locale
+  den.aspects.<hostname>.system
+  ...
+];
+```
+
+### Hardware Profiles
+
+For common hardware, use aspects from `aspects/hardware/`. Currently available:
+
+- `den.aspects.hardware.t480` — ThinkPad T480 (imports `nixos-hardware`)
+
+To add a new hardware profile (e.g., a Framework laptop), create `aspects/hardware/framework.nix`:
+
+```nix
+# aspects/hardware/framework.nix
+{ inputs, den, ... }:
+{
+  flake-file.inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
+  den.aspects.hardware.framework.nixos.imports = [
+    inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t480 # TODO: replace with framework module
+  ];
+}
+```
+
+(`flake-file` deduplicates `nixos-hardware` if another aspect already declared it.)
+
+## Step 3: Declare Users
+
+In `modules/hosts/default.nix`, add the host under the correct architecture:
 
 ```nix
 {
   den.hosts.x86_64-linux = {
     kats-laptop.users = { ... };
     wsl.users.ksakura = { };
-    ### NEW HOST ###
-    desktop.users = {
-      ksakura = { };
+    <hostname>.users = {
+      ksakura = { };   # full user with home-manager
+      # kat = { classes = [ ]; };   # SSH-only, no home-manager
     };
   };
 
-  den.hosts.aarch64-linux.rpi.users.ksakura = { };
+  # For ARM hosts:
+  # den.hosts.aarch64-linux.<hostname>.users.ksakura = { };
 }
 ```
 
-### 2. `modules/hosts/<hostname>/` — Create a host folder
+### User Classes
 
-Each host gets its own folder. Look at `kats-laptop/` as a reference:
+- `{ }` (empty) — inherits default `classes = [ "homeManager" ]` from `defaults.nix`. Full home-manager config runs.
+- `{ classes = [ ]; }` — no home-manager. Use for unprivileged or service users.
 
-```
-modules/hosts/kats-laptop/
-├── default.nix    # Main: includes aspects and host-specific nixos config
-├── hardware.nix   # Hardware-specific: disks, CPU, filesystems
-├── locale.nix     # Timezone, language, keyboard layout
-└── system.nix     # Mechanical config: bootloader, kernel, nix settings, VM variant
-```
-
-#### `default.nix` — The entry point
-
-This is the main file. It lists all aspects the host uses:
-
-```nix
-# desktop — generic x86_64 desktop.
-{ den, ... }:
-{
-  den.aspects.desktop = {
-    includes = [
-      den.aspects.base                  # always include this
-      den.aspects.gui.gnome             # or cosmic, or nothing if headless
-      den.aspects.networking.networkmanager
-      den.aspects.hardware.desktop      # hardware-specific aspects
-      den.aspects.desktop.hardware      # from your hardware.nix
-      den.aspects.desktop.locale        # from your locale.nix
-      den.aspects.desktop.system        # from your system.nix
-      # ... any other aspects
-    ];
-
-    nixos =
-      { pkgs, ... }:
-      {
-        system.stateVersion = "23.05";
-
-        # Host-specific packages
-        environment.systemPackages = with pkgs; [
-          firefox
-        ];
-      };
-  };
-}
-```
-
-> **⚠️ Important:** The aspect name in the `includes` list **must match** the folder/host name exactly. `den.aspects.desktop.hardware` refers to the aspect defined in `hardware.nix`.
-
-#### `hardware.nix` — Filesystem layout, kernel modules
-
-Copy this from `nixos-generate-config` output or from `kats-laptop/hardware.nix`.
-
-#### `locale.nix` — Timezone + i18n
-
-```nix
-{ den, ... }:
-{
-  den.aspects.desktop.locale.nixos = {
-    time.timeZone = "America/New_York";
-    i18n.defaultLocale = "en_US.UTF-8";
-    services.xserver.xkb.layout = "us";
-  };
-}
-```
-
-#### `system.nix` — Bootloader, kernel, nix settings
-
-```nix
-{ den, lib, ... }:
-{
-  den.aspects.desktop.system = {
-    includes = [
-      den.aspects.system.boot.kernel.zen
-      den.aspects.system.boot.limine
-      den.aspects.system.fstrim
-      den.aspects.system.ssh
-      den.aspects.system.tmpfs
-      den.aspects.system.zram
-    ];
-
-    nixos = {
-      boot.loader.efi.canTouchEfiVariables = true;
-      nix.settings.max-jobs = 8;
-      system.stateVersion = "23.05";
-
-      virtualisation.vmVariant = {
-        users.users.ksakura.initialPassword = "vm";
-        services.getty.autologinUser = "ksakura";
-      };
-    };
-  };
-}
-```
-
-### 3. (Optional) `aspects/hardware/` — Hardware-specific modules
-
-If your host needs hardware-specific config (like a GPU driver, laptop support), create a file in `aspects/hardware/`. See `aspects/hardware/t480.nix` or `aspects/hardware/desktop.nix` as examples.
-
-Then include it in the host's `default.nix`:
-
-```nix
-includes = [
-  den.aspects.hardware.desktop
-  ...
-];
-```
-
-### Headless/minimal hosts (rpi, wsl)
-
-For simple headless hosts, you don't need the full folder structure. Just set it all in one `default.nix`:
-
-```nix
-# modules/hosts/my-server/default.nix
-{ den, ... }:
-{
-  den.aspects.my-server.includes = [ den.aspects.base ];
-
-  den.aspects.my-server.nixos.system.stateVersion = "23.05";
-}
-```
-
-### Build and deploy
+## Step 4: Build and Test
 
 ```bash
-# Build the new host
-nix build .#nixosConfigurations.desktop.config.system.build.toplevel
+# Build (dry run)
+nix run .#<hostname>    # if using nix run
+nh os build .#<hostname>
 
-# Or use nh (after running `nix run .#write-flake`)
-nh os switch --hostname desktop
+# Build and switch (on the actual machine)
+nh os switch .#<hostname>
+
+# Test in a VM (if you added a VM config)
+# See vm.nix — currently only kats-laptop has a VM
 ```
+
+## Example: Adding a New Desktop Host
+
+Here's a complete example for a fictional "framework" laptop:
+
+```nix
+# modules/hosts/framework/default.nix
+{ den, ... }:
+{
+  den.aspects.framework = {
+    includes = [
+      den.aspects.base
+      den.aspects.gui.gnome
+      den.aspects.gui.social
+      den.aspects.gui.steam
+      den.aspects.hardware.framework    # you'd need to create this
+      den.aspects.networking.networkmanager
+      den.aspects.networking.tailscale
+    ];
+
+    nixos = { pkgs, ... }: {
+      system.stateVersion = "25.05";
+      environment.systemPackages = with pkgs; [ firefox ];
+    };
+  };
+}
+```
+
+```nix
+# In hosts/default.nix:
+den.hosts.x86_64-linux.framework.users.ksakura = { };
+```
+
+Now build: `nh os build .#framework`

@@ -1,15 +1,66 @@
-# What `vm.nix`, `nh.nix`, `dendritic.nix`, `defaults.nix` Do
+# Wiring Files: `dendritic.nix`, `defaults.nix`, `nh.nix`, `vm.nix`
 
-These four files live in `next/modules/` and are **plumbing** — they wire up the
-build system but don't contain application-level config.
+These four files in `modules/` are the framework backbone. They wire up `den`, `flake-file`, `nh`, and the VM test workflow.
 
 ---
 
-## `defaults.nix` — Default settings for every host/user
+## `dendritic.nix` — The Single Wiring Entrypoint
 
-**File:** `next/modules/defaults.nix`
+**Path**: `modules/dendritic.nix`
+
+This is the **only file** that imports framework modules and declares the top-level flake inputs. Everything else is just aspects, hosts, and users.
 
 ```nix
+# den + flake-file wiring. nixpkgs and home-manager kept in sync.
+{ inputs, ... }:
+{
+  imports = [
+    (inputs.flake-file.flakeModules.dendritic or { })
+    (inputs.den.flakeModules.dendritic or { })
+  ];
+
+  systems = [
+    "x86_64-linux"
+    "aarch64-linux"
+  ];
+
+  flake-file.inputs = {
+    den.url = "github:denful/den";
+    flake-file.url = "github:vic/flake-file";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+### What Each Line Does
+
+| Line | Meaning |
+|---|---|
+| `imports = [ ... ]` | Imports the `dendritic` flake module from both `flake-file` and `den`. The `or { }` prevents errors if the module isn't found. |
+| `systems = [ ... ]` | Architectures this config targets. Both x86_64 (laptops, WSL) and aarch64 (Raspberry Pi). |
+| `flake-file.inputs.den` | The `den` framework itself. |
+| `flake-file.inputs.flake-file` | Auto-flake generator. |
+| `flake-file.inputs.nixpkgs` | Pinned to `nixos-26.05` (stable). |
+| `flake-file.inputs.home-manager` | Pinned to `release-26.05`, following the same nixpkgs. Keeps home-manager and nixpkgs in sync. |
+
+### Why a Single Wiring File?
+
+In quasigod's config, framework imports and inputs are scattered: `modules/den.nix` wires `den`, individual aspect files declare some inputs, the flake declares others. This rewrite consolidates everything into one place so you always know where to look.
+
+**If you need to add a new top-level framework dependency**, this is the file to edit.
+
+---
+
+## `defaults.nix` — Applied to Every Host and User
+
+**Path**: `modules/defaults.nix`
+
+```nix
+# den.default — applied to every host and user automatically.
 { lib, den, ... }:
 {
   den.default.includes = [
@@ -21,73 +72,31 @@ build system but don't contain application-level config.
 }
 ```
 
-**What it does:**
+### What Each Line Does
 
-1. **`den.batteries.hostname`** — Auto-detects the hostname and wires it to the
-   correct `den.hosts.<arch>.<hostname>` entry. This is how building on
-   `kats-laptop` picks `den.hosts.x86_64-linux.kats-laptop` automatically.
-2. **`den.batteries.define-user`** — Creates a skeleton user for each user
-   declared in `hosts/default.nix`. This is what makes the users actually exist.
-3. **`den.schema.user.classes`** — Sets the default user class to
-   `"homeManager"`, meaning users get home-manager unless they explicitly
-   override with `classes = [ ]`.
+| Line | Meaning |
+|---|---|
+| `den.batteries.hostname` | Auto-sets `networking.hostName` to the host entity name. You don't need `networking.hostName = "kats-laptop"` anywhere — it's automatic. |
+| `den.batteries.define-user { }` | Auto-creates `users.users.<name>.isNormalUser = true` for every user declared in `hosts/default.nix`. With empty args, uses defaults. |
+| `den.schema.user.classes` | Sets the default user class to `[ "homeManager" ]`, meaning home-manager config runs for every user unless overridden (see `kat` user). |
 
-**When to touch it:** Almost never. Only if you want to change the default
-behavior for all hosts/users (e.g., disable home-manager by default).
+### `lib.mkDefault` and Overrides
 
----
-
-## `dendritic.nix` — Framework wiring (den + flake-file)
-
-**File:** `next/modules/dendritic.nix`
+The `lib.mkDefault` on `user.classes` means individual user declarations can override it:
 
 ```nix
-{ inputs, ... }:
-{
-  imports = [
-    (inputs.flake-file.flakeModules.dendritic or { })
-    (inputs.den.flakeModules.dendritic or { })
-  ];
-
-  systems = [ "x86_64-linux" "aarch64-linux" ];
-
-  flake-file.inputs = {
-    den.url = "github:denful/den";
-    flake-file.url = "github:vic/flake-file";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
-    home-manager.url = "github:nix-community/home-manager/release-26.05";
-    ...
-  };
-}
+# kat overrides the default — no home-manager
+kats-laptop.users.kat = { classes = [ ]; };
 ```
 
-**What it does:**
-
-1. Imports the **dendritic modules** from both `den` and `flake-file`.
-   These allow the directory-tree structure to define the flake outputs.
-2. Declares supported **systems** (`x86_64-linux`, `aarch64-linux`).
-3. Pins the **input URLs** for flake-file's generated `flake.nix`.
-   These are the URLs that get written into `flake.nix` when you
-   run `nix run .#write-flake`.
-
-**How it works:** The `import-tree` system reads the `modules/` directory tree.
-Each `.nix` file becomes part of the flake outputs automatically.
-`dendritic.nix` is the module that tells it *how* to interpret the tree —
-specifically that it should use the `den` framework's conventions
-(aspects, hosts, users, etc.).
-
-**When to touch it:** Only when you:
-- Add a new system architecture
-- Add a new flake input
-- Update `flake.nix` via `nix run .#write-flake`
-
 ---
 
-## `nh.nix` — Expose packages for `nh` (nix helper)
+## `nh.nix` — `nh` CLI Integration
 
-**File:** `next/modules/nh.nix`
+**Path**: `modules/nh.nix`
 
 ```nix
+# Exposes flake apps under the name of each host / home for building with nh.
 { den, lib, ... }:
 {
   perSystem =
@@ -98,26 +107,30 @@ specifically that it should use the `den` framework's conventions
 }
 ```
 
-**What it does:**
+### What It Does
 
-The `nh` tool (`nix helper`) needs flake apps/packages named after each host
-to build or switch. This module exposes all hosts as outputs so you can do:
+`nh` is a NixOS/home-manager CLI helper (`nh os switch`, `nh home switch`). It discovers available configurations by running `nix flake show` and looking for packages named after hosts and users.
 
-```bash
-nh os switch --hostname kats-laptop
+`den.lib.nh.denPackages { fromFlake = true; }` generates per-system packages like:
+
+```
+packages.x86_64-linux.kats-laptop
+packages.x86_64-linux.wsl
+packages.aarch64-linux.rpi
 ```
 
-Without this, `nh` wouldn't know how to find your hosts.
-
-**When to touch it:** Never. It's a one-liner that just works.
+`nh` finds these and lets you run:
+- `nh os switch .#kats-laptop` — build and switch the NixOS config
+- `nh home switch .#ksakura@kats-laptop` — build and switch home-manager for ksakura on kats-laptop
 
 ---
 
-## `vm.nix` — Launch a test VM
+## `vm.nix` — `nix run .#vm` Test VM
 
-**File:** `next/modules/vm.nix`
+**Path**: `modules/vm.nix`
 
 ```nix
+# `nix run .#vm` — launch a test VM of kats-laptop.
 { inputs, ... }:
 {
   perSystem =
@@ -137,36 +150,23 @@ Without this, `nh` wouldn't know how to find your hosts.
 }
 ```
 
-**What it does:**
+### What It Does
 
-Creates a `nix run .#vm` command that:
-1. Builds the **kats-laptop** configuration as a VM
-2. Launches it in QEMU
+Creates `nix run .#vm` which boots a QEMU VM of the `kats-laptop` configuration. The VM variant is configured in `hosts/kats-laptop/system.nix`:
 
-The VM variant includes special settings from `hosts/kats-laptop/system.nix`:
-- Auto-login for `ksakura`
-- Initial password set to `vm`
-- No microcode updates needed
-
-**Usage:**
-```bash
-# Build and launch the VM
-nix run .#vm
-
-# Or build first, then run with extra args
-nix run .#vm -- -m 4G -smp 2
+```nix
+virtualisation.vmVariant = {
+  hardware.cpu.intel.updateMicrocode = lib.mkForce true;   # Intel microcode forced on for VM compatibility
+  users.users.ksakura.initialPassword = "vm";               # auto-login password
+  services.getty.autologinUser = "ksakura";                 # skip login screen
+  services.greetd.settings.initial_session = lib.mkForce {
+    user = "ksakura";                                        # auto-start GNOME
+  };
+};
 ```
 
-**When to touch it:** Only if you want to change which host the VM targets,
-or add more VM configurations.
+### VM Variant Notes
 
----
-
-## Summary
-
-| File | Purpose | Touching frequency |
-|------|---------|-------------------|
-| `defaults.nix` | Sets hostname, user skeleton, default classes | Rarely |
-| `dendritic.nix` | Wires den + flake-file for the tree structure | Adding inputs/changing systems |
-| `nh.nix` | Enables `nh os switch` | Never |
-| `vm.nix` | `nix run .#vm` for testing | Rarely (change target host) |
+- **Intel microcode is forced ON** (`lib.mkForce true`) in the VM variant, despite the real hardware defaulting to `config.hardware.enableRedistributableFirmware`. This is for VM compatibility.
+- **Password is `vm`** — only in the VM, never on real hardware.
+- **Auto-login** — skips greetd and goes straight to GNOME.

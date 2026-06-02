@@ -1,80 +1,130 @@
-# Adding New Users
+# Adding a New User
 
-## Where users are declared
+Step-by-step guide for adding a new user to this configuration.
 
-There are **two places** you need to touch:
+## Step 1: Create the User File
 
-### 1. `modules/hosts/default.nix` — Register the user on a host
+Create `modules/users/<username>.nix`:
 
-This file declares which users exist on which hosts.
+```nix
+# <username> — <short description>
+{ den, ... }:
+{
+  den.aspects.<username>.provides.to-hosts.nixos =
+    { pkgs, ... }:
+    {
+      users.users.<username> = {
+        description = "Full Name";
+        extraGroups = [
+          "networkmanager"
+          "wheel"
+          "audio"
+          "sound"
+          "video"
+        ];
+        shell = pkgs.nushell;      # or pkgs.bash, pkgs.zsh, etc.
+      };
+    };
+}
+```
 
-Example — current state:
+### What `provides.to-hosts` Does
+
+This is the key pattern. The user file doesn't list which hosts they belong to. Instead, it declares **what config should be injected** into any host that includes this user. The mapping of users to hosts is centralized in `hosts/default.nix`.
+
+This means:
+- You define the user once
+- You can add them to multiple hosts without editing the user file
+- The user config stays clean and host-independent
+
+## Step 2: Assign User to Hosts
+
+In `modules/hosts/default.nix`, add the user to each host they should appear on:
 
 ```nix
 {
   den.hosts.x86_64-linux = {
     kats-laptop.users = {
-      ksakura = { };           # full user with home-manager
+      ksakura = { };
       kat = {
-        classes = [ ];         # unprivileged SSH user, no home-manager
+        # No home-manager — SSH access only
+        classes = [ ];
       };
+      <username> = { };    # full user with home-manager
+    };
+
+    wsl.users = {
+      ksakura = { };
+      <username> = { };    # also on WSL
     };
   };
 }
 ```
 
-To add a new user `alice` to `kats-laptop`:
+## Understanding User Classes
+
+| Declaration | Effect |
+|---|---|
+| `ksakura = { }` | Default classes from `defaults.nix`: `[ "homeManager" ]`. Full home-manager config runs. |
+| `kat = { classes = [ ]; }` | Override: no classes. No home-manager. User exists for SSH but gets no dotfiles/programs. |
+
+### How the Default Class Works
+
+In `defaults.nix`:
+```nix
+den.schema.user.classes = lib.mkDefault [ "homeManager" ];
+```
+
+`lib.mkDefault` means every user gets `[ "homeManager" ]` unless they explicitly set `classes` to something else.
+
+## Step 3: Add Home-Manager Config (if desired)
+
+Home-manager config for a user typically lives in the **host** `default.nix`, not in the user file:
 
 ```nix
-kats-laptop.users = {
-  ksakura = { };
-  kat = { classes = [ ]; };
-  alice = { };                 # <--- new user with home-manager
+# In hosts/kats-laptop/default.nix:
+den.aspects.kats-laptop.nixos = { pkgs, ... }: {
+  home-manager.users.<username> = {
+    home.stateVersion = "24.05";
+    # ... user-specific home-manager config ...
+  };
 };
 ```
 
-- If you omit `classes` (or set `classes = [ "homeManager" ]`), the user gets home-manager.
-- If you set `classes = [ ]`, the user gets no home-manager (system user only).
+This is because home-manager config can be host-specific (different paths, different programs available per host). The user file (`users/<username>.nix`) only sets up the NixOS-level user account (groups, shell, description).
 
-> **Key concept:** `den.schema.user.classes` defaults to `[ "homeManager" ]` (set in `defaults.nix`).
+## Step 4: Build and Verify
 
-### 2. `modules/users/<username>.nix` — Define the user
+```bash
+# Build for a specific host to check for errors
+nh os build .#kats-laptop
 
-Create a file like `modules/users/alice.nix`:
+# Switch home-manager for the user
+nh home switch .#<username>@kats-laptop
+```
+
+## Complete Example: Adding a "dev" User
 
 ```nix
-# alice — description here.
+# modules/users/dev.nix
 { den, ... }:
 {
-  den.aspects.alice.provides.to-hosts.nixos =
+  den.aspects.dev.provides.to-hosts.nixos =
     { pkgs, ... }:
     {
-      users.users.alice = {
-        description = "Alice Example";
+      users.users.dev = {
         isNormalUser = true;
-        extraGroups = [
-          "networkmanager"
-          "wheel"
-        ];
-        shell = pkgs.nushell;    # or pkgs.bash, pkgs.fish, etc.
+        description = "Development User";
+        extraGroups = [ "wheel" "networkmanager" "docker" ];
+        shell = pkgs.zsh;
       };
     };
 }
 ```
 
-### Full home-manager user example (like `ksakura`)
-
-For a user with home-manager, the pattern is the same. The home-manager config is done separately in the host config's `nixos` block (in `hosts/kats-laptop/default.nix`), where:
-
 ```nix
-home-manager.users.alice.home.stateVersion = "24.05";
+# In hosts/default.nix — add to kats-laptop:
+kats-laptop.users.dev = { };
 ```
 
-And then you'd add a separate home-manager module somewhere (or inline in the host file).
-
-### Quick reference
-
-| User type | `hosts/default.nix` | `users/<name>.nix` | home-manager? |
-|-----------|---------------------|--------------------|---------------|
-| Full user | `ksakura = { };` | Has `provides.to-hosts.nixos` | Yes (via `defaults.nix`'s `den.schema.user.classes`) |
-| SSH-only  | `kat = { classes = [ ]; };` | Has `provides.to-hosts.nixos` | No |
+That's it. Build and you have a new user.
