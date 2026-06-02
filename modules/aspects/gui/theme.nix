@@ -84,7 +84,10 @@
             targets.qt.platform = lib.mkForce "qtct";
           };
 
-          qt.platformTheme.name = lib.mkForce "adwaita";
+          qt.platformTheme = lib.mkForce "adwaita";
+
+          # Silence stylix upstream warning (uses renamed option internally)
+          services.displayManager.generic.environment = lib.mkDefault { };
         };
     };
 }
