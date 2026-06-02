@@ -1,5 +1,5 @@
 # kats-laptop.system — mechanical host config.
-{ den, lib, ... }:
+{ den, lib, config, ... }:
 {
   den.aspects.kats-laptop.system = {
     includes = [
@@ -16,6 +16,8 @@
     nixos = {
       # EFI
       boot.loader.efi.canTouchEfiVariables = true;
+
+      config.hardware.enableRedistributableFirmware = true;
 
       # Kernel tuning
       boot.extraModprobeConfig = "options kvm_intel nested=1";
