@@ -84,7 +84,7 @@
             targets.qt.platform = lib.mkForce "qtct";
           };
 
-          qt.platformTheme = lib.mkForce "adwaita";
+          qt.platformTheme = lib.mkForce "gnome";
 
           # Silence stylix upstream warning (uses renamed option internally)
           services.displayManager.generic.environment = lib.mkDefault { };
