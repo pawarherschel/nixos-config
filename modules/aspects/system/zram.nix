@@ -1,0 +1,8 @@
+# system.zram — zram swap.
+{ den, lib, ... }:
+{
+  den.aspects.system.zram.nixos = {
+    zramSwap.enable = true;
+    zramSwap.algorithm = lib.mkDefault "zstd";
+  };
+}

@@ -86,23 +86,18 @@
         "type": "github"
       }
     },
-    "fingerprint": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
+    "den": {
       "locked": {
-        "lastModified": 1752265282,
-        "narHash": "sha256-eipl7Niq9Xurtr+W75LJNdl9A3z3+RmXBWx1n8/l5G4=",
-        "owner": "viktor-grunwaldt",
-        "repo": "t480-fingerprint-nixos",
-        "rev": "1ef501415c23782b9f8de050d3b45d1d480da8bd",
+        "lastModified": 1780270913,
+        "narHash": "sha256-7jmaw+1HI0mfZvxNj7qo8GL4wAjo9fCBkPDqDfzzt3E=",
+        "owner": "denful",
+        "repo": "den",
+        "rev": "294d58404758df423e0332646a241b98ed087d78",
         "type": "github"
       },
       "original": {
-        "owner": "viktor-grunwaldt",
-        "repo": "t480-fingerprint-nixos",
+        "owner": "denful",
+        "repo": "den",
         "type": "github"
       }
     },
@@ -122,7 +117,42 @@
         "type": "github"
       }
     },
+    "flake-file": {
+      "locked": {
+        "lastModified": 1771897754,
+        "narHash": "sha256-SQhPQRbs35fQ8ZE7tbfHsf2eu5r+oICyZL1SpGIPvGg=",
+        "owner": "vic",
+        "repo": "flake-file",
+        "rev": "619d2212482c104fd3bbc815d80c6227b1b01338",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vic",
+        "repo": "flake-file",
+        "type": "github"
+      }
+    },
     "flake-parts": {
+      "inputs": {
+        "nixpkgs-lib": [
+          "nixpkgs-lib"
+        ]
+      },
+      "locked": {
+        "lastModified": 1769996383,
+        "narHash": "sha256-AnYjnFWgS49RlqX7LrC4uA+sCCDBj0Ry/WOJ5XWAsa0=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "57928607ea566b5db3ad13af0e57e921e6b12381",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "flake-parts_2": {
       "inputs": {
         "nixpkgs-lib": [
           "helium-browser",
@@ -143,7 +173,7 @@
         "type": "github"
       }
     },
-    "flake-parts_2": {
+    "flake-parts_3": {
       "inputs": {
         "nixpkgs-lib": [
           "stylix",
@@ -217,7 +247,7 @@
     },
     "helium-browser": {
       "inputs": {
-        "flake-parts": "flake-parts",
+        "flake-parts": "flake-parts_2",
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -255,6 +285,38 @@
         "owner": "nix-community",
         "ref": "release-26.05",
         "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "import-tree": {
+      "locked": {
+        "lastModified": 1771045967,
+        "narHash": "sha256-oYO4poyw0Sb/db2PigqugMlDwsvwLg6CSpFrMUWxA3Q=",
+        "owner": "vic",
+        "repo": "import-tree",
+        "rev": "c968d3b54d12cf5d9c13f16f7c545a06c9d1fde6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vic",
+        "repo": "import-tree",
+        "type": "github"
+      }
+    },
+    "nil-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1765326831,
+        "narHash": "sha256-18j8X2Nbe0Wg1+7YrWRlYzmjZ5Wq0NCVwJHJlBIw/dc=",
+        "owner": "oxalica",
+        "repo": "nil",
+        "rev": "504599f7e555a249d6754698473124018b80d121",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "nil",
+        "rev": "504599f7e555a249d6754698473124018b80d121",
         "type": "github"
       }
     },
@@ -334,11 +396,18 @@
     "root": {
       "inputs": {
         "base16": "base16",
-        "fingerprint": "fingerprint",
+        "den": "den",
+        "flake-file": "flake-file",
+        "flake-parts": "flake-parts",
         "helium-browser": "helium-browser",
         "home-manager": "home-manager",
+        "import-tree": "import-tree",
+        "nil-src": "nil-src",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
+        "nixpkgs-lib": [
+          "nixpkgs"
+        ],
         "stylix": "stylix",
         "tt-schemes": "tt-schemes"
       }
@@ -350,7 +419,7 @@
         "base16-helix": "base16-helix",
         "base16-vim": "base16-vim",
         "firefox-gnome-theme": "firefox-gnome-theme",
-        "flake-parts": "flake-parts_2",
+        "flake-parts": "flake-parts_3",
         "gnome-shell": "gnome-shell",
         "nixpkgs": [
           "nixpkgs"
