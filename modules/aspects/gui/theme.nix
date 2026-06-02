@@ -1,5 +1,5 @@
 # gui.theme — stylix + base16 colibri theme.
-{ inputs, den, ... }:
+{ inputs, ... }:
 {
   flake-file.inputs = {
     stylix = {

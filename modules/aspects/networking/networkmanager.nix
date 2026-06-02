@@ -1,5 +1,4 @@
 # networking.networkmanager — NetworkManager.
-{ den, ... }:
-{
+_: {
   den.aspects.networking.networkmanager.nixos.networking.networkmanager.enable = true;
 }

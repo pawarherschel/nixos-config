@@ -1,5 +1,5 @@
 # Adds pi coding agent to nixpkgs.
-{ inputs, den, ... }:
+{ inputs, ... }:
 let
   llm-agents = inputs.pi-coding-agent-flake;
 in
@@ -10,7 +10,7 @@ in
   };
 
   den.aspects.overlays.pi-coding-agent.nixos.nixpkgs.overlays = [
-    (final: prev: {
+    (_final: prev: {
       pi-coding-agent = llm-agents.packages.${prev.system}.pi;
     })
   ];

@@ -1,6 +1,5 @@
 # helix.json — JSON language config.
-{ den, ... }:
-{
+_: {
   den.aspects.programs.helix.json.homeManager = {
     programs.helix.languages.language = [
       {

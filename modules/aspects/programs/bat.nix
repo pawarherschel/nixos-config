@@ -1,6 +1,5 @@
 # bat — cat replacement with syntax highlighting.
-{ den, ... }:
-{
+_: {
   den.aspects.programs.bat = {
     nixos =
       { pkgs, ... }:

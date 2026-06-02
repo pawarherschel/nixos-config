@@ -1,5 +1,5 @@
 # system.zram — zram swap.
-{ den, lib, ... }:
+{ lib, ... }:
 {
   den.aspects.system.zram.nixos = {
     zramSwap.enable = true;

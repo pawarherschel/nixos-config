@@ -1,6 +1,5 @@
 # gui.opentabletdriver — hardware + .desktop entry.
-{ den, ... }:
-{
+_: {
   den.aspects.gui.opentabletdriver = {
     nixos = {
       hardware.opentabletdriver.enable = true;

@@ -1,6 +1,5 @@
 # kat — unprivileged SSH user. No home-manager.
-{ den, ... }:
-{
+_: {
   den.aspects.kat.provides.to-hosts.nixos.users.users.kat = {
     isNormalUser = true;
     description = "_kat";

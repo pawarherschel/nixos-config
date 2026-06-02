@@ -1,6 +1,5 @@
 # gui.pipewire — PipeWire audio server.
-{ den, ... }:
-{
+_: {
   den.aspects.gui.pipewire.nixos = {
     security.rtkit.enable = true;
     services.pipewire = {

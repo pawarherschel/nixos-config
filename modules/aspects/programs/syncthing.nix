@@ -1,6 +1,5 @@
 # syncthing — file sync service.
-{ den, ... }:
-{
+_: {
   den.aspects.programs.syncthing = {
     nixos =
       { pkgs, ... }:

@@ -1,5 +1,5 @@
 # system.boot.plymouth — boot splash.
-{ den, lib, ... }:
+{ lib, ... }:
 {
   den.aspects.system.boot.plymouth.nixos =
     { pkgs, ... }:

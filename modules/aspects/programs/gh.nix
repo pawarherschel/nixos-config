@@ -1,6 +1,5 @@
 # gh — GitHub CLI.
-{ den, ... }:
-{
+_: {
   den.aspects.programs.gh = {
     nixos =
       { pkgs, ... }:

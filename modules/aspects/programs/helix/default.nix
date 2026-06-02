@@ -1,5 +1,5 @@
 # helix — editor with per-language configs.
-{ den, lib, ... }:
+{ den, ... }:
 {
   den.aspects.programs.helix = {
     includes = [
@@ -19,43 +19,41 @@
         environment.sessionVariables.EDITOR = "hx";
       };
 
-    homeManager =
-      { lib, ... }:
-      {
-        home.sessionVariables.EDITOR = "hx";
+    homeManager = _: {
+      home.sessionVariables.EDITOR = "hx";
 
-        programs.helix = {
-          enable = true;
-          defaultEditor = true;
-          settings = {
-            # theme = "dracula";
-            keys.normal.esc = [
-              "collapse_selection"
-              "keep_primary_selection"
-            ];
-            editor = {
-              line-number = "relative";
-              cursor-shape = {
-                insert = "bar";
-                normal = "block";
-                select = "underline";
-              };
-              lsp.display-inlay-hints = true;
-              whitespace.render = {
-                space = "all";
-                nbsp = "all";
-                tab = "all";
-                newline = "none";
-                tabpad = "all";
-              };
-              indent-guides = {
-                render = true;
-                character = "╎";
-                skip-levels = 1;
-              };
+      programs.helix = {
+        enable = true;
+        defaultEditor = true;
+        settings = {
+          # theme = "dracula";
+          keys.normal.esc = [
+            "collapse_selection"
+            "keep_primary_selection"
+          ];
+          editor = {
+            line-number = "relative";
+            cursor-shape = {
+              insert = "bar";
+              normal = "block";
+              select = "underline";
+            };
+            lsp.display-inlay-hints = true;
+            whitespace.render = {
+              space = "all";
+              nbsp = "all";
+              tab = "all";
+              newline = "none";
+              tabpad = "all";
+            };
+            indent-guides = {
+              render = true;
+              character = "╎";
+              skip-levels = 1;
             };
           };
         };
       };
+    };
   };
 }

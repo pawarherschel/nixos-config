@@ -1,6 +1,5 @@
 # starship — prompt with jj integration.
-{ den, ... }:
-{
+_: {
   den.aspects.programs.starship = {
     nixos =
       { pkgs, ... }:

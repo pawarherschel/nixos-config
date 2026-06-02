@@ -1,6 +1,5 @@
 # gui.greetd — greetd display manager with tuigreet.
-{ den, ... }:
-{
+_: {
   den.aspects.gui.greetd.nixos =
     { pkgs, ... }:
     {

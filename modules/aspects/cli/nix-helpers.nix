@@ -1,6 +1,5 @@
 # cli.nix-helpers — nh and nix-output-monitor.
-{ den, ... }:
-{
+_: {
   den.aspects.cli.nix-helpers.nixos =
     { pkgs, ... }:
     {

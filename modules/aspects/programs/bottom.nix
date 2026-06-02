@@ -1,6 +1,5 @@
 # bottom — system monitor.
-{ den, ... }:
-{
+_: {
   den.aspects.programs.bottom = {
     nixos =
       { pkgs, ... }:

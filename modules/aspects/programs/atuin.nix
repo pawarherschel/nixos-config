@@ -1,6 +1,5 @@
 # atuin — shell history with nushell integration.
-{ den, ... }:
-{
+_: {
   den.aspects.programs.atuin = {
     nixos =
       { pkgs, ... }:

@@ -1,6 +1,5 @@
 # helix.typst — Typst language + LSP config + system package.
-{ den, lib, ... }:
-{
+_: {
   den.aspects.programs.helix.typst = {
     nixos =
       { pkgs, ... }:

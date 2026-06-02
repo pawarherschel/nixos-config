@@ -1,6 +1,5 @@
 # networking.openvpn — OpenVPN client + NetworkManager plugin.
-{ den, ... }:
-{
+_: {
   den.aspects.networking.openvpn.nixos =
     { pkgs, ... }:
     {

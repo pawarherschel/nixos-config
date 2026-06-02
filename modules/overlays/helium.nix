@@ -1,7 +1,7 @@
 # Adds helium browser to nixpkgs.
-{ inputs, den, ... }:
+{ inputs, ... }:
 let
-  helium-browser = inputs.helium-browser;
+  inherit (inputs) helium-browser;
 in
 {
   flake-file.inputs.helium-browser = {
@@ -10,7 +10,7 @@ in
   };
 
   den.aspects.overlays.helium.nixos.nixpkgs.overlays = [
-    (final: prev: {
+    (_final: prev: {
       helium = helium-browser.packages.${prev.system}.helium;
     })
   ];

@@ -1,6 +1,5 @@
 # system.boot.kernel.zen — Linux Zen kernel.
-{ den, ... }:
-{
+_: {
   den.aspects.system.boot.kernel.zen.nixos =
     { pkgs, ... }:
     {

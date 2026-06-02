@@ -1,6 +1,5 @@
 # kats-laptop.hardware — hardware config from nixos-generate-config.
-{ den, ... }:
-{
+_: {
   den.aspects.kats-laptop.hardware.nixos =
     { config, lib, ... }:
     {

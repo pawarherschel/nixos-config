@@ -1,6 +1,5 @@
 # gui.xdg — XDG autostart, terminal-exec, and DE-independent portals.
-{ den, ... }:
-{
+_: {
   den.aspects.gui.xdg.nixos =
     { pkgs, ... }:
     {

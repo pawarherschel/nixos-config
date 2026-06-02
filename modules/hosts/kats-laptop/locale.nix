@@ -1,6 +1,5 @@
 # kats-laptop.locale — timezone, i18n, keyboard.
-{ den, ... }:
-{
+_: {
   den.aspects.kats-laptop.locale.nixos = {
     time.timeZone = "Asia/Kolkata";
 

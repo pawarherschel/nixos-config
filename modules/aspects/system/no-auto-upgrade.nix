@@ -1,5 +1,4 @@
 # system.no-auto-upgrade — disables automatic NixOS upgrades.
-{ den, ... }:
-{
+_: {
   den.aspects.system.no-auto-upgrade.nixos.system.autoUpgrade.enable = false;
 }

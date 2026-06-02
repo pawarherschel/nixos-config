@@ -1,5 +1,5 @@
 # system.ssh — OpenSSH server.
-{ den, lib, ... }:
+{ lib, ... }:
 {
   den.aspects.system.ssh.nixos = {
     services.openssh.enable = true;

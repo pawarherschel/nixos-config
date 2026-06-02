@@ -1,6 +1,5 @@
 # jujutsu — VCS, replaces git.
-{ den, ... }:
-{
+_: {
   den.aspects.programs.jujutsu = {
     nixos =
       { pkgs, ... }:

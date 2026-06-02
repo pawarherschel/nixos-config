@@ -1,5 +1,5 @@
 # gui.kdeconnect — KDE Connect integration. DE picks the package.
-{ den, lib, ... }:
+{ lib, ... }:
 {
   den.aspects.gui.kdeconnect.nixos =
     { pkgs, ... }:

@@ -2,7 +2,7 @@
 #
 # To update: change rev + cargoHash, then nix flake update nil-src
 
-{ inputs, den, ... }:
+{ inputs, ... }:
 let
   rev = "504599f7e555a249d6754698473124018b80d121";
   cargoHash = "sha256-LS2IW4gZ1k6Xl5weMNwxvVA2z56r4rPkjqrkROZTmBw=";
@@ -16,13 +16,13 @@ in
   den.aspects.overlays.nil.nixos =
     { config, ... }:
     let
-      nil-src = inputs.nil-src;
+      inherit (inputs) nil-src;
     in
     {
       nixpkgs.overlays = [
         (final: prev: {
           nil = (prev.nil.override { nix = config.nix.package; }).overrideAttrs (
-            finalAttrs: previousAttrs: {
+            finalAttrs: _previousAttrs: {
               src = nil-src;
               cargoDeps = final.rustPlatform.fetchCargoVendor {
                 inherit (finalAttrs) src;

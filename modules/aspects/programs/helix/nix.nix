@@ -1,5 +1,5 @@
 # helix.nix — Nix language + LSP config + system packages.
-{ den, lib, ... }:
+{ den, ... }:
 {
   den.aspects.programs.helix.nix = {
     includes = [ den.aspects.overlays.nil ];

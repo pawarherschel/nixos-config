@@ -1,5 +1,4 @@
 # system.boot.limine — Limine boot loader.
-{ den, ... }:
-{
+_: {
   den.aspects.system.boot.limine.nixos.boot.loader.limine.enable = true;
 }

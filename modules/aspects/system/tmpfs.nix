@@ -1,5 +1,5 @@
 # system.tmpfs — tmpfs for /tmp.
-{ den, lib, ... }:
+{ lib, ... }:
 {
   den.aspects.system.tmpfs.nixos = {
     boot.tmp.useTmpfs = true;

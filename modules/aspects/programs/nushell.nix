@@ -1,5 +1,5 @@
 # nushell — shell with default configs. Prompt customized by starship.
-{ den, lib, ... }:
+{ den, ... }:
 let
   tag = "0.108.0";
   defaults = {

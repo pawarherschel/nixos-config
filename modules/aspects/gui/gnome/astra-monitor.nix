@@ -1,6 +1,5 @@
 # gui.gnome.astra-monitor — system monitor extension + deps.
-{ den, ... }:
-{
+_: {
   den.aspects.gui.gnome.astra-monitor.nixos =
     { pkgs, ... }:
     {

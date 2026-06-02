@@ -1,6 +1,5 @@
 # kitty — terminal emulator.
-{ den, ... }:
-{
+_: {
   den.aspects.programs.kitty = {
     nixos =
       { pkgs, ... }:

@@ -1,6 +1,5 @@
 # gui.social — Discord and Signal.
-{ den, ... }:
-{
+_: {
   den.aspects.gui.social.nixos =
     { pkgs, ... }:
     {

@@ -1,6 +1,5 @@
 # gui.wayland — Wayland utilities.
-{ den, ... }:
-{
+_: {
   den.aspects.gui.wayland.nixos =
     { pkgs, ... }:
     {

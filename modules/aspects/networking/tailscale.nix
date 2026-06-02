@@ -1,6 +1,5 @@
 # networking.tailscale — VPN.
-{ den, ... }:
-{
+_: {
   den.aspects.networking.tailscale = {
     nixos =
       { pkgs, ... }:

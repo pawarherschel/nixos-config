@@ -1,6 +1,5 @@
 # ksakura — primary user.
-{ den, ... }:
-{
+_: {
   den.aspects.ksakura.provides.to-hosts.nixos =
     { pkgs, ... }:
     {

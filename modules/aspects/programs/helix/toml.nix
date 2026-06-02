@@ -1,6 +1,5 @@
 # helix.toml — TOML language + LSP config + system packages.
-{ den, lib, ... }:
-{
+_: {
   den.aspects.programs.helix.toml = {
     nixos =
       { pkgs, ... }:

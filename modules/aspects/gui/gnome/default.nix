@@ -1,5 +1,5 @@
 # gui.gnome — GNOME desktop environment. Includes gui base automatically.
-{ den, lib, ... }:
+{ den, ... }:
 {
   den.aspects.gui.gnome = {
     includes = [
