@@ -1,5 +1,10 @@
 # kats-laptop.system — mechanical host config.
-{ den, lib, config, ... }:
+{
+  den,
+  lib,
+  config,
+  ...
+}:
 {
   den.aspects.kats-laptop.system = {
     includes = [
@@ -17,7 +22,7 @@
       # EFI
       boot.loader.efi.canTouchEfiVariables = true;
 
-      config.hardware.enableRedistributableFirmware = true;
+      hardware.enableRedistributableFirmware = true;
 
       # Kernel tuning
       boot.extraModprobeConfig = "options kvm_intel nested=1";
