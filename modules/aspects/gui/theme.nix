@@ -82,6 +82,7 @@
             base16Scheme = colibri;
             # stylix GNOME module auto-sets these to outdated values; force the correct ones
             targets.qt.platform = lib.mkForce "qtct";
+            targets.kmscon.enable = false;
           };
 
           qt.platformTheme = lib.mkForce "gnome";
