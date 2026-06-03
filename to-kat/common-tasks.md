@@ -22,8 +22,8 @@ nh home switch .#ksakura@kats-laptop
 
 For WSL or Raspberry Pi, substitute the hostname:
 ```bash
-nh os switch .#wsl
-nh os switch .#rpi
+nh os switch .#kats-wsl
+nh os switch .#kats-rpi
 ```
 
 ---

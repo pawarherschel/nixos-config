@@ -12,12 +12,16 @@ This is the **only file** that imports framework modules and declares the top-le
 
 ```nix
 # den + flake-file wiring. nixpkgs and home-manager kept in sync.
-{ inputs, ... }:
+{ inputs, den, ... }:
 {
   imports = [
     (inputs.flake-file.flakeModules.dendritic or { })
     (inputs.den.flakeModules.dendritic or { })
+    inputs.agenix-rekey.flakeModule
+    inputs.home-manager.flakeModules.home-manager
   ];
+
+  den.schema.user.includes = [ den._.mutual-provider ];
 
   systems = [
     "x86_64-linux"
@@ -40,12 +44,13 @@ This is the **only file** that imports framework modules and declares the top-le
 
 | Line | Meaning |
 |---|---|
-| `imports = [ ... ]` | Imports the `dendritic` flake module from both `flake-file` and `den`. The `or { }` prevents errors if the module isn't found. |
+| `imports = [ ... ]` | Imports the `dendritic` flake module from both `flake-file` and `den`, plus `agenix-rekey` and `home-manager` flake modules. The `or { }` prevents errors if the module isn't found. |
+| `den.schema.user.includes` | Adds the `mutual-provider` battery to every user, enabling host→user and user→host config forwarding (e.g., `provides.to-users`, `provides.<username>`). |
 | `systems = [ ... ]` | Architectures this config targets. Both x86_64 (laptops, WSL) and aarch64 (Raspberry Pi). |
 | `flake-file.inputs.den` | The `den` framework itself. |
 | `flake-file.inputs.flake-file` | Auto-flake generator. |
 | `flake-file.inputs.nixpkgs` | Pinned to `nixos-26.05` (stable). |
-| `flake-file.inputs.home-manager` | Pinned to `release-26.05`, following the same nixpkgs. Keeps home-manager and nixpkgs in sync. |
+| `flake-file.inputs.home-manager` | Pinned to `release-26.05`, following the same nixpkgs. Keeps home-manager and home-manager in sync. |
 
 ### Why a Single Wiring File?
 
@@ -61,12 +66,30 @@ In quasigod's config, framework imports and inputs are scattered: `modules/den.n
 
 ```nix
 # den.default — applied to every host and user automatically.
-{ lib, den, ... }:
+{
+  lib,
+  den,
+  self,
+  inputs,
+  ...
+}:
 {
   den.default.includes = [
     den.batteries.hostname
     (den.batteries.define-user { })
   ];
+
+  den.default.nixos = {
+    home-manager.backupFileExtension = "bk";
+
+    nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+    environment.etc."nixos-config" = { source = ../.; };
+
+    system.configurationRevision = lib.mkDefault (
+      inputs.self.rev or self.rev or "dirty"
+    );
+  };
 
   den.schema.user.classes = lib.mkDefault [ "homeManager" ];
 }
@@ -78,6 +101,10 @@ In quasigod's config, framework imports and inputs are scattered: `modules/den.n
 |---|---|
 | `den.batteries.hostname` | Auto-sets `networking.hostName` to the host entity name. You don't need `networking.hostName = "kats-laptop"` anywhere — it's automatic. |
 | `den.batteries.define-user { }` | Auto-creates `users.users.<name>.isNormalUser = true` for every user declared in `hosts/default.nix`. With empty args, uses defaults. |
+| `home-manager.backupFileExtension` | If home-manager would overwrite an existing dotfile, it renames the old one with a `.bk` suffix instead of failing. Prevents activation errors on existing `gh/config.yml`, `jj/config.toml`, `atuin/config.toml`, etc. |
+| `nix.settings.experimental-features` | Required for flakes. |
+| `environment.etc."nixos-config"` | Captures the full flake source in the Nix store, so it's available at runtime (safe from accidental deletion). |
+| `system.configurationRevision` | Tags the generation with the git/jj revision for rollback identification. |
 | `den.schema.user.classes` | Sets the default user class to `[ "homeManager" ]`, meaning home-manager config runs for every user unless overridden (see `kat` user). |
 
 ### `lib.mkDefault` and Overrides
@@ -115,8 +142,8 @@ kats-laptop.users.kat = { classes = [ ]; };
 
 ```
 packages.x86_64-linux.kats-laptop
-packages.x86_64-linux.wsl
-packages.aarch64-linux.rpi
+packages.x86_64-linux.kats-wsl
+packages.aarch64-linux.kats-rpi
 ```
 
 `nh` finds these and lets you run:

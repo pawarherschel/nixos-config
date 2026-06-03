@@ -65,8 +65,13 @@ den.default.includes = [
   den.batteries.hostname                          # auto-detect hostname
   (den.batteries.define-user { })                  # auto-create user skeletons
 ];
+
+den.default.nixos.home-manager.backupFileExtension = "bk";
+
 den.schema.user.classes = lib.mkDefault [ "homeManager" ];
 ```
+
+The `nixos` section of `den.default` applies to every host. Notably `home-manager.backupFileExtension = "bk"` prevents activation failures when home-manager would overwrite existing user dotfiles — the old file gets renamed with a `.bk` extension instead.
 
 ### `den.batteries`
 
@@ -74,6 +79,20 @@ Utility modules provided by the `den` framework:
 
 - **`den.batteries.hostname`** — Automatically sets `networking.hostName` based on the host's entity name. No need to manually set hostname in each host config.
 - **`den.batteries.define-user`** — Auto-creates user entries (`users.users.<name>.isNormalUser = true`) for every user declared in `hosts/default.nix`. With `{ }` (empty args), it uses defaults.
+
+### `den.schema.user.includes`
+
+Controls which aspects are included for every user automatically. Set in `dendritic.nix`:
+
+```nix
+den.schema.user.includes = [ den._.mutual-provider ];
+```
+
+This enables the **mutual-provider** battery, which lets host aspects deliver config to their users (and vice versa) without the user aspect needing to explicitly include program aspects.
+
+**Result**: A host aspect can use `provides.to-users` or `provides.<username>` to forward `homeManager` config to specific users. For example, `den.aspects.kats-laptop.provides.ksakura.includes = [ den.aspects.cli ]` delivers helix's home-manager config to ksakura without the user aspect including it.
+
+**Why this exists**: Program aspects define their home-manager config under `den.aspects.programs.<name>.homeManager`, but the den system only forwards `homeManager` sections to users when the user aspect (or an aspect in its include chain) contains them. The mutual-provider battery bridges this gap by allowing the host aspect to "provide" config to its users.
 
 ### `den.schema.user.classes`
 

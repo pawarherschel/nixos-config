@@ -29,7 +29,7 @@ Create `modules/hosts/<hostname>/default.nix`:
     nixos =
       { pkgs, ... }:
       {
-        system.stateVersion = "23.05"; # ← set to the NixOS version at install time
+        system.stateVersion = "26.05"; # ← set to the NixOS version at install time (check with nixos-version)
       };
   };
 }
@@ -109,7 +109,7 @@ In `modules/hosts/default.nix`, add the host under the correct architecture:
 {
   den.hosts.x86_64-linux = {
     kats-laptop.users = { ... };
-    wsl.users.ksakura = { };
+    kats-wsl.users.ksakura = { };
     <hostname>.users = {
       ksakura = { };   # full user with home-manager
       # kat = { classes = [ ]; };   # SSH-only, no home-manager
@@ -160,7 +160,7 @@ Here's a complete example for a fictional "framework" laptop:
     ];
 
     nixos = { pkgs, ... }: {
-      system.stateVersion = "25.05";
+      system.stateVersion = "26.05";
       environment.systemPackages = with pkgs; [ firefox ];
     };
   };

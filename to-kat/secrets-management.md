@@ -15,13 +15,18 @@ This configuration uses **agenix** + **agenix-rekey** for secret management. Sec
                          │
                    agenix-rekey
                          │
-              ┌──────────┼──────────┐
-              │          │          │
-         ┌────▼────┐ ┌──▼──┐  ┌───▼───┐
-         │kats-    │ │kats-│  │kats-  │  ← per-host encrypted
-         │laptop   │ │wsl  │  │rpi    │    copies in secrets/
-         └─────────┘ └─────┘  └───────┘
+              ┌──────────┼──────────────────┐
+              │          │                  │
+         ┌────▼────┐ ┌──▼──────────┐  ┌──────────▼───┐
+         │kats-    │ │kats-        │  │kats-         │  ← per-host encrypted
+         │laptop   │ │wsl          │  │rpi           │    copies in secrets/
+         └─────────┘ └──────┬──────┘  └────────┬─────┘
+                          │            │
+                      (disabled—  (disabled—
+                      FIXME pubkey) FIXME pubkey)
 ```
+
+> **Note**: Minimal hosts (`kats-wsl`, `kats-rpi`) currently have secrets **disabled** — their `age.rekey.hostPubkey` is set to a placeholder (`# FIXME: replace with actual host pubkey`) and the `gitKey` secret has `enable = false`. To enable secrets on these hosts, get their actual SSH host pubkey, update `age.rekey.hostPubkey`, remove the `enable = false`, and run `agenix rekey -a`.
 
 - **Source secrets** live in their aspect folder (e.g. `modules/aspects/programs/git/gitKey.age`)
 - Encrypted with your **master identity** (`~/.config/agenix/identity.txt`, converted from `~/.ssh/id_ed25519`)

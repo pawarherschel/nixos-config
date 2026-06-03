@@ -53,7 +53,7 @@ In `modules/hosts/default.nix`, add the user to each host they should appear on:
       <username> = { };    # full user with home-manager
     };
 
-    wsl.users = {
+    kats-wsl.users = {
       ksakura = { };
       <username> = { };    # also on WSL
     };

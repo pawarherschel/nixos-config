@@ -211,6 +211,7 @@ Some programs (like `helium`) also include overlay aspects for adding custom pac
 |---|---|
 | `helium.nix` | Adds `helium` browser to nixpkgs from `github:ominit/helium-browser-flake`. |
 | `nil.nix` | Pins `nil` (Nix LSP) to a specific revision with a custom `cargoHash`. |
+| `pi-coding-agent.nix` | Adds `pi-coding-agent` to nixpkgs from `github:numtide/llm-agents.nix`. Included by kats-laptop. |
 
 Overlays declare their own flake inputs, so removing the overlay removes the dependency:
 
