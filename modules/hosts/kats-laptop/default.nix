@@ -26,6 +26,8 @@
 
         home-manager.users.ksakura.home.stateVersion = "26.05";
 
+        age.rekey.hostPubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMLB4iwiBhhog6TCs50yqJ/2uGYHjRw7lus8vdq1m0G1 ksakura@kats-laptop";
+
         networking.firewall.trustedInterfaces = [ "enp0s31f6" ];
 
         environment.systemPackages = with pkgs; [

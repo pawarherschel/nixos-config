@@ -2,9 +2,12 @@
 { den, lib, ... }:
 {
   den.aspects.base = {
-    includes = [ den.aspects.cli ];
+    includes = [
+      den.aspects.cli
+      den.aspects.agenix
+    ];
 
-    nixos = {
+    nixos = {    
       nixpkgs.config.allowUnfree = true;
       hardware.enableRedistributableFirmware = lib.mkDefault true;
     };

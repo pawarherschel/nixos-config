@@ -9,8 +9,8 @@
         classes = [ ];
       };
     };
-    wsl.users.ksakura = { };
+    kats-wsl.users.ksakura = { };
   };
 
-  den.hosts.aarch64-linux.rpi.users.ksakura = { };
+  den.hosts.aarch64-linux.kats-rpi.users.ksakura = { };
 }

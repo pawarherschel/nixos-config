@@ -15,5 +15,9 @@ _: {
         ];
         shell = pkgs.nushell;
       };
+
+      age.rekey.masterIdentities = [
+        "/home/ksakura/.config/agenix/identity.txt"
+      ];
     };
 }

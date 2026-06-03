@@ -4,6 +4,14 @@
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 
   inputs = {
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    agenix-rekey = {
+      url = "github:oddlama/agenix-rekey";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     base16.url = "github:SenchoPens/base16.nix";
     den.url = "github:denful/den";
     flake-file.url = "github:vic/flake-file";

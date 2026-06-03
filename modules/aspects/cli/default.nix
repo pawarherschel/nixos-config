@@ -8,6 +8,7 @@
       den.aspects.programs.bat
       den.aspects.programs.bottom
       den.aspects.programs.gh
+      den.aspects.programs.git
       den.aspects.programs.helix
       den.aspects.programs.jujutsu
       den.aspects.programs.kitty
@@ -21,7 +22,6 @@
       {
         environment.systemPackages = with pkgs; [
           difftastic
-          git
           ripgrep
           zellij
         ];
