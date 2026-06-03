@@ -13,8 +13,9 @@ A handbook for understanding, extending, and maintaining this Dendritic Nix conf
 | 5 | `adding-new-hosts.md` | Step-by-step guide for declaring a new host |
 | 6 | `adding-new-users.md` | Step-by-step guide for adding a new user |
 | 7 | `program-aspect-pattern.md` | Templates for creating new program aspects |
-| 8 | `common-tasks.md` | Day-to-day operations: build, switch, test VM, update, add programs |
-| 9 | `GLOSSARY.md` | Alphabetical reference of all terminology |
+| 8 | `secrets-management.md` | Secrets workflow: agenix, rekeying, creating/editing secrets |
+| 9 | `common-tasks.md` | Day-to-day operations: build, switch, test VM, update, add programs |
+| 10 | `GLOSSARY.md` | Alphabetical reference of all terminology |
 
 ## Quick Start
 
