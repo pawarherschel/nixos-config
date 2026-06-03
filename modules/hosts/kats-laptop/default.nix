@@ -6,8 +6,8 @@
       den.aspects.base
       den.aspects.gui.gnome
       den.aspects.gui.opentabletdriver
-      den.aspects.gui.social
-      den.aspects.gui.steam
+      den.aspects.programs.social
+      den.aspects.programs.steam
       den.aspects.hardware.t480
       den.aspects.kats-laptop.hardware
       den.aspects.kats-laptop.locale

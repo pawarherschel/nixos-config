@@ -1,6 +1,6 @@
-# gui.social — Discord and Signal.
+# programs.social — Discord and Signal.
 _: {
-  den.aspects.gui.social.nixos =
+  den.aspects.programs.social.nixos =
     { pkgs, ... }:
     {
       environment.systemPackages = with pkgs; [
