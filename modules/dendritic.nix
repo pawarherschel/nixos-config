@@ -1,5 +1,5 @@
 # den + flake-file wiring. nixpkgs and home-manager kept in sync.
-{ inputs, ... }:
+{ inputs, den, ... }:
 {
   imports = [
     (inputs.flake-file.flakeModules.dendritic or { })
@@ -7,6 +7,8 @@
     inputs.agenix-rekey.flakeModule
     inputs.home-manager.flakeModules.home-manager
   ];
+
+  den.schema.user.includes = [ den._.mutual-provider ];
 
   systems = [
     "x86_64-linux"

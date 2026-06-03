@@ -13,6 +13,8 @@
   ];
 
   den.default.nixos = {
+    home-manager.backupFileExtension = "bk";
+
     nix.settings.experimental-features = [
       "nix-command"
       "flakes"
