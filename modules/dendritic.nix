@@ -5,6 +5,7 @@
     (inputs.flake-file.flakeModules.dendritic or { })
     (inputs.den.flakeModules.dendritic or { })
     inputs.agenix-rekey.flakeModule
+    inputs.home-manager.flakeModules.home-manager
   ];
 
   systems = [
