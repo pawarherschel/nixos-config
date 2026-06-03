@@ -24,6 +24,7 @@
           difftastic
           ripgrep
           zellij
+          devenv
         ];
       };
   };

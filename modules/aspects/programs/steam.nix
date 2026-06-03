@@ -1,4 +1,4 @@
-# gui.steam — gaming.
+# programs.steam — gaming.
 _: {
-  den.aspects.gui.steam.nixos.programs.steam.enable = true;
+  den.aspects.programs.steam.nixos.programs.steam.enable = true;
 }
