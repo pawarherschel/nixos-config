@@ -16,6 +16,7 @@ _: {
         #   size = 11;
         # };
         settings.window_padding_width = 15;
+        settings.auto_reload_config = -1;
       };
     };
   };
