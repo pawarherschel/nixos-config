@@ -25,6 +25,7 @@
           ripgrep
           zellij
           devenv
+          libnotify
         ];
       };
   };

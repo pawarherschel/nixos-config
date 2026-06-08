@@ -16,6 +16,7 @@
       den.aspects.networking.openvpn
       den.aspects.networking.tailscale
       den.aspects.overlays.pi-coding-agent
+      den.aspects.overlays.opencode
       den.aspects.programs.helium
     ];
 
@@ -35,6 +36,7 @@
           gnome-connections
           moonlight-qt
           nautilus
+          opencode
           pi-coding-agent
           wakeonlan
           waypipe
