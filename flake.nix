@@ -32,6 +32,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     import-tree.url = "github:vic/import-tree";
+    locker.url = "github:tgirlcloud/locker";
     nil-src = {
       url = "github:oxalica/nil/504599f7e555a249d6754698473124018b80d121";
       flake = false;
@@ -52,6 +53,10 @@
     };
     tt-schemes = {
       url = "github:tinted-theming/schemes";
+      flake = false;
+    };
+    wallpapers = {
+      url = "github:pawarherschel/wallpapers";
       flake = false;
     };
   };

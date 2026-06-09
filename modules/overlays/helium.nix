@@ -11,7 +11,7 @@ in
 
   den.aspects.overlays.helium.nixos.nixpkgs.overlays = [
     (_final: prev: {
-      helium = helium-browser.packages.${prev.system}.helium;
+      helium = helium-browser.packages.${prev.stdenv.hostPlatform.system}.helium;
     })
   ];
 }

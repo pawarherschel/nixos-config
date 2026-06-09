@@ -8,7 +8,7 @@
 
   den.aspects.overlays.devenv.nixos.nixpkgs.overlays = [
     (_final: prev: {
-      devenv = inputs.devenv.packages.${prev.system}.devenv;
+      devenv = inputs.devenv.packages.${prev.stdenv.hostPlatform.system}.devenv;
     })
   ];
 }

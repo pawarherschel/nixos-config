@@ -3,15 +3,19 @@ _: {
   den.aspects.kats-laptop.hardware.nixos =
     { config, lib, ... }:
     {
-      boot.initrd.availableKernelModules = [
-        "xhci_pci"
-        "ahci"
-        "usb_storage"
-        "sd_mod"
-      ];
-      boot.initrd.kernelModules = [ ];
-      boot.kernelModules = [ "kvm-intel" ];
-      boot.extraModulePackages = [ ];
+      boot = {
+        initrd = {
+          availableKernelModules = [
+            "xhci_pci"
+            "ahci"
+            "usb_storage"
+            "sd_mod"
+          ];
+          kernelModules = [ ];
+        };
+        kernelModules = [ "kvm-intel" ];
+        extraModulePackages = [ ];
+      };
 
       fileSystems."/" = {
         device = "/dev/disk/by-uuid/c57e32ef-09bf-4d8a-9fe3-8ad4cf22fc70";

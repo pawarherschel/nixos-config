@@ -11,7 +11,7 @@ in
 
   den.aspects.overlays.opencode.nixos.nixpkgs.overlays = [
     (_final: prev: {
-      opencode = llm-agents.packages.${prev.system}.opencode;
+      opencode = llm-agents.packages.${prev.stdenv.hostPlatform.system}.opencode;
     })
   ];
 }

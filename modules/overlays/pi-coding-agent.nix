@@ -11,7 +11,7 @@ in
 
   den.aspects.overlays.pi-coding-agent.nixos.nixpkgs.overlays = [
     (_final: prev: {
-      pi-coding-agent = llm-agents.packages.${prev.system}.pi;
+      pi-coding-agent = llm-agents.packages.${prev.stdenv.hostPlatform.system}.pi;
     })
   ];
 }

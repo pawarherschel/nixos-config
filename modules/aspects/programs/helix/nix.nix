@@ -2,13 +2,17 @@
 { den, ... }:
 {
   den.aspects.programs.helix.nix = {
-    includes = [ den.aspects.overlays.nil ];
+    includes = [
+      den.aspects.overlays.nil
+      den.aspects.overlays.locker
+    ];
 
     nixos =
       { pkgs, ... }:
       {
         environment.systemPackages = with pkgs; [
           deadnix
+          locker
           nil
           nixd
           nixfmt

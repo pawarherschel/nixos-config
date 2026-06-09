@@ -5,9 +5,11 @@
     nixos =
       { pkgs, ... }:
       {
-        environment.systemPackages = [ pkgs.helix ];
-        environment.variables.EDITOR = "hx";
-        environment.sessionVariables.EDITOR = "hx";
+        environment = {
+          systemPackages = [ pkgs.helix ];
+          variables.EDITOR = "hx";
+          sessionVariables.EDITOR = "hx";
+        };
       };
 
     provides.to-users = _: {

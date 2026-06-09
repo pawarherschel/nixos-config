@@ -6,6 +6,7 @@
       den.aspects.cli.nix-helpers
       den.aspects.programs.atuin
       den.aspects.programs.bat
+      den.aspects.programs.carapace
       den.aspects.programs.bottom
       den.aspects.programs.gh
       den.aspects.programs.git
@@ -13,6 +14,7 @@
       den.aspects.programs.jujutsu
       den.aspects.programs.kitty
       den.aspects.programs.nushell
+      den.aspects.programs.opencode
       den.aspects.programs.starship
       den.aspects.programs.syncthing
     ];
@@ -22,7 +24,10 @@
       {
         environment.systemPackages = with pkgs; [
           difftastic
+          kdiff3
+          mergiraf
           ripgrep
+          waypipe
           zellij
           devenv
           libnotify
