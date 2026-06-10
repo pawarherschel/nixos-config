@@ -5,6 +5,7 @@
     includes = [
       den.aspects.gui
       den.aspects.gui.gnome.astra-monitor
+      den.aspects.gui.greetd
       den.aspects.gui.wayland
     ];
 

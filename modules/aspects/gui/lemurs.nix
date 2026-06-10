@@ -1,7 +1,7 @@
 # gui.lemurs — lemurs display manager
 _: {
   den.aspects.gui.lemurs.nixos =
-    { pkgs, ... }:
+    _:
     {
       _ = throw "lemurs seems to be broken atm, it doesnt get into the DE after logging in (2026-06-02)";
 

@@ -9,7 +9,7 @@ in
   };
 
   den.aspects.overlays.locker.nixos.nixpkgs.overlays = [
-    (final: prev: {
+    (_final: prev: {
       locker = locker.packages.${prev.stdenv.hostPlatform.system}.default;
     })
   ];

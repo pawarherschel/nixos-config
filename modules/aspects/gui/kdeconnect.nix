@@ -1,12 +1,11 @@
 # gui.kdeconnect — KDE Connect integration. DE picks the package.
-{ lib, ... }:
+_:
 {
   den.aspects.gui.kdeconnect.nixos =
-    { pkgs, ... }:
+    _:
     {
       programs.kdeconnect = {
         enable = true;
-        package = lib.mkDefault pkgs.kdeconnect;
       };
     };
 }

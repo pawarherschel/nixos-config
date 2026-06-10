@@ -13,6 +13,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     base16.url = "github:SenchoPens/base16.nix";
+    cosmic-ext-alternative-startup = {
+      url = "github:Drakulix/cosmic-ext-alternative-startup";
+      flake = false;
+    };
     den.url = "github:denful/den";
     devenv = {
       url = "github:cachix/devenv";
@@ -33,20 +37,17 @@
     };
     import-tree.url = "github:vic/import-tree";
     locker.url = "github:tgirlcloud/locker";
+    naersk = {
+      url = "github:nix-community/naersk";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nil-src = {
       url = "github:oxalica/nil/504599f7e555a249d6754698473124018b80d121";
       flake = false;
     };
+    niri.url = "github:sodiboo/niri-flake";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    opencode-flake = {
-      url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    pi-coding-agent-flake = {
-      url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     stylix = {
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";

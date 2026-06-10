@@ -14,13 +14,11 @@
     ];
 
     nixos =
-      { pkgs, ... }:
+      { ... }:
       {
         imports = [
           inputs.agenix.nixosModules.age
         ];
-
-
       };
   };
 }

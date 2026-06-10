@@ -14,7 +14,6 @@
       den.aspects.programs.jujutsu
       den.aspects.programs.kitty
       den.aspects.programs.nushell
-      den.aspects.programs.opencode
       den.aspects.programs.starship
       den.aspects.programs.syncthing
     ];

@@ -5,6 +5,8 @@
     includes = [
       den.aspects.base
       den.aspects.gui.gnome
+      # den.aspects.gui.niri
+      # den.aspects.overlays.cosmic-ext-alternative-startup
       den.aspects.gui.opentabletdriver
       den.aspects.programs.social
       den.aspects.programs.steam
@@ -15,8 +17,7 @@
       den.aspects.networking.networkmanager
       den.aspects.networking.openvpn
       den.aspects.networking.tailscale
-      den.aspects.overlays.pi-coding-agent
-
+      den.aspects.programs.opencode
       den.aspects.programs.helium
     ];
 
@@ -36,7 +37,6 @@
           gnome-connections
           moonlight-qt
           nautilus
-          pi-coding-agent
           wakeonlan
           zed-editor-fhs
         ];

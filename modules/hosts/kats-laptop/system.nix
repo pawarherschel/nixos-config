@@ -2,7 +2,6 @@
 {
   den,
   lib,
-  config,
   ...
 }:
 {
@@ -37,6 +36,7 @@
         ];
         cores = 4;
         max-jobs = 4;
+        extra-platforms = [ "aarch64-linux" ];
       };
 
       system.autoUpgrade.allowReboot = false;
