@@ -19,28 +19,35 @@
         programs.niri.enable = true;
       };
 
-    homeManager =
-      { inputs, ... }:
-      {
-        imports = [
-          inputs.niri.homeModules.niri
-          inputs.niri.homeModules.stylix
-        ];
+    provides.to-users = _: {
+      homeManager = _: {
+        programs.niri = {
+          settings = {
+            prefer-no-csd = true;
 
-        programs.niri.settings = {
-          prefer-no-csd = true;
+            environment.XCURSOR_THEME = "Cosmic";
 
-          environment.XCURSOR_THEME = "Cosmic";
+            input.keyboard.xkb.layout = "us";
 
-          input.keyboard.xkb.layout = "us";
+            "spawn-at-startup" = [
+              { argv = [ "cosmic-ext-alternative-startup" ]; }
+              { argv = [ "xwayland-satellite" ":13" ]; }
+            ];
 
-          binds = {
-            "Mod+T".spawn = "cosmic-term";
-            "Mod+D".spawn = "cosmic-launcher";
-            "Mod+Shift+D".spawn = "cosmic-app-library";
-            "Mod+Alt+L".spawn = "cosmic-greeter";
+            binds = {
+              "Mod+Return".action.close-window = { };
+              "Mod+Q".action.spawn = "kitty";
+              "Mod+T".action.spawn = "kitty";
+              "Mod+D".action.spawn = "cosmic-launcher";
+              "Mod+Shift+D".action.spawn = "cosmic-app-library";
+              "Mod+Alt+L".action.spawn = "cosmic-greeter";
+              "Mod+F".action.maximize-column = { };
+              "Mod+Shift+F".action.fullscreen-window = { };
+              "Mod+V".action.toggle-window-floating = { };
+            };
           };
         };
       };
+    };
   };
 }

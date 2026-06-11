@@ -93,6 +93,7 @@ _:
           cosmic-settings
           cosmic-idle
           cosmic-greeter
+          xwayland-satellite
           cosmic-term
         ];
 

@@ -45,10 +45,10 @@
       virtualisation.vmVariant = {
         hardware.cpu.intel.updateMicrocode = lib.mkForce true;
         users.users.ksakura.initialPassword = "vm";
-        services.greetd.settings.initial_session = lib.mkForce {
-          user = "ksakura";
-          command = "${pkgs.gnome-session}/bin/gnome-session";
-        };
+        # services.greetd.settings.initial_session = lib.mkForce {
+        #   user = "ksakura";
+        #   command = "${pkgs.cosmic-session}/bin/cosmic-session niri";
+        # };
       };
     };
   };
