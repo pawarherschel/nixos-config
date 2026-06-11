@@ -9,6 +9,7 @@
       {
         users.users.ksakura = {
           description = "Kathryn Sakura";
+          uid = 1001;
           extraGroups = [
             "networkmanager"
             "wheel"
@@ -16,6 +17,7 @@
             "sound"
             "video"
             "libvirtd"
+            "input"
           ];
           shell = pkgs.nushell;
         };
