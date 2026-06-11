@@ -10,6 +10,11 @@
       den.aspects.gui.xdg
     ];
 
-    nixos.security.polkit.enable = true;
+    nixos =
+      { pkgs, ... }:
+      {
+        environment.systemPackages = [ pkgs.jetbrains-toolbox ];
+        security.polkit.enable = true;
+      };
   };
 }
