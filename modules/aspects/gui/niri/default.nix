@@ -18,11 +18,12 @@
     ];
 
     nixos =
-      { config, ... }:
+      { config, pkgs, ... }:
       {
         imports = [ inputs.niri.nixosModules.niri ];
 
         programs.niri.enable = true;
+        programs.niri.package = pkgs.niri;
 
         home-manager.extraSpecialArgs = {
           stylixImage = config.stylix.image;
@@ -108,6 +109,7 @@
                 "Mod+F".action.maximize-column = { };
                 "Mod+Shift+F".action.fullscreen-window = { };
                 "Mod+V".action.toggle-window-floating = { };
+                "Mod+Shift+Slash".action.show-hotkey-overlay = { };
               };
             };
           };
