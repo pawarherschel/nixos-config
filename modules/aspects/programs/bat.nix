@@ -7,6 +7,6 @@ _: {
         environment.systemPackages = [ pkgs.bat ];
       };
 
-    homeManager.programs.bat.enable = true;
+    provides.ksakura.homeManager.programs.bat.enable = true;
   };
 }

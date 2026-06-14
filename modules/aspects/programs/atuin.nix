@@ -7,7 +7,7 @@ _: {
         environment.systemPackages = [ pkgs.atuin ];
       };
 
-    homeManager = {
+    provides.ksakura.homeManager = {
       programs.atuin = {
         enable = true;
         enableNushellIntegration = true;

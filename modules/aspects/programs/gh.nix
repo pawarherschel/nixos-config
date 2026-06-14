@@ -7,7 +7,7 @@ _: {
         environment.systemPackages = [ pkgs.gh ];
       };
 
-    homeManager = {
+    provides.ksakura.homeManager = {
       programs.gh = {
         enable = true;
         settings = {

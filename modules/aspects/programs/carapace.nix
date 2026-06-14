@@ -4,7 +4,7 @@ _: {
       environment.systemPackages = [ pkgs.carapace ];
     };
 
-    homeManager = {
+    provides.ksakura.homeManager = {
       programs.carapace = {
         enable = true;
         enableNushellIntegration = true;

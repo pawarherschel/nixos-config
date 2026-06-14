@@ -7,6 +7,6 @@ _: {
         environment.systemPackages = [ pkgs.syncthing ];
       };
 
-    homeManager.services.syncthing.enable = true;
+    provides.ksakura.homeManager.services.syncthing.enable = true;
   };
 }

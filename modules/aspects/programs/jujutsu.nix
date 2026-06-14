@@ -7,11 +7,13 @@ _: {
         environment.systemPackages = [
           pkgs.jujutsu
           pkgs.jj-starship
-          (pkgs.blazingjj.overrideAttrs (_: { doCheck = false; }))
+          (pkgs.blazingjj.overrideAttrs (_: {
+            doCheck = false;
+          }))
         ];
       };
 
-    homeManager = {
+    provides.ksakura.homeManager = {
       programs.starship.settings.custom.jj = {
         when = "jj-starship detect";
         shell = [ "jj-starship" ];

@@ -10,7 +10,7 @@
         environment.systemPackages = [ pkgs.helium ];
       };
 
-    homeManager =
+    provides.ksakura.homeManager =
       { pkgs, ... }:
       {
         xdg.desktopEntries.helium = {

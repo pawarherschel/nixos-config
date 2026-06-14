@@ -7,7 +7,7 @@ _: {
       boot.kernelModules = [ "uinput" ];
     };
 
-    homeManager.xdg.desktopEntries.OpenTabletDriver = {
+    provides.ksakura.homeManager.xdg.desktopEntries.OpenTabletDriver = {
       name = "OpenTabletDriver";
       genericName = "Tablet Driver";
       exec = "otd-gui";

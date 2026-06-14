@@ -23,7 +23,7 @@ in
         environment.systemPackages = [ pkgs.nushell ];
       };
 
-    homeManager = {
+    provides.ksakura.homeManager = {
       programs.nushell = {
         enable = true;
         configFile.text = builtins.readFile defaults.config;

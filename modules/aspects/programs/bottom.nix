@@ -7,7 +7,7 @@ _: {
         environment.systemPackages = [ pkgs.bottom ];
       };
 
-    homeManager = {
+    provides.ksakura.homeManager = {
       programs.bottom = {
         enable = true;
         settings.flags = { };

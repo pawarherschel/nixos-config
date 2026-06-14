@@ -7,7 +7,7 @@ _: {
         environment.systemPackages = [ pkgs.kitty ];
       };
 
-    homeManager = {
+    provides.ksakura.homeManager = {
       programs.kitty = {
         enable = true;
         # font = {

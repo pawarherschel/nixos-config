@@ -7,7 +7,7 @@ _: {
         environment.systemPackages = [ pkgs.starship ];
       };
 
-    homeManager = {
+    provides.ksakura.homeManager = {
       programs.starship = {
         enable = true;
         settings = {
