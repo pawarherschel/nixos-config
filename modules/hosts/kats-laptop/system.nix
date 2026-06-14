@@ -22,6 +22,10 @@
 
       hardware.enableRedistributableFirmware = true;
 
+      # Bluetooth
+      hardware.bluetooth.enable = true;
+      hardware.bluetooth.powerOnBoot = true;
+
       # Kernel tuning
       boot.extraModprobeConfig = "options kvm_intel nested=1";
 
