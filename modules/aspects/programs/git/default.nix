@@ -8,6 +8,8 @@ _: {
 
         age.secrets.gitKey = {
           rekeyFile = ./gitKey.age;
+          owner = "ksakura";
+          mode = "0400";
         };
 
         programs.ssh.extraConfig = ''
