@@ -23,6 +23,7 @@
           src = inputs.cosmic-ext-alternative-startup;
           buildInputs = with final; [ libxkbcommon ];
           nativeBuildInputs = with final; [ pkg-config ];
+          meta.mainProgram = "cosmic-ext-alternative-startup";
         };
     })
   ];
