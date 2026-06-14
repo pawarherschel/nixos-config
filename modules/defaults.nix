@@ -15,7 +15,10 @@
       ];
 
       nixos = {
-        home-manager.backupFileExtension = "bk";
+        home-manager = {
+          backupFileExtension = "bk";
+          useGlobalPkgs = true;
+        };
 
         nix.settings.experimental-features = [
           "nix-command"

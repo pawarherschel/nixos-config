@@ -1,7 +1,9 @@
 # gui.niri.cosmic-shell — COSMIC shell components on niri.
 # Launched via cosmic-session niri with cosmic-ext-alternative-startup.
-_: {
+{ den, ... }: {
   den.aspects.gui.niri.cosmic-shell = {
+    includes = [ den.aspects.overlays.cosmic-ext-alternative-startup ];
+
     nixos =
       {
         pkgs,

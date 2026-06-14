@@ -40,7 +40,7 @@
             input.keyboard.xkb.layout = "us";
 
             "spawn-at-startup" = [
-              { argv = [ "cosmic-ext-alternative-startup" ]; }
+              { argv = [ (lib.getExe pkgs.cosmic-ext-alternative-startup) ]; }
               {
                 argv = [
                   (lib.getExe pkgs.xwayland-satellite)

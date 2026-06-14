@@ -4,9 +4,9 @@
   den.aspects.kats-laptop = {
     includes = [
       den.aspects.base
+
       # den.aspects.gui.gnome
       den.aspects.gui.niri
-      den.aspects.overlays.cosmic-ext-alternative-startup
       den.aspects.gui.opentabletdriver
       den.aspects.programs.social
       den.aspects.programs.steam
