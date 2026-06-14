@@ -1,11 +1,16 @@
 # gui.niri.cosmic-shell — COSMIC shell components on niri.
 # Launched via cosmic-session niri with cosmic-ext-alternative-startup.
-_:
-{
+_: {
   den.aspects.gui.niri.cosmic-shell = {
     nixos =
-      { pkgs, ... }:
+      {
+        pkgs,
+        config,
+        ...
+      }:
       let
+        ksakuraUid = toString config.users.users.ksakura.uid;
+
         start-cosmic-niri = pkgs.writeShellApplication {
           name = "start-cosmic-niri";
           runtimeInputs = with pkgs; [
@@ -32,7 +37,7 @@ _:
 
             if [ -n "''${SHELL:-}" ]; then
               if [ "''${1:-}" != "--in-login-shell" ]; then
-                exec bash -c "exec -l ${"'"}''${SHELL}' -c ${"'"}''${0} --in-login-shell'"
+                exec "''${SHELL}" -l -c "exec ''${0} --in-login-shell"
               fi
             fi
 
@@ -40,6 +45,7 @@ _:
             export XDG_SESSION_TYPE="''${XDG_SESSION_TYPE:=wayland}"
             export XCURSOR_THEME="''${XCURSOR_THEME:=Cosmic}"
             export _JAVA_AWT_WM_NONREPARENTING=1
+            export GDK_BACKEND=wayland,x11
             export MOZ_ENABLE_WAYLAND=1
             export QT_QPA_PLATFORM="wayland;xcb"
             export QT_AUTO_SCREEN_SCALE_FACTOR=1
@@ -65,20 +71,37 @@ _:
             Name=COSMIC-on-niri
             Comment=COSMIC desktop shell on niri compositor
             Type=Application
-            DesktopNames=niri-cosmic
+            DesktopNames=niri
             Exec=${start-cosmic-niri}/bin/start-cosmic-niri
           '';
         };
 
       in
       {
-        services.displayManager.sessionPackages = [
-          (session-desktop.overrideAttrs (_: {
-            passthru.providedSessions = [ "cosmic-on-niri" ];
-          }))
-        ];
+        services.displayManager = {
+          sessionPackages = [
+            (session-desktop.overrideAttrs (_: {
+              passthru.providedSessions = [ "cosmic-on-niri" ];
+            }))
+          ];
+          cosmic-greeter.enable = true;
+        };
 
-        services.displayManager.cosmic-greeter.enable = true;
+        system.activationScripts.cosmic-greeter-config = ''
+          GREETER_DIR="/var/lib/cosmic-greeter/.config/cosmic/com.system76.CosmicGreeter/v1"
+          mkdir -p "$GREETER_DIR"
+          echo 'Some(${ksakuraUid})' > "$GREETER_DIR/last_user"
+          cat > "$GREETER_DIR/users" << 'EOF'
+          {
+              ${ksakuraUid}: (
+                  uid: ${ksakuraUid},
+                  last_session: Some("cosmic-on-niri"),
+              ),
+          }
+          EOF
+          chown -R cosmic-greeter:cosmic-greeter "$GREETER_DIR"
+          chmod 0600 "$GREETER_DIR/last_user" "$GREETER_DIR/users"
+        '';
 
         environment.systemPackages = with pkgs; [
           cosmic-ext-alternative-startup
@@ -95,6 +118,7 @@ _:
           cosmic-greeter
           xwayland-satellite
           cosmic-term
+          pop-launcher
         ];
 
         xdg.portal = {

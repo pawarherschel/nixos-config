@@ -2,7 +2,13 @@
 # Includes cosmic-shell for the COSMIC shell integration.
 { inputs, den, ... }:
 {
-  flake-file.inputs.niri.url = "github:sodiboo/niri-flake";
+  flake-file.inputs = {
+    niri.url = "github:sodiboo/niri-flake";
+    cosmic-manager = {
+      url = "github:HeitorAugustoLN/cosmic-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
 
   den.aspects.gui.niri = {
     includes = [
@@ -20,7 +26,9 @@
       };
 
     provides.to-users = _: {
-      homeManager = _: {
+      homeManager = { pkgs, lib, ... }: {
+        imports = [ inputs.cosmic-manager.homeManagerModules.cosmic-manager ];
+
         programs.niri = {
           settings = {
             prefer-no-csd = true;
@@ -31,16 +39,20 @@
 
             "spawn-at-startup" = [
               { argv = [ "cosmic-ext-alternative-startup" ]; }
-              { argv = [ "xwayland-satellite" ":13" ]; }
+              {
+                argv = [
+                  (lib.getExe pkgs.xwayland-satellite)
+                  ":13"
+                ];
+              }
             ];
 
             binds = {
-              "Mod+Return".action.close-window = { };
-              "Mod+Q".action.spawn = "kitty";
-              "Mod+T".action.spawn = "kitty";
-              "Mod+D".action.spawn = "cosmic-launcher";
-              "Mod+Shift+D".action.spawn = "cosmic-app-library";
-              "Mod+Alt+L".action.spawn = "cosmic-greeter";
+              "Mod+Backspace".action.close-window = { };
+              "Mod+Q".action.spawn = lib.getExe pkgs.kitty;
+              "Mod+D".action.spawn = lib.getExe pkgs.cosmic-launcher;
+              "Mod+Shift+D".action.spawn = lib.getExe pkgs.cosmic-applibrary;
+              "Mod+Alt+L".action.spawn = lib.getExe pkgs.cosmic-greeter;
               "Mod+F".action.maximize-column = { };
               "Mod+Shift+F".action.fullscreen-window = { };
               "Mod+V".action.toggle-window-floating = { };
