@@ -28,7 +28,7 @@
 
         fonts = {
           enableDefaultPackages = true;
-          packages = [ pkgs.jetbrains-mono ];
+          packages = [ (pkgs.nerd-fonts.jetbrains-mono) ];
         };
 
         stylix = {
