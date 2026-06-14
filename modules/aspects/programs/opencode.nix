@@ -13,7 +13,6 @@ _: {
           shell = "nu";
           snapshot = false;
           compaction.prune = true;
-          plugin = [ "@tarquinen/opencode-dcp@latest" ];
         };
         web.enable = true;
       };
