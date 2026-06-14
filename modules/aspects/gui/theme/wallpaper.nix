@@ -41,7 +41,7 @@
           ]
         );
 
-        # SVG stripes for dirty rev — all theme colors as vertical stripes
+        # PNG stripes for dirty rev — all theme colors as vertical stripes
         generated =
           let
             schemeColors = parseColors config.stylix.base16Scheme;
@@ -49,12 +49,22 @@
             rects = lib.concatStringsSep "\n" (
               lib.imap0 (i: c: ''<rect x="${toString i}" y="0" width="1" height="1" fill="${c}"/>'') schemeColors
             );
+            svg = pkgs.writeText "theme-wallpaper.svg" ''
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${toString n} 1" width="1920" height="1080" preserveAspectRatio="none">
+              ${rects}
+              </svg>
+            '';
           in
-          pkgs.writeText "theme-wallpaper.svg" ''
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${toString n} 1" width="1920" height="1080" preserveAspectRatio="none">
-            ${rects}
-            </svg>
-          '';
+          pkgs.runCommand "theme-wallpaper.png"
+            {
+              nativeBuildInputs = with pkgs; [
+                imagemagick
+                librsvg
+              ];
+            }
+            ''
+              convert "${svg}" -resize 1920x1080 "$out"
+            '';
 
         # Select a PNG from the wallpapers repo seeded by git rev
         selectedPng =
