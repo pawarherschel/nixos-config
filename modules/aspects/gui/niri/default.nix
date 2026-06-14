@@ -80,6 +80,107 @@
                 rotation_frequency = 600;
               }
             ];
+            panels = [
+              {
+                anchor = {
+                  __type = "enum";
+                  variant = "Top";
+                };
+                anchor_gap = false;
+                autohide = {
+                  __type = "optional";
+                  value = null;
+                };
+                background = {
+                  __type = "enum";
+                  variant = "Dark";
+                };
+                expand_to_edges = true;
+                name = "Panel";
+                margin = 0;
+                opacity = 1.0;
+                output = {
+                  __type = "enum";
+                  variant = "All";
+                };
+                plugins_center = {
+                  __type = "optional";
+                  value = [ "com.system76.CosmicAppletTime" ];
+                };
+                plugins_wings = {
+                  __type = "optional";
+                  value = {
+                    __type = "tuple";
+                    value = [
+                      [ "com.system76.CosmicPanelAppButton" ]
+                      [
+                        "com.system76.CosmicAppletInputSources"
+                        "com.system76.CosmicAppletStatusArea"
+                        "com.system76.CosmicAppletA11y"
+                        "com.system76.CosmicAppletAudio"
+                        "com.system76.CosmicAppletBluetooth"
+                        "com.system76.CosmicAppletNetwork"
+                        "com.system76.CosmicAppletBattery"
+                        "com.system76.CosmicAppletNotifications"
+                        "com.system76.CosmicAppletPower"
+                      ]
+                    ];
+                  };
+                };
+                size = {
+                  __type = "enum";
+                  variant = "XS";
+                };
+              }
+              {
+                anchor = {
+                  __type = "enum";
+                  variant = "Bottom";
+                };
+                anchor_gap = true;
+                autohide = {
+                  __type = "optional";
+                  value = {
+                    handle_size = 4;
+                    transition_time = 200;
+                    wait_time = 1000;
+                  };
+                };
+                background = {
+                  __type = "enum";
+                  variant = "Dark";
+                };
+                expand_to_edges = true;
+                name = "Dock";
+                margin = 4;
+                opacity = 1.0;
+                output = {
+                  __type = "enum";
+                  variant = "All";
+                };
+                plugins_center = {
+                  __type = "optional";
+                  value = [
+                    "com.system76.CosmicPanelLauncherButton"
+                    "com.system76.CosmicPanelAppButton"
+                  ];
+                };
+                plugins_wings = {
+                  __type = "optional";
+                  value = {
+                    __type = "tuple";
+                    value = [
+                      [ ]
+                      [ ]
+                    ];
+                  };
+                };
+                size = {
+                  __type = "enum";
+                  variant = "L";
+                };
+              }
+            ];
           };
 
           programs.niri = {
