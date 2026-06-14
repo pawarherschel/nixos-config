@@ -17,6 +17,10 @@
       url = "github:Drakulix/cosmic-ext-alternative-startup";
       flake = false;
     };
+    cosmic-manager = {
+      url = "github:HeitorAugustoLN/cosmic-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     den.url = "github:denful/den";
     devenv = {
       url = "github:cachix/devenv";
