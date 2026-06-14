@@ -37,10 +37,8 @@
               done
             fi
 
-            if [ -n "''${SHELL:-}" ]; then
-              if [ "''${1:-}" != "--in-login-shell" ]; then
-                exec "''${SHELL}" -l -c "exec ''${0} --in-login-shell"
-              fi
+            if [ "''${1:-}" != "--in-login-shell" ]; then
+              exec bash -l -c "exec ''${0} --in-login-shell"
             fi
 
             export XDG_CURRENT_DESKTOP="''${XDG_CURRENT_DESKTOP:=niri}"
@@ -97,7 +95,7 @@
           {
               ${ksakuraUid}: (
                   uid: ${ksakuraUid},
-                  last_session: Some("cosmic-on-niri"),
+                  last_session: Some("COSMIC-on-niri"),
               ),
           }
           EOF
@@ -109,6 +107,7 @@
           cosmic-ext-alternative-startup
           cosmic-session
           cosmic-panel
+          cosmic-applets
           cosmic-applibrary
           cosmic-launcher
           cosmic-bg
@@ -116,7 +115,6 @@
           cosmic-osd
           cosmic-settings-daemon
           cosmic-settings
-          cosmic-idle
           cosmic-greeter
           xwayland-satellite
           cosmic-term
