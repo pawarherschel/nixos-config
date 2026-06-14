@@ -4,10 +4,20 @@ _: {
     nixos =
       { pkgs, ... }:
       {
-        environment.systemPackages = [ pkgs.jujutsu ];
+        environment.systemPackages = [
+          pkgs.jujutsu
+          pkgs.jj-starship
+          (pkgs.blazingjj.overrideAttrs (_: { doCheck = false; }))
+        ];
       };
 
     homeManager = {
+      programs.starship.settings.custom.jj = {
+        when = "jj-starship detect";
+        shell = [ "jj-starship" ];
+        format = "$output ";
+      };
+
       programs.jujutsu = {
         enable = true;
         settings = {
