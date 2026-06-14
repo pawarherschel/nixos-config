@@ -12,7 +12,7 @@
         };
       };
 
-    provides.to-users = _: {
+    provides.ksakura = {
       includes = [
         den.aspects.programs.helix.json
         den.aspects.programs.helix.javascript

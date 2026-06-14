@@ -1,24 +1,21 @@
 # opencode — AI coding agent with HM integration + web access.
-_:
-{
+_: {
   den.aspects.programs.opencode = {
     nixos = { pkgs, ... }: {
       environment.systemPackages = [ pkgs.opencode ];
     };
 
-    provides.to-users = _: {
-      homeManager = _: {
-        programs.opencode = {
-          enable = true;
-          settings = {
-            lsp = true;
-            shell = "nu";
-            snapshot = false;
-            compaction.prune = true;
-            plugin = [ "@tarquinen/opencode-dcp@latest" ];
-          };
-          web.enable = true;
+    provides.ksakura.homeManager = _: {
+      programs.opencode = {
+        enable = true;
+        settings = {
+          lsp = true;
+          shell = "nu";
+          snapshot = false;
+          compaction.prune = true;
+          plugin = [ "@tarquinen/opencode-dcp@latest" ];
         };
+        web.enable = true;
       };
     };
   };
