@@ -115,7 +115,7 @@
             ''
               src="${inputs.wallpapers}/${selectedPng}"
               convert "$src" -resize 1920x1080 resized.png
-              lutgen apply resized.png -o "$out" -- ${lib.escapeShellArgs allColors}
+              lutgen apply resized.png -o "$out" --gaussian-rbf --shape=384 -- ${lib.escapeShellArgs allColors}
             '';
 
       in
