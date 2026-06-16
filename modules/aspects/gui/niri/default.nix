@@ -15,6 +15,7 @@
       den.aspects.gui
       den.aspects.gui.wayland
       den.aspects.gui.niri.cosmic-shell
+      den.aspects.gui.niri.default-config
     ];
 
     nixos =
