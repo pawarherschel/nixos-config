@@ -15,12 +15,29 @@
     ];
 
     nixos =
-      { config, pkgs, ... }:
+      {
+        config,
+        pkgs,
+        lib,
+        ...
+      }:
       {
         imports = [ inputs.niri.nixosModules.niri ];
 
         programs.niri.enable = true;
         programs.niri.package = pkgs.niri;
+
+        systemd.user.services.niri-wayland-env = {
+          description = "Propagate WAYLAND_DISPLAY to systemd user services";
+          after = [ "niri.service" ];
+          before = [ "graphical-session.target" ];
+          wantedBy = [ "graphical-session.target" ];
+          serviceConfig = {
+            Type = "oneshot";
+            RemainAfterExit = true;
+            ExecStart = "${lib.getExe' pkgs.systemd "systemctl"} --user set-environment WAYLAND_DISPLAY=wayland-1";
+          };
+        };
 
         home-manager.extraSpecialArgs = {
           stylixImage = config.stylix.image;
