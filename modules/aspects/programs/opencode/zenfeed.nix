@@ -11,64 +11,61 @@ _: {
         opmlPath = "/home/ksakura/.config/opencode/feeds.opml";
 
         configGenNu = pkgs.writeText "zenfeed-config.nu" ''
-          let opml = ($env.OPML_PATH? | default "/home/ksakura/.config/opencode/feeds.opml")
-          let out = ($env.CONFIG_OUT? | default "/var/lib/zenfeed/config/config.yaml")
+            let opml = ($env.OPML_PATH? | default "/home/ksakura/.config/opencode/feeds.opml")
+            let out = ($env.CONFIG_OUT? | default "/var/lib/zenfeed/config/config.yaml")
 
-          if ($out | path exists) {
-            print "Config already exists, skipping generation."
-            exit 0
-          }
+            if ($out | path exists) {
+              print "Config already exists, skipping generation."
+              exit 0
+            }
 
-          if not ($opml | path exists) {
-            print "OPML file not found, writing minimal config."
-            let minimal = "llms:\n  - name: local-gen\n    default: true\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    model: qwen3:8b\n    api_key: ollama\n  - name: local-embed\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    embedding_model: nomic-embed-text\n    api_key: ollama\napi:\n  mcp:\n    address: \":1301\"\nscrape:\n  past: 8760h\n  interval: 1h\n  sources: []\nstorage:\n  feed:\n    retention: 730d\n    embedding_llm: local-embed\n"
-            $minimal | save --force $out
-            exit 0
-          }
+            if not ($opml | path exists) {
+              print "OPML file not found, writing minimal config."
+              let minimal = "llms:\n  - name: local-gen\n    default: true\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    model: qwen3:8b\n    api_key: ollama\n  - name: local-embed\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    embedding_model: nomic-embed-text\n    api_key: ollama\napi:\n  mcp:\n    address: \":1301\"\nscrape:\n  past: 8760h\n  interval: 1h\n  sources: []\nstorage:\n  feed:\n    retention: 730d\n    embedding_llm: local-embed\n"
+              $minimal | save --force $out
+              exit 0
+            }
 
-          print $"Generating Zenfeed config from ($opml)..."
-          let xml = open --raw $opml | from xml
+            print $"Generating Zenfeed config from ($opml)..."
+            let xml = open --raw $opml | from xml
 
-          let outlines = (
+          let bodyChildren = (
             $xml
-            | get content
-            | where tag == "opml"
-            | first
             | get content
             | where tag == "body"
             | first
             | get content
-            | where tag == "outline"
           )
 
-          let feeds = (
-            $outlines
-            | each {|o|
-              let attrs = $o.attributes
-              let url = $attrs.xmlUrl?
-              let title = ($attrs.title? | default ($attrs.text? | default "untitled"))
-              if ($url | is-not-empty) {
-                {name: $title, url: $url}
+          def collect-outlines [items] {
+            $items | each {|item|
+              if ($item.tag == "outline") {
+                if ($item.attributes.xmlUrl? | is-not-empty) {
+                  [{name: ($item.attributes.title? | default "untitled"), url: $item.attributes.xmlUrl}]
+                } else {
+                  collect-outlines ($item.content | default [])
+                }
               }
-            }
-            | compact
-          )
+            } | flatten | compact
+          }
 
-          let sourceEntries = (
-            $feeds
-            | each {|f|
-              let name = ($f.name | str replace --all '"' "")
-              let url = ($f.url | str replace --all '"' "")
-              $"(char newline)    - name: \"($name)\"(char newline)      rss:(char newline)        url: \"($url)\""
-            }
-            | str join ""
-          )
+          let feeds = collect-outlines $bodyChildren
 
-          let header = "llms:\n  - name: local-gen\n    default: true\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    model: qwen3:8b\n    api_key: ollama\n  - name: local-embed\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    embedding_model: nomic-embed-text\n    api_key: ollama\napi:\n  mcp:\n    address: \":1301\"\nscrape:\n  past: 8760h\n  interval: 1h\n  sources:($sourceEntries)\nstorage:\n  feed:\n    retention: 730d\n    embedding_llm: local-embed\n"
+            let sourceEntries = (
+              $feeds
+              | each {|f|
+                let name = ($f.name | str replace --all '"' "")
+                let url = ($f.url | str replace --all '"' "")
+                $"(char newline)    - name: \"($name)\"(char newline)      rss:(char newline)        url: \"($url)\""
+              }
+              | str join ""
+            )
 
-          mkdir ($out | path dirname)
-          $header | save --force $out
-          print $"Config written to ($out) with ($feeds | length) feeds."
+            let header = $"llms:\n  - name: local-gen\n    default: true\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    model: qwen3:8b\n    api_key: ollama\n  - name: local-embed\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    embedding_model: nomic-embed-text\n    api_key: ollama\napi:\n  mcp:\n    address: ':1301'\nscrape:\n  past: 8760h\n  interval: 1h\n  sources:($sourceEntries)\nstorage:\n  feed:\n    retention: 730d\n    embedding_llm: local-embed\n"
+
+            mkdir ($out | path dirname)
+            $header | save --force $out
+            print $"Config written to ($out) with ($feeds | length) feeds."
         '';
 
         generateConfig = pkgs.writeShellScript "zenfeed-generate-config" ''
@@ -80,7 +77,10 @@ _: {
       {
         services.ollama = {
           enable = true;
-          acceleration = null;
+          loadModels = [
+            "nomic-embed-text"
+            "qwen3:8b"
+          ];
         };
 
         virtualisation.podman = {

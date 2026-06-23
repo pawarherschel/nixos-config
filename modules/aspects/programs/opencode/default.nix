@@ -1,5 +1,5 @@
 # opencode — AI coding agent with HM integration, web access, RSS via Zenfeed.
-_: {
+{ den, ... }: {
   den.aspects.programs.opencode = {
     includes = [
       den.aspects.programs.opencode.zenfeed
