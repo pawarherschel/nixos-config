@@ -1,0 +1,12 @@
+--- a/pkg/storage/feed/feed.go
++++ b/pkg/storage/feed/feed.go
+@@ -80,7 +80,7 @@
+ 	if c.Retention <= 0 {
+ 		c.Retention = 8 * timeutil.Day
+ 	}
+-	if c.Retention < timeutil.Day || c.Retention > 15*timeutil.Day {
+-		return errors.New("retention must be between 1 day and 15 days")
++	if c.Retention < timeutil.Day || c.Retention > 730*timeutil.Day {
++		return errors.New("retention must be between 1 day and 730 days")
+ 	}
+ 	if c.BlockDuration <= 0 {

@@ -47,6 +47,9 @@
           4. The Query API supports `summarize: true` for on-demand LLM summaries of search results.
 
           When discussing a topic, search RSS feeds via Zenfeed MCP first to check for relevant background knowledge stored in the vector database.
+
+## Available scripting tools
+This system does not have Python, Node.js, or other common scripting runtimes available. The only available scripting language is **Nushell** (`nu`). When you need to write small scripts for data processing, JSON parsing, API responses, or file manipulation, use Nushell — not Python, jq, node, or bash one-liners.
         '';
       };
     };

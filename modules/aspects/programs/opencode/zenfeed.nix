@@ -10,6 +10,32 @@ _: {
         configFile = "${configDir}/config.yaml";
         opmlPath = "/home/ksakura/.config/opencode/feeds.opml";
 
+        patchedZenfeed = pkgs.buildGoModule {
+          pname = "zenfeed";
+          version = "0.7.0";
+          src = pkgs.fetchFromGitHub {
+            owner = "glidea";
+            repo = "zenfeed";
+            rev = "v0.7.0";
+            hash = "sha256-Xnj/WVjvTwHBGE07zirsbCQUFKm2TbDXlC8zMKCWyD0=";
+          };
+          vendorHash = "sha256-b143oIh3OCMWVWNoynGP68H/3wbWDfVfpxmROwIUbz8=";
+          patches = [ ./zenfeed-retention.patch ];
+          ldflags = [ "-s" "-w" "-X main.version=0.7.0-patched" ];
+          meta.mainProgram = "zenfeed";
+        };
+
+        zenfeedImage = pkgs.dockerTools.buildLayeredImage {
+          name = "zenfeed";
+          tag = "patched";
+          contents = [ patchedZenfeed pkgs.cacert pkgs.tzdata ];
+          config = {
+            Entrypoint = [ (lib.getExe patchedZenfeed) ];
+            Cmd = [ "--config" "/app/config/config.yaml" ];
+            WorkingDir = "/app";
+          };
+        };
+
         configGenNu = pkgs.writeText "zenfeed-config.nu" ''
             let opml = ($env.OPML_PATH? | default "/home/ksakura/.config/opencode/feeds.opml")
             let out = ($env.CONFIG_OUT? | default "/var/lib/zenfeed/config/config.yaml")
@@ -21,7 +47,7 @@ _: {
 
             if not ($opml | path exists) {
               print "OPML file not found, writing minimal config."
-              let minimal = "llms:\n  - name: local-gen\n    default: true\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    model: qwen3:8b\n    api_key: ollama\n  - name: local-embed\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    embedding_model: nomic-embed-text\n    api_key: ollama\napi:\n  mcp:\n    address: \":1301\"\nscrape:\n  past: 8760h\n  interval: 1h\n  sources: []\nstorage:\n  feed:\n    retention: 730d\n    embedding_llm: local-embed\n"
+              let minimal = "llms:\n  - name: local-gen\n    default: true\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    model: qwen3:8b\n    api_key: ollama\n  - name: local-embed\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    embedding_model: nomic-embed-text\n    api_key: ollama\napi:\n  mcp:\n    address: \":1301\"\nscrape:\n  past: 8760h\n  interval: 1h\n  sources: []\nstorage:\n  feed:\n    retention: 17520h\n    embedding_llm: local-embed\n"
               $minimal | save --force $out
               exit 0
             }
@@ -61,7 +87,7 @@ _: {
               | str join ""
             )
 
-            let header = $"llms:\n  - name: local-gen\n    default: true\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    model: qwen3:8b\n    api_key: ollama\n  - name: local-embed\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    embedding_model: nomic-embed-text\n    api_key: ollama\napi:\n  mcp:\n    address: ':1301'\nscrape:\n  past: 8760h\n  interval: 1h\n  sources:($sourceEntries)\nstorage:\n  feed:\n    retention: 730d\n    embedding_llm: local-embed\n"
+            let header = $"llms:\n  - name: local-gen\n    default: true\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    model: qwen3:8b\n    api_key: ollama\n  - name: local-embed\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    embedding_model: nomic-embed-text\n    api_key: ollama\napi:\n  mcp:\n    address: ':1301'\nscrape:\n  past: 8760h\n  interval: 1h\n  sources:($sourceEntries)\nstorage:\n  feed:\n    retention: 17520h\n    embedding_llm: local-embed\n"
 
             mkdir ($out | path dirname)
             $header | save --force $out
@@ -92,7 +118,7 @@ _: {
           description = "Generate Zenfeed config from OPML on first boot";
           after = [ "network.target" ];
           before = [ "podman-zenfeed.service" ];
-          wants = [ "podman-zenfeed.service" ];
+          requiredBy = [ "podman-zenfeed.service" ];
           serviceConfig = {
             Type = "oneshot";
             RemainAfterExit = true;
@@ -104,11 +130,9 @@ _: {
         virtualisation.oci-containers = {
           backend = "podman";
           containers.zenfeed = {
-            image = "ghcr.io/glidea/zenfeed:latest";
-            ports = [
-              "127.0.0.1:1300:1300"
-              "127.0.0.1:1301:1301"
-            ];
+            image = "zenfeed:patched";
+            imageFile = zenfeedImage;
+            extraOptions = [ "--network=host" ];
             volumes = [
               "${dataDir}/data:/app/data"
               "${configDir}:/app/config"
@@ -119,11 +143,11 @@ _: {
             autoStart = true;
           };
           containers.zenfeed-web = {
-            image = "ghcr.io/glidea/zenfeed-web:latest";
-            ports = [ "127.0.0.1:1400:1400" ];
+            image = "docker.io/glidea/zenfeed-web:latest";
+            extraOptions = [ "--network=host" ];
             dependsOn = [ "zenfeed" ];
             environment = {
-              PUBLIC_DEFAULT_API_URL = "http://zenfeed:1300";
+              PUBLIC_DEFAULT_API_URL = "http://127.0.0.1:1300";
             };
             autoStart = true;
           };
