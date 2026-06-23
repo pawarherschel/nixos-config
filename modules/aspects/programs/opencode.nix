@@ -25,6 +25,7 @@ _: {
           snapshot = false;
           compaction.prune = true;
           plugin = [ "opencode-mem" ];
+          systemPromptPrefix = "You have a local memory plugin enabled. For every user interaction, you must call the 'opencode-mem' search tool to pull relevant user preferences and historical project choices before formulating your answer.";
         };
       };
     };
