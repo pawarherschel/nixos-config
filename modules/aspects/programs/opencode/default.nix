@@ -34,6 +34,10 @@
               type = "remote";
               url = "http://127.0.0.1:1301/sse";
             };
+            mdn = {
+              type = "remote";
+              url = "https://mcp.mdn.mozilla.net/";
+            };
           };
         };
         context = builtins.readFile ./AGENTS.md;
