@@ -40,7 +40,23 @@
           in
           map (a: a.hex) sorted;
 
-        # PNG stripes for dirty rev — all colors as vertical stripes
+        # Pre-computed noise maps for palapply (deterministic from seed 67 + resolution)
+        noiseMaps =
+          pkgs.runCommand "palapply-noise-maps"
+            {
+              nativeBuildInputs = [
+                pkgs.palapply
+                pkgs.imagemagick
+              ];
+              outputHash = "sha256-SDkodFkvKQITeLV89lVv4upUXGJspijodtNQhEFAL4Q=";
+              outputHashAlgo = "sha256";
+              outputHashMode = "nar";
+            }
+            ''
+              convert -size 1920x1080 xc:black dummy.png
+              palapply --maps-dir "$out" --genmaps-only 1920 1080 --input dummy.png --output dummy.png
+              rm dummy.png
+            '';
         generated =
           let
             n = builtins.length allColors;
@@ -113,7 +129,7 @@
             ''
               src="${inputs.wallpapers}/${selectedPng}"
               convert "$src" -resize 1920x1080 resized.png
-              palapply -i resized.png -o "$out"
+              palapply --maps-dir ${noiseMaps} -i resized.png -o "$out"
             '';
 
       in
