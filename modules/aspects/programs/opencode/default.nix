@@ -39,7 +39,7 @@
               url = "https://mcp.mdn.mozilla.net/";
             };
             jetbrains = {
-              type = "sse";
+              type = "remote";
               url = "http://127.0.0.1:64342/sse";
             };
           };
