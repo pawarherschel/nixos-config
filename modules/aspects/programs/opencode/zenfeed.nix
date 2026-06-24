@@ -67,7 +67,7 @@ _: {
             $items | each {|item|
               if ($item.tag == "outline") {
                 if ($item.attributes.xmlUrl? | is-not-empty) {
-                  [{name: ($item.attributes.title? | default "untitled"), url: $item.attributes.xmlUrl}]
+                  [{name: ($item.attributes.title? | default "" | str trim), url: $item.attributes.xmlUrl}]
                 } else {
                   collect-outlines ($item.content | default [])
                 }
@@ -79,12 +79,17 @@ _: {
 
             let sourceEntries = (
               $feeds
-              | each {|f|
-                let name = ($f.name | str replace --all '"' "")
-                let url = ($f.url | str replace --all '"' "")
-                $"(char newline)    - name: \"($name)\"(char newline)      rss:(char newline)        url: \"($url)\""
+              | reduce -f { acc: "", seen: {} } {|f, state|
+                let rawName = ($f.name | str trim | str replace --all '"' "")
+                let baseName = if ($rawName | is-empty) { "untitled" } else { $rawName }
+                let count = ($state.seen | get -i $baseName | default 0) + 1
+                let seen = ($state.seen | upsert $baseName $count)
+                let name = if $count > 1 { $"($baseName)-($count)" } else { $baseName }
+                let url = ($f.url | str trim | str replace --all '"' "")
+                let entry = $"(char newline)    - name: \"($name)\"(char newline)      rss:(char newline)        url: \"($url)\""
+                { acc: ($state.acc + $entry), seen: $seen }
               }
-              | str join ""
+              | get acc
             )
 
             let header = $"llms:\n  - name: local-gen\n    default: true\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    model: qwen3:8b\n    api_key: ollama\n  - name: local-embed\n    provider: openai\n    endpoint: http://127.0.0.1:11434/v1\n    embedding_model: nomic-embed-text\n    api_key: ollama\napi:\n  mcp:\n    address: ':1301'\nscrape:\n  past: 8760h\n  interval: 1h\n  sources:($sourceEntries)\nstorage:\n  feed:\n    retention: 17520h\n    embedding_llm: local-embed\n"
