@@ -26,7 +26,7 @@
                 (
                   name:
                   lib.mapAttrsToList (_: c: {
-                    hex = c.hex;
+                    inherit (c) hex;
                     hue = c.oklch.h;
                   }) (lib.filterAttrs (_: c: c.accent) palette.${name}.colors)
                 )
