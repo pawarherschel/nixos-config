@@ -1429,11 +1429,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782292318,
-        "narHash": "sha256-4r6BVgR74Ie2VVXACPcWWDvmh025sOBjm1Kttt5JV/c=",
+        "lastModified": 1782294233,
+        "narHash": "sha256-tC2E7FFn6leJryOtDcd3SwucwjCxMy0wTpC0Jg9NBhY=",
         "owner": "pawarherschel",
         "repo": "palapply",
-        "rev": "636758155c893cf209eacfdc1d1b3a76ff058254",
+        "rev": "f772174389e927d86f03c3eddc2fc52735838fce",
         "type": "github"
       },
       "original": {
