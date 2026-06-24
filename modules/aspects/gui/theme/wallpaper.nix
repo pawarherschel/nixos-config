@@ -19,9 +19,14 @@
 
         # All colors from all 4 catppuccin variants via palapply's palette
         palette = builtins.fromJSON (builtins.readFile "${inputs.palapply}/palette.json");
-        allColors = lib.concatMap (variant: lib.attrValues (lib.mapAttrs (_: c: c.hex) variant.colors)) (
-          builtins.attrValues palette
-        );
+        allColors =
+          lib.concatMap (name: lib.attrValues (lib.mapAttrs (_: c: c.hex) palette.${name}.colors))
+            [
+              "mocha"
+              "macchiato"
+              "frappe"
+              "latte"
+            ];
 
         # PNG stripes for dirty rev — all colors as vertical stripes
         generated =
