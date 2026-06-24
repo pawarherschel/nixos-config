@@ -1,6 +1,6 @@
 # gui.theme.wallpaper — deterministic wallpaper selection from wallpaper repo.
 # Uses git rev as seed, or generates an SVG from theme colors when dirty/local.
-{ inputs, ... }:
+{ inputs, den, ... }:
 {
   flake-file.inputs.wallpapers = {
     url = "github:pawarherschel/wallpapers";
@@ -8,46 +8,27 @@
   };
 
   den.aspects.gui.theme.wallpaper = {
+    includes = [
+      den.aspects.overlays.palapply
+    ];
+
     nixos =
-      {
-        config,
-        pkgs,
-        lib,
-        ...
-      }:
+      { pkgs, lib, ... }:
       let
         hasRev = inputs.self ? rev;
 
-        # Parse a base24 YAML and get all baseXX hex colors directly from the file
-        parseColors =
-          path:
-          let
-            yaml = builtins.readFile path;
-            matches = map builtins.head (
-              builtins.filter (m: m != null) (
-                map (line: builtins.match "  base[0-9a-fA-F]{2}: \"(#......)\".*" line) (lib.splitString "\n" yaml)
-              )
-            );
-          in
-          matches;
-
-        # All colors from the 4 catppuccin variants
-        allColors = lib.concatLists (
-          map parseColors [
-            "${inputs.tt-schemes}/base24/catppuccin-mocha.yaml"
-            "${inputs.tt-schemes}/base24/catppuccin-macchiato.yaml"
-            "${inputs.tt-schemes}/base24/catppuccin-frappe.yaml"
-            "${inputs.tt-schemes}/base24/catppuccin-latte.yaml"
-          ]
+        # All colors from all 4 catppuccin variants via palapply's palette
+        palette = builtins.fromJSON (builtins.readFile "${inputs.palapply}/palette.json");
+        allColors = lib.concatMap (variant: lib.attrValues (lib.mapAttrs (_: c: c.hex) variant.colors)) (
+          builtins.attrValues palette
         );
 
-        # PNG stripes for dirty rev — all theme colors as vertical stripes
+        # PNG stripes for dirty rev — all colors as vertical stripes
         generated =
           let
-            schemeColors = parseColors config.stylix.base16Scheme;
-            n = builtins.length schemeColors;
+            n = builtins.length allColors;
             rects = lib.concatStringsSep "\n" (
-              lib.imap0 (i: c: ''<rect x="${toString i}" y="0" width="1" height="1" fill="${c}"/>'') schemeColors
+              lib.imap0 (i: c: ''<rect x="${toString i}" y="0" width="1" height="1" fill="${c}"/>'') allColors
             );
             svg = pkgs.writeText "theme-wallpaper.svg" ''
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${toString n} 1" width="1920" height="1080" preserveAspectRatio="none">
@@ -103,19 +84,19 @@
           else
             null;
 
-        # Resize + lutgen recolor pipeline
+        # Resize + palapply recolor pipeline
         pipeline =
           pkgs.runCommand "catppuccin-wallpaper.png"
             {
               nativeBuildInputs = [
-                pkgs.lutgen
+                pkgs.palapply
                 pkgs.imagemagick
               ];
             }
             ''
               src="${inputs.wallpapers}/${selectedPng}"
               convert "$src" -resize 1920x1080 resized.png
-              lutgen apply resized.png -o "$out" --gaussian-rbf --shape=384 -- ${lib.escapeShellArgs allColors}
+              palapply -i resized.png -o "$out"
             '';
 
       in
