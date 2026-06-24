@@ -17,6 +17,16 @@ Zenfeed RSS database is your primary knowledge base. Before answering any questi
 4. Make the MCP query call visible to the user.
 Do NOT answer from pre-existing training knowledge without first checking Zenfeed.
 
+## VCS: jj
+This repo uses `jj` (jujutsu) for version control — not git.
+- Atomic logical commits only — one change per commit
+- `jj commit -m "message"` — when working copy has exactly one logical change
+- `jj split <files> -m "message"` — to split an existing commit into two logical commits
+- If you need help with jj commands, use `jj --help` instead of guessing
+- Do NOT use `jj new` or `jj abandon` (banned by user)
+- Do NOT push/submit to any remote; the user handles that
+- Commit messages: concise lowercase imperative, no conventional-commit prefixes like `feat:` or `fix:`
+
 ## Source Restrictions
 Do NOT read or inspect files in /nix/store, node_modules, or any other dependency/build directories. Library source code and reference material are only available in the `references/` directory and the Zenfeed RSS knowledge base. If you need to look up how something works, check there first.
 

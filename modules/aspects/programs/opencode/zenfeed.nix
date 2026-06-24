@@ -21,17 +21,28 @@ _: {
           };
           vendorHash = "sha256-b143oIh3OCMWVWNoynGP68H/3wbWDfVfpxmROwIUbz8=";
           patches = [ ./zenfeed-retention.patch ];
-          ldflags = [ "-s" "-w" "-X main.version=0.7.0-patched" ];
+          ldflags = [
+            "-s"
+            "-w"
+            "-X main.version=0.7.0-patched"
+          ];
           meta.mainProgram = "zenfeed";
         };
 
         zenfeedImage = pkgs.dockerTools.buildLayeredImage {
           name = "zenfeed";
           tag = "patched";
-          contents = [ patchedZenfeed pkgs.cacert pkgs.tzdata ];
+          contents = [
+            patchedZenfeed
+            pkgs.cacert
+            pkgs.tzdata
+          ];
           config = {
             Entrypoint = [ (lib.getExe patchedZenfeed) ];
-            Cmd = [ "--config" "/app/config/config.yaml" ];
+            Cmd = [
+              "--config"
+              "/app/config/config.yaml"
+            ];
             WorkingDir = "/app";
           };
         };

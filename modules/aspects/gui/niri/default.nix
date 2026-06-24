@@ -44,12 +44,8 @@
         };
       };
 
-    provides.ksakura.homeManager =
-      {
-        ...
-      }:
-      {
-        stylix.targets.niri.enable = true;
-      };
+    provides.ksakura.homeManager = _: {
+      stylix.targets.niri.enable = true;
+    };
   };
 }

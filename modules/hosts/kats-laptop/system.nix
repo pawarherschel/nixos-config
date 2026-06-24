@@ -16,15 +16,17 @@
       den.aspects.system.zram
     ];
 
-    nixos = { pkgs, ... }: {
+    nixos = _: {
       # EFI
       boot.loader.efi.canTouchEfiVariables = true;
 
-      hardware.enableRedistributableFirmware = true;
-
-      # Bluetooth
-      hardware.bluetooth.enable = true;
-      hardware.bluetooth.powerOnBoot = true;
+      hardware = {
+        enableRedistributableFirmware = true;
+        bluetooth = {
+          enable = true;
+          powerOnBoot = true;
+        };
+      };
 
       # Kernel tuning
       boot.extraModprobeConfig = "options kvm_intel nested=1";
