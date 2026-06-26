@@ -42,6 +42,10 @@
               type = "remote";
               url = "http://127.0.0.1:64342/sse";
             };
+            "Astro docs" = {
+              type = "remote";
+              url = "https://mcp.docs.astro.build/mcp";
+            };
           };
         };
         context = builtins.readFile ./AGENTS.md;
