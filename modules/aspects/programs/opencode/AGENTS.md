@@ -1,21 +1,21 @@
 You have a local memory plugin enabled. For every user interaction, you must call the 'opencode-mem' search tool to pull relevant user preferences and historical project choices before formulating your answer.
 
-## RSS feeds via Zenfeed
-When the user asks you to "catch up with RSS":
-1. Use Zenfeed MCP tools to query stored articles — search semantically by topic or filter by date/labels.
-2. For relevant articles, read full content and extract key insights.
-3. Store important facts in memory (opencode-mem) with tags: `rss`, `<topic>`.
-4. The Query API supports `summarize: true` for on-demand LLM summaries of search results.
+<!-- ## RSS feeds via Zenfeed -->
+<!-- When the user asks you to "catch up with RSS": -->
+<!-- 1. Use Zenfeed MCP tools to query stored articles — search semantically by topic or filter by date/labels. -->
+<!-- 2. For relevant articles, read full content and extract key insights. -->
+<!-- 3. Store important facts in memory (opencode-mem) with tags: `rss`, `<topic>`. -->
+<!-- 4. The Query API supports `summarize: true` for on-demand LLM summaries of search results. -->
 
-When discussing a topic, search RSS feeds via Zenfeed MCP first to check for relevant background knowledge stored in the vector database.
+<!-- When discussing a topic, search RSS feeds via Zenfeed MCP first to check for relevant background knowledge stored in the vector database. -->
 
-## Knowledge Grounding Protocol
-Zenfeed RSS database is your primary knowledge base. Before answering any question:
-1. Query Zenfeed MCP semantic search for the topic — keep queries under 64 characters, use exact phrasing the user gave, do not bias or expand the query.
-2. Check memories for user/project context.
-3. If Zenfeed returns relevant articles, ground your answer in them — reference them explicitly by title/source/score.
-4. Make the MCP query call visible to the user.
-Do NOT answer from pre-existing training knowledge without first checking Zenfeed.
+<!-- ## Knowledge Grounding Protocol -->
+<!-- Zenfeed RSS database is your primary knowledge base. Before answering any question: -->
+<!-- 1. Query Zenfeed MCP semantic search for the topic — keep queries under 64 characters, use exact phrasing the user gave, do not bias or expand the query. -->
+<!-- 2. Check memories for user/project context. -->
+<!-- 3. If Zenfeed returns relevant articles, ground your answer in them — reference them explicitly by title/source/score. -->
+<!-- 4. Make the MCP query call visible to the user. -->
+<!-- Do NOT answer from pre-existing training knowledge without first checking Zenfeed. -->
 
 ## VCS: jj
 This repo uses `jj` (jujutsu) for version control — not git.
@@ -28,9 +28,13 @@ This repo uses `jj` (jujutsu) for version control — not git.
 - Commit messages: concise lowercase imperative, no conventional-commit prefixes like `feat:` or `fix:`
 
 ## Source Restrictions
-Do NOT read or inspect files in /nix/store, node_modules, or any other dependency/build directories. Library source code and reference material are only available in the `references/` directory and the Zenfeed RSS knowledge base. If you need to look up how something works, check there first.
+Do NOT read or inspect files in /nix/store, node_modules, or any other dependency/build directories. Library source code and reference material are only available in the `references/` directory
+<!-- and the Zenfeed RSS knowledge base -->
+. If you need to look up how something works, check there first.
 
-If you need information that is not in Zenfeed or in the references/ directory, ask the user to add it rather than using WebFetch or assuming. Do not search the web for answers — ask the user to populate the knowledge base.
+If you need information that is not
+ <!-- in Zenfeed or -->
+in the references/ directory, ask the user to add it rather than using WebFetch or assuming. Do not search the web for answers — ask the user to populate the knowledge base.
 
 ## Web Platform Docs via MDN MCP
 The MDN MCP server provides access to MDN's search, documentation, and browser compatibility data for web technologies.

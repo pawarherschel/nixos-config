@@ -37,8 +37,8 @@ _: {
               "$left"
               "$right"
             ];
-            "diff-editor" = "kdiff3";
-            "merge-editor" = "mergiraf";
+            # "diff-editor" = "kdiff3";
+            # "merge-editor" = "mergiraf";
           };
           "merge-tools" = {
             difft = {

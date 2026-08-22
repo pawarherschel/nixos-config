@@ -2,7 +2,7 @@
 { den, ... }: {
   den.aspects.programs.opencode = {
     includes = [
-      den.aspects.programs.opencode.zenfeed
+      # den.aspects.programs.opencode.zenfeed
     ];
 
     nixos = { pkgs, ... }: {
@@ -30,10 +30,10 @@
           compaction.prune = true;
           plugin = [ "opencode-mem" ];
           mcp = {
-            zenfeed = {
-              type = "remote";
-              url = "http://127.0.0.1:1301/sse";
-            };
+            # zenfeed = {
+            #   type = "remote";
+            #   url = "http://127.0.0.1:1301/sse";
+            # };
             mdn = {
               type = "remote";
               url = "https://mcp.mdn.mozilla.net/";
