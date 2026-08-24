@@ -20,31 +20,22 @@
         ];
       };
 
-    homeManager =
-      { pkgs, lib, ... }:
-      let
-        nil = lib.getExe pkgs.nil;
-        nixd = lib.getExe pkgs.nixd;
-        nixfmt = lib.getExe pkgs.nixfmt;
-      in
-      {
-        programs.helix.languages = {
-          language-server.nil.command = nil;
-          language-server.nixd.command = nixd;
+    helixWrapper.languages = {
+      language-server.nil.command = "nil";
+      language-server.nixd.command = "nixd";
 
-          language = [
-            {
-              name = "nix";
-              file-types = [ "nix" ];
-              language-servers = [
-                "nil"
-                "nixd"
-              ];
-              formatter.command = nixfmt;
-              auto-format = true;
-            }
+      language = [
+        {
+          name = "nix";
+          file-types = [ "nix" ];
+          language-servers = [
+            "nil"
+            "nixd"
           ];
-        };
-      };
+          formatter.command = "nixfmt";
+          auto-format = true;
+        }
+      ];
+    };
   };
 }

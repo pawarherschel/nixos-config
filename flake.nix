@@ -13,6 +13,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     base16.url = "github:SenchoPens/base16.nix";
+    base16-helix = {
+      url = "github:tinted-theming/base16-helix";
+      flake = false;
+    };
     cosmic-ext-alternative-startup = {
       url = "github:Drakulix/cosmic-ext-alternative-startup";
       flake = false;
@@ -71,6 +75,10 @@
     wallpapers = {
       url = "github:pawarherschel/wallpapers";
       flake = false;
+    };
+    wrappers = {
+      url = "github:BirdeeHub/nix-wrapper-modules";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 }

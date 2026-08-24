@@ -1,7 +1,7 @@
 # helix.javascript — JavaScript/TypeScript/JSX/TSX language configs.
 _: {
-  den.aspects.programs.helix.javascript.homeManager = {
-    programs.helix.languages.language = [
+  den.aspects.programs.helix.javascript.helixWrapper.languages = {
+    language = [
       {
         name = "javascript";
         language-servers = [

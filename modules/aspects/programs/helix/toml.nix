@@ -10,32 +10,22 @@ _: {
         ];
       };
 
-    homeManager =
-      { pkgs, lib, ... }:
-      let
-        tombi = lib.getExe pkgs.tombi;
-        taplo = lib.getExe pkgs.taplo;
-      in
-      {
-        programs.helix.languages = {
-          language-server.tombi.command = tombi;
+    helixWrapper.languages = {
+      language-server.tombi.command = "tombi";
 
-          language = [
-            {
-              name = "toml";
-              language-servers = [ "tombi" ];
-              formatter = {
-                command = taplo;
-                args = [
-                  "format"
-                  "-"
-                ];
-              };
-              auto-format = true;
-              roots = [ "." ];
-            }
+      language = [
+        {
+          name = "toml";
+          language-servers = [ "tombi" ];
+          formatter.command = "taplo";
+          formatter.args = [
+            "format"
+            "-"
           ];
-        };
-      };
+          auto-format = true;
+          roots = [ "." ];
+        }
+      ];
+    };
   };
 }

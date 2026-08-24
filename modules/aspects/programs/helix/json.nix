@@ -1,7 +1,7 @@
 # helix.json — JSON language config.
 _: {
-  den.aspects.programs.helix.json.homeManager = {
-    programs.helix.languages.language = [
+  den.aspects.programs.helix.json.helixWrapper.languages = {
+    language = [
       {
         name = "json";
         language-servers = [
