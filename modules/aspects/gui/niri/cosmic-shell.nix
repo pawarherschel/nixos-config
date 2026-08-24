@@ -121,6 +121,7 @@
           cosmic-bg
           cosmic-notifications
           cosmic-osd
+          cosmic-randr
           cosmic-settings-daemon
           cosmic-settings
           cosmic-greeter
