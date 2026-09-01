@@ -46,6 +46,17 @@
               type = "remote";
               url = "https://mcp.docs.astro.build/mcp";
             };
+            mcp-nixos = {
+              type = "local";
+              command = lib.getExe pkgs.mcp-nixos;
+            };
+            mcp-nixos = {
+              type = "local";
+              command = [
+                lib.getExe
+                pkgs.mcp-nixos
+              ];
+            };
           };
         };
         context = builtins.readFile ./AGENTS.md;
