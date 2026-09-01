@@ -48,13 +48,8 @@
             };
             mcp-nixos = {
               type = "local";
-              command = lib.getExe pkgs.mcp-nixos;
-            };
-            mcp-nixos = {
-              type = "local";
               command = [
-                lib.getExe
-                pkgs.mcp-nixos
+                (lib.getExe pkgs.mcp-nixos)
               ];
             };
           };
