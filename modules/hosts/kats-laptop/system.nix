@@ -43,6 +43,8 @@
         cores = 4;
         max-jobs = 4;
         extra-platforms = [ "aarch64-linux" ];
+        extra-substituters = [ "https://devenv.cachix.org" ];
+        extra-trusted-public-keys = [ "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=" ];
       };
 
       system.autoUpgrade.allowReboot = false;
