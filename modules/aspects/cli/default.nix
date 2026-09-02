@@ -4,6 +4,7 @@
   den.aspects.cli = {
     includes = [
       den.aspects.cli.nix-helpers
+      den.aspects.cli.devenv
       den.aspects.programs.atuin
       den.aspects.programs.bat
       den.aspects.programs.carapace
@@ -28,7 +29,6 @@
           ripgrep
           waypipe
           zellij
-          devenv
           libnotify
         ];
       };
