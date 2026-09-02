@@ -19,5 +19,15 @@ _: {
             IdentityFile ${config.age.secrets.gitKey.path}
         '';
       };
+
+    provides.ksakura.homeManager = {
+      programs.git.enable = true;
+      programs.git.settings = {
+        user = {
+          name = "Herschel Pawar";
+          email = "pawarherschel@gmail.com";
+        };
+      };
+    };
   };
 }
