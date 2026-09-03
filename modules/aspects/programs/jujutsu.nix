@@ -27,6 +27,19 @@ _: {
             email = "pawarherschel@gmail.com";
             name = "Herschel Pawar";
           };
+          # jj tug — move the closest ancestor bookmark to @- (the change under an empty @).
+          # https://shaddy.dev/notes/jj-tug/
+          # Caveats:
+          # - moves ALL bookmarks on that ancestor change, not just one
+          # - avoid right after a merge commit (the parent is ambiguous)
+          aliases.tug = [
+            "bookmark"
+            "move"
+            "--from"
+            "heads(::@- & bookmarks())"
+            "--to"
+            "@-"
+          ];
           ui = {
             editor = "hx";
             paginate = "never";
