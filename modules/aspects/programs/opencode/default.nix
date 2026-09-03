@@ -52,6 +52,10 @@
                 (lib.getExe pkgs.mcp-nixos)
               ];
             };
+            linear = {
+              type = "remote";
+              url = "https://mcp.linear.app/mcp";
+            };
           };
         };
         context = builtins.readFile ./AGENTS.md;
