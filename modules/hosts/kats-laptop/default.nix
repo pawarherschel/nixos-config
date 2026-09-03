@@ -8,6 +8,7 @@
       # den.aspects.gui.gnome
       den.aspects.gui.niri
       den.aspects.gui.opentabletdriver
+      den.aspects.programs.obsidian
       den.aspects.programs.social
       den.aspects.programs.steam
       den.aspects.hardware.t480
