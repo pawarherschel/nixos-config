@@ -34,19 +34,27 @@
         ];
 
         programs.bash.interactiveShellInit = ''
+          # TODO: jj alias completion broken — see jujutsu.nix comment.
+          # _jj_alias_wrap was tried but `jj util completion bash` doesn't include
+          # aliases. The wrapper handles fdiff (bookmark completion) and tug (no-args)
+          # but conflicts with jj's own _jj function in some cases.
+          #
           eval "$(${lib.getExe pkgs.fzf} --bash)"
           source "$(${lib.getExe pkgs.jujutsu} util completion bash)"
-          _jj_wrap() {
+          _jj_alias_wrap() {
             case "''${COMP_WORDS[1]}" in
               fdiff)
                 COMPREPLY=($(compgen -W "$(${lib.getExe pkgs.jujutsu} bookmark list --template 'name ++ "\n"' 2>/dev/null) @ @-" -- "''${COMP_WORDS[COMP_CWORD]}"))
+                ;;
+              tug)
+                COMPREPLY=()
                 ;;
               *)
                 _jj "$@"
                 ;;
             esac
           }
-          complete -F _jj_wrap jj
+          complete -F _jj_alias_wrap jj
         '';
       };
   };

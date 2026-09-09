@@ -28,23 +28,25 @@ in
         enable = true;
         configFile.text = builtins.readFile defaults.config + ''
 
-          # jj completion — set BEFORE fzf autoload so fzf wraps it
-          $env.config = $env.config | upsert completions {
-              external: {
-                  enable: true
-                  completer: {|spans|
-                      if ($spans | first) != "jj" { return null }
-                      let sub = ($spans | skip 1 | first | default "")
-                      if ($sub in ["fdiff" "new" "rebase" "squash" "bookmark"]) {
-                          ${lib.getExe pkgs.jujutsu} bookmark list --template 'name ++ "\n"' | lines
-                      } else {
-                          ${lib.getExe pkgs.jujutsu} log --template 'change_id.shortest() ++ "\n"' | lines
-                      }
-                  }
-              }
-          }
+          # TODO: jj alias completion broken — see jujutsu.nix comment.
+          # `use jj-completions.nu *` was tried but jj's generated completions don't
+          # include aliases (tug, fdiff). The export extern declarations below were
+          # added manually but don't integrate with nushell's span-based completion.
+          #
+          # jj native completions — handles built-in subcommands
+          use ${
+            pkgs.runCommand "jj-completions.nu" {
+              buildInputs = [ pkgs.jujutsu ];
+            } "${lib.getExe pkgs.jujutsu} util completion nushell > $out"
+          } *
 
-          # fzf integration — autoloaded, wraps the jj completer above
+          # completions for custom aliases
+          export extern "jj fdiff" [
+            ...target: string  # Bookmark or revset to diff (default: @)
+          ]
+          export extern "jj tug" []
+
+          # fzf integration
           mkdir ($nu.default-config-dir | path join "autoload")
           ${lib.getExe pkgs.fzf} --nushell | save -f ($nu.default-config-dir | path join "autoload" "_fzf_integration.nu")
         '';

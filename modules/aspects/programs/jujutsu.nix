@@ -32,23 +32,35 @@ _: {
           # Caveats:
           # - moves ALL bookmarks on that ancestor change, not just one
           # - avoid right after a merge commit (the parent is ambiguous)
-          aliases.tug = [
-            "bookmark"
-            "move"
-            "--from"
-            "heads(::@- & bookmarks())"
-            "--to"
-            "@-"
-          ];
-          aliases.fdiff = [
-            "util"
-            "exec"
-            "--"
-            "bash"
-            "-c"
-            "target=\${1:-@}; jj diff --from \"fork_point(trunk()|$target)\" --to \"$target\""
-            "--"
-          ];
+          #
+          # TODO: shell completion for custom aliases is broken.
+          # jj util completion bash/nushell does NOT include user-defined aliases.
+          # The .doc table format was tried but jj 0.44.0 ignores it — `jj help tug`
+          # says "unrecognized subcommand". What's needed: either jj gains alias
+          # completion support, or we manually extend the generated completion scripts.
+          aliases.tug = {
+            definition = [
+              "bookmark"
+              "move"
+              "--from"
+              "heads(::@- & bookmarks())"
+              "--to"
+              "@-"
+            ];
+            doc = "Move closest ancestor bookmark to @-";
+          };
+          aliases.fdiff = {
+            definition = [
+              "util"
+              "exec"
+              "--"
+              "bash"
+              "-c"
+              "target=\${1:-@}; jj diff --from \"fork_point(trunk()|$target)\" --to \"$target\""
+              "--"
+            ];
+            doc = "Diff from fork point of trunk";
+          };
           ui = {
             editor = "hx";
             paginate = "never";
