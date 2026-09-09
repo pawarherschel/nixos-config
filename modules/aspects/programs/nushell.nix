@@ -23,10 +23,28 @@ in
         environment.systemPackages = [ pkgs.nushell ];
       };
 
-    provides.ksakura.homeManager = {
+    provides.ksakura.homeManager = { pkgs, lib, ... }: {
       programs.nushell = {
         enable = true;
-        configFile.text = builtins.readFile defaults.config;
+        configFile.text = builtins.readFile defaults.config + ''
+
+          # fzf integration
+          mkdir ($nu.default-config-dir | path join "autoload")
+          ${lib.getExe pkgs.fzf} --nushell | save -f ($nu.default-config-dir | path join "autoload" "_fzf_integration.nu")
+
+          # jj bookmark fuzzy completer
+          $env.FZF_COMPLETERS = {
+              jj: {|prefix, spans|
+                  let sub = $spans | skip 1 | first
+                  let candidates = (if ($sub in ["new" "rebase" "squash" "bookmark"]) {
+                      ${lib.getExe pkgs.jujutsu} bookmark list --template 'name ++ "\n"' | lines
+                  } else {
+                      ${lib.getExe pkgs.jujutsu} log --template 'change_id.shortest() ++ "\n"' | lines
+                  })
+                  { candidates: $candidates, opts: ["--prompt" "jj > "] }
+              }
+          }
+        '';
         envFile.text = builtins.readFile defaults.env;
       };
     };
