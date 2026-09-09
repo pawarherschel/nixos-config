@@ -40,6 +40,15 @@ _: {
             "--to"
             "@-"
           ];
+          aliases.fdiff = [
+            "util"
+            "exec"
+            "--"
+            "bash"
+            "-c"
+            "target=\${1:-@}; jj diff --from \"fork_point(trunk()|$target)\" --to \"$target\""
+            "--"
+          ];
           ui = {
             editor = "hx";
             paginate = "never";
