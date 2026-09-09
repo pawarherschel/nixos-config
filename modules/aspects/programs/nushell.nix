@@ -28,22 +28,25 @@ in
         enable = true;
         configFile.text = builtins.readFile defaults.config + ''
 
-          # fzf integration
-          mkdir ($nu.default-config-dir | path join "autoload")
-          ${lib.getExe pkgs.fzf} --nushell | save -f ($nu.default-config-dir | path join "autoload" "_fzf_integration.nu")
-
-          # jj bookmark fuzzy completer
-          $env.FZF_COMPLETERS = {
-              jj: {|prefix, spans|
-                  let sub = $spans | skip 1 | first
-                  let candidates = (if ($sub in ["new" "rebase" "squash" "bookmark"]) {
-                      ${lib.getExe pkgs.jujutsu} bookmark list --template 'name ++ "\n"' | lines
-                  } else {
-                      ${lib.getExe pkgs.jujutsu} log --template 'change_id.shortest() ++ "\n"' | lines
-                  })
-                  { candidates: $candidates, opts: ["--prompt" "jj > "] }
+          # jj completion — set BEFORE fzf autoload so fzf wraps it
+          $env.config = $env.config | upsert completions {
+              external: {
+                  enable: true
+                  completer: {|spans|
+                      if ($spans | first) != "jj" { return null }
+                      let sub = ($spans | skip 1 | first | default "")
+                      if ($sub in ["fdiff" "new" "rebase" "squash" "bookmark"]) {
+                          ${lib.getExe pkgs.jujutsu} bookmark list --template 'name ++ "\n"' | lines
+                      } else {
+                          ${lib.getExe pkgs.jujutsu} log --template 'change_id.shortest() ++ "\n"' | lines
+                      }
+                  }
               }
           }
+
+          # fzf integration — autoloaded, wraps the jj completer above
+          mkdir ($nu.default-config-dir | path join "autoload")
+          ${lib.getExe pkgs.fzf} --nushell | save -f ($nu.default-config-dir | path join "autoload" "_fzf_integration.nu")
         '';
         envFile.text = builtins.readFile defaults.env;
       };
