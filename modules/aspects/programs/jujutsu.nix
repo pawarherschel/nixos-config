@@ -32,23 +32,34 @@ _: {
           # Caveats:
           # - moves ALL bookmarks on that ancestor change, not just one
           # - avoid right after a merge commit (the parent is ambiguous)
-          aliases.tug = [
-            "bookmark"
-            "move"
-            "--from"
-            "heads(::@- & bookmarks())"
-            "--to"
-            "@-"
-          ];
-          aliases.fdiff = [
-            "util"
-            "exec"
-            "--"
-            "bash"
-            "-c"
-            "target=\${1:-@}; jj diff --from \"fork_point(trunk()|$target)\" --to \"$target\""
-            "--"
-          ];
+          aliases = {
+            tug = [
+              "bookmark"
+              "move"
+              "--from"
+              "heads(::@- & bookmarks())"
+              "--to"
+              "@-"
+            ];
+            fdiff = [
+              "util"
+              "exec"
+              "--"
+              "bash"
+              "-c"
+              "target=\${1:-@}; jj diff --from \"fork_point(trunk()|$target)\" --to \"$target\""
+              "--"
+            ];
+            flog = [
+              "util"
+              "exec"
+              "--"
+              "bash"
+              "-c"
+              "target=\${1:-@}; jj log -r \"fork_point(trunk()|$target)..$target\""
+              "--"
+            ];
+          };
           ui = {
             editor = "hx";
             paginate = "never";
