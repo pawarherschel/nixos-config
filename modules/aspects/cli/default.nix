@@ -20,11 +20,10 @@
     ];
 
     nixos =
-      { pkgs, lib, ... }:
+      { pkgs, ... }:
       {
         environment.systemPackages = with pkgs; [
           difftastic
-          fzf
           # kdiff3
           # mergiraf
           ripgrep
@@ -32,22 +31,6 @@
           zellij
           libnotify
         ];
-
-        programs.bash.interactiveShellInit = ''
-          eval "$(${lib.getExe pkgs.fzf} --bash)"
-          source "$(${lib.getExe pkgs.jujutsu} util completion bash)"
-          _jj_wrap() {
-            case "''${COMP_WORDS[1]}" in
-              fdiff)
-                COMPREPLY=($(compgen -W "$(${lib.getExe pkgs.jujutsu} bookmark list --template 'name ++ "\n"' 2>/dev/null) @ @-" -- "''${COMP_WORDS[COMP_CWORD]}"))
-                ;;
-              *)
-                _jj "$@"
-                ;;
-            esac
-          }
-          complete -F _jj_wrap jj
-        '';
       };
   };
 }
