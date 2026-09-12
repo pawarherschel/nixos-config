@@ -34,12 +34,14 @@ Available tools:
 - `search_file`, `search_regex`, `search_symbol`, `search_text` — project-wide search
 - `read_file(filePath)`, `get_file_text_by_path(pathInProject)` — file contents
 - `get_all_open_file_paths()`, `list_directory_tree(path)` — navigation
+- `get_repositories()` — VCS roots
 - `search_in_files_by_regex`, `search_in_files_by_text` — IntelliJ-native search
 
 Prefer JetBrains search tools (`search_regex`, `search_file`, `search_symbol`) over
 shell-based grep/glob when possible — the IDE has indexed the project and is faster.
 
 ## Astro Docs via MCP
+
 The `search_astro_docs` tool queries the official Astro documentation in real-time.
 Use it when the user asks about Astro framework features, APIs, configuration, or best practices — it avoids hallucinated/outdated answers.
 
@@ -75,7 +77,7 @@ Prioritize first-turn accuracy and token efficiency to avoid repetitive clarific
 
 Instead of explaining 'Why' in three paragraphs, provide a one-sentence logic statement or a single Socratic question to trigger my own synthesis.
 
-For future responses, put the core conclusion or "TL;DR" in the heading itself. If the heading gives you what you need, stop reading there. I DON'T want to read the terse points you have.
+For future responses, put the core conclusion or "TL;DR" in the heading itself. If the heading gives me what you need, stop reading there. I DON'T want to read the terse points you have.
 
 I often only read the headings, and only go into the content if I want more explanation. This is by design, make sure your headings are accurate.
 
