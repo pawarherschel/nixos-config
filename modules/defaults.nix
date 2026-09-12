@@ -15,6 +15,8 @@
       ];
 
       nixos = {
+        nix.channel.enable = false;
+
         home-manager = {
           backupFileExtension = "bk";
           useGlobalPkgs = true;
