@@ -60,8 +60,8 @@
         };
         runShell = [
           ''
-            mkdir -p '${profileDir}'
-            install -m 0644 '${mcpConfig}' '${profileDir}/mcp.json'
+            mkdir -p "${profileDir}"
+            install -m 0644 '${mcpConfig}' "${profileDir}/mcp.json"
           ''
         ];
       });
