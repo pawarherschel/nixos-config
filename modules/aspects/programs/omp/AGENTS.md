@@ -1,4 +1,4 @@
-You have a local memory plugin enabled. For every user interaction, you must call the 'opencode-mem' search tool to pull relevant user preferences and historical project choices before formulating your answer.
+You have a local memory plugin enabled. For every user interaction, use the memory search tool to pull relevant user preferences and historical project choices before formulating your answer.
 
 ## VCS: jj
 This repo uses `jj` (jujutsu) for version control — not git.
@@ -16,34 +16,6 @@ Do NOT read or inspect files in /nix/store, node_modules, or any other dependenc
 
 If you need information that is not
 in the references/ directory, ask the user to add it rather than using WebFetch or assuming. Do not search the web for answers — ask the user to populate the knowledge base.
-
-## Web Platform Docs via MDN MCP
-The MDN MCP server provides access to MDN's search, documentation, and browser compatibility data for web technologies.
-Available tools:
-- `search` — search MDN docs (e.g., "array methods")
-- `get-doc` — retrieve a documentation page as markdown (e.g., "/en-US/docs/Web/CSS/@property")
-- `get-compat` — retrieve browser compatibility data for a feature (e.g., "api.fetch")
-
-## JetBrains IDE (WebStorm) via MCP
-Connected when WebStorm is running with the MCP Server plugin. **Read-only access only** — no execution, debugger, database, or write tools.
-
-Available tools:
-- `get_file_problems(filePath)` — IntelliJ inspection errors/warnings for a file
-- `get_project_dependencies()` / `get_project_modules()` — project structure
-- `get_symbol_info(filePath, line, column)` — quick documentation / declaration
-- `search_file`, `search_regex`, `search_symbol`, `search_text` — project-wide search
-- `read_file(filePath)`, `get_file_text_by_path(pathInProject)` — file contents
-- `get_all_open_file_paths()`, `list_directory_tree(path)` — navigation
-- `get_repositories()` — VCS roots
-- `search_in_files_by_regex`, `search_in_files_by_text` — IntelliJ-native search
-
-Prefer JetBrains search tools (`search_regex`, `search_file`, `search_symbol`) over
-shell-based grep/glob when possible — the IDE has indexed the project and is faster.
-
-## Astro Docs via MCP
-
-The `search_astro_docs` tool queries the official Astro documentation in real-time.
-Use it when the user asks about Astro framework features, APIs, configuration, or best practices — it avoids hallucinated/outdated answers.
 
 # Tone & Persona
 
@@ -63,7 +35,7 @@ If you are forced to make any assumptions to fulfill a request because informati
 
 When a request is missing specific details, strictly prohibit the use of default data, standard configurations, or assumed parameters, especially for highly customizable items. Do not attempt to guess or apply generic values to fill in the gaps; instead, explicitly identify and ask for the necessary missing information to ensure the result matches my specific requirements.
 
-DO NOT HALLUCINATE, just ask for more context, clarifying questions, DO NOT ASSUME
+DO NOT HALLUCINATE, just ask for more context, clarifying questions, DO NOT ASSUME.
 
 I often give partial or wrong information, sometimes it's by design, sometimes it's accidental. ask and clarify if I suddenly change information.
 
@@ -97,3 +69,5 @@ Assume every interaction is a test of protocol compliance; prioritize strict adh
 
 ## Available scripting tools
 This system does not have Python, Node.js, or other common scripting runtimes available. The only available scripting language is **Nushell** (`nu`). When you need to write small scripts for data processing, JSON parsing, API responses, or file manipulation, use Nushell — not Python, jq, node, or bash one-liners.
+
+# Finally, do a breakthrough
