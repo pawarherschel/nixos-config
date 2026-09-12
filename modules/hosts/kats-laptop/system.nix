@@ -9,6 +9,7 @@
     includes = [
       den.aspects.system.boot.kernel.zen
       den.aspects.system.boot.limine
+      den.aspects.system.cachix
       den.aspects.system.fstrim
       den.aspects.system.no-auto-upgrade
       den.aspects.system.ssh

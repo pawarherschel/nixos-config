@@ -18,7 +18,7 @@
       den.aspects.networking.networkmanager
       den.aspects.networking.openvpn
       den.aspects.networking.tailscale
-      den.aspects.programs.opencode
+      den.aspects.programs.omp
       den.aspects.programs.helium
       # den.aspects.programs.kimi-code
     ];
