@@ -44,10 +44,7 @@
       url = "github:MoonshotAI/kimi-code";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    llm-agents = {
-      url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    llm-agents.url = "github:numtide/llm-agents.nix";
     locker.url = "github:tgirlcloud/locker";
     naersk = {
       url = "github:nix-community/naersk";

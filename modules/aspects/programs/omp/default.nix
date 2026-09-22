@@ -3,7 +3,7 @@
   flake-file.inputs = {
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # Keep upstream's nixpkgs for compatible dependencies and binary cache reuse.
     };
     wrappers = {
       url = "github:nix-community/nix-wrapper-modules";
@@ -14,6 +14,7 @@
   perSystem =
     {
       pkgs,
+      inputs',
       ...
     }:
     let
@@ -51,10 +52,7 @@
     {
       packages.omp = inputs.wrappers.lib.wrapPackage (_: {
         inherit pkgs;
-        # The filtered packages output evaluates unrelated packages, including t3code,
-        # which requires electron_44 absent from our pinned nixpkgs. Select OMP lazily
-        # through the shared-nixpkgs overlay without updating either input pin.
-        package = (inputs.llm-agents.overlays.shared-nixpkgs pkgs pkgs).llm-agents.omp;
+        package = inputs'.llm-agents.packages.omp;
         runtimePkgs = [ pkgs.coreutils ];
         env.OMP_PROFILE = profile;
         flags = {
