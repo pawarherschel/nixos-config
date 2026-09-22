@@ -14,7 +14,6 @@
   perSystem =
     {
       pkgs,
-      inputs',
       ...
     }:
     let
@@ -52,7 +51,10 @@
     {
       packages.omp = inputs.wrappers.lib.wrapPackage (_: {
         inherit pkgs;
-        package = inputs'.llm-agents.packages.omp;
+        # The filtered packages output evaluates unrelated packages, including t3code,
+        # which requires electron_44 absent from our pinned nixpkgs. Select OMP lazily
+        # through the shared-nixpkgs overlay without updating either input pin.
+        package = (inputs.llm-agents.overlays.shared-nixpkgs pkgs pkgs).llm-agents.omp;
         runtimePkgs = [ pkgs.coreutils ];
         env.OMP_PROFILE = profile;
         flags = {
