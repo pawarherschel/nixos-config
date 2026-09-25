@@ -57,6 +57,7 @@
         env.OMP_PROFILE = profile;
         flags = {
           "--append-system-prompt" = ./AGENTS.md;
+          "--extension" = ./time-context.ts;
         };
         runShell = [
           ''
