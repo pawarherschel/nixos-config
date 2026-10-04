@@ -17,7 +17,7 @@ _: {
         taplo = lib.getExe pkgs.taplo;
       in
       {
-        programs.helix.languages = {
+        wrappers.helix.languages = {
           language-server.tombi.command = tombi;
 
           language = [

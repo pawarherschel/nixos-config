@@ -1,19 +1,17 @@
 # helix — editor with per-language configs.
-{ den, ... }:
+{ den, inputs, ... }:
 {
   den.aspects.programs.helix = {
-    nixos =
-      { pkgs, ... }:
-      {
-        environment = {
-          systemPackages = [ pkgs.helix ];
-          variables.EDITOR = "hx";
-          sessionVariables.EDITOR = "hx";
-        };
-      };
+    homeManager = {
+      imports = [ inputs.wrappers.homeModules.helix ];
+      home.sessionVariables.EDITOR = "hx";
+      home.sessionVariables.VISUAL = "hx";
+      wrappers.helix.enable = true;
+    };
 
-    provides.ksakura = {
+    development = {
       includes = [
+        den.aspects.programs.helix
         den.aspects.programs.helix.json
         den.aspects.programs.helix.javascript
         # den.aspects.programs.helix.markdown
@@ -23,11 +21,7 @@
       ];
 
       homeManager = _: {
-        home.sessionVariables.EDITOR = "hx";
-
-        programs.helix = {
-          enable = true;
-          defaultEditor = true;
+        wrappers.helix = {
           settings = {
             # theme = "dracula";
             keys.normal.esc = [

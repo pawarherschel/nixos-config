@@ -17,13 +17,7 @@ in
   den.aspects.programs.nushell = {
     includes = [ den.aspects.programs.starship ];
 
-    nixos =
-      { pkgs, ... }:
-      {
-        environment.systemPackages = [ pkgs.nushell ];
-      };
-
-    provides.ksakura.homeManager = {
+    homeManager = {
       programs.nushell = {
         enable = true;
         configFile.text = builtins.readFile defaults.config;

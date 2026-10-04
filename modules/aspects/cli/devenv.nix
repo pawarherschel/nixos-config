@@ -1,10 +1,10 @@
 # cli.devenv — devenv cache substituters and the devenv CLI.
 _: {
   den.aspects.cli.devenv = {
-    nixos =
+    homeManager =
       { pkgs, ... }:
       {
-        environment.systemPackages = [ pkgs.devenv ];
+        home.packages = [ pkgs.devenv ];
       };
   };
 }

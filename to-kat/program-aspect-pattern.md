@@ -15,12 +15,6 @@ For programs already in nixpkgs that have home-manager modules.
 { den, ... }:
 {
   den.aspects.programs.<program> = {
-    nixos =
-      { pkgs, ... }:
-      {
-        environment.systemPackages = [ pkgs.<program> ];
-      };
-
     homeManager = {
       programs.<program> = {
         enable = true;
@@ -38,12 +32,6 @@ For programs already in nixpkgs that have home-manager modules.
 { den, ... }:
 {
   den.aspects.programs.atuin = {
-    nixos =
-      { pkgs, ... }:
-      {
-        environment.systemPackages = [ pkgs.atuin ];
-      };
-
     homeManager = {
       programs.atuin = {
         enable = true;
@@ -57,10 +45,15 @@ For programs already in nixpkgs that have home-manager modules.
 
 ### Key Points
 
-- **`nixos`** — Install the package system-wide
-- **`homeManager`** — Configure the program for the user (dotfiles, integrations)
+- Give each application one installation owner. An enabled Home Manager program module already installs its package; do not repeat it in system packages.
+- Prefer wrapper derivations for portable application configuration; Home Manager can install the wrapped package without also enabling the unwrapped program module.
+- System services own their packages and activation. Keep host integration separate from application configuration.
 - File name = aspect name: `atuin.nix` → `den.aspects.programs.atuin`
 - After creating, add it to `cli/default.nix` includes list if it's a CLI tool
+- Shared `homeManager` settings apply to both laptop and Mac users; keep identities in user composition, not username-specific providers inside generic program aspects.
+- NixOS-only packages belong in `nixos`; Darwin-specific applications and services belong in `darwin`.
+- Both host classes allow unfree packages through `modules/defaults.nix`.
+- The Mac uses native `zed-editor`, not the laptop's Linux-only `zed-editor-fhs` wrapper.
 
 ---
 

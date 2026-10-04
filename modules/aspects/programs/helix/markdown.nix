@@ -1,7 +1,7 @@
 # helix.markdown — Markdown language + LSP config.
 _: {
   den.aspects.programs.helix.markdown.homeManager = {
-    programs.helix.languages = {
+    wrappers.helix.languages = {
       language-server.ltex-ls-plus = {
         # command = "${pkgs.ltex-ls-plus}/bin/ltex-ls-plus";
         config.ltex = {

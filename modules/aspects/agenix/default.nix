@@ -20,5 +20,13 @@
           inputs.agenix.nixosModules.age
         ];
       };
+
+    darwin =
+      { ... }:
+      {
+        imports = [
+          inputs.agenix.darwinModules.age
+        ];
+      };
   };
 }

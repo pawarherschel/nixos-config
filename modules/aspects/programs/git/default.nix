@@ -1,33 +1,12 @@
-# git
-_: {
-  den.aspects.programs.git = {
-    nixos =
-      { pkgs, config, ... }:
-      {
-        environment.systemPackages = [ pkgs.git ];
-
-        age.secrets.gitKey = {
-          rekeyFile = ./gitKey.age;
-          owner = "ksakura";
-          mode = "0400";
-        };
-
-        programs.ssh.extraConfig = ''
-          Match host github.com
-            IdentityFile ${config.age.secrets.gitKey.path}
-          Match host tangled.org
-            IdentityFile ${config.age.secrets.gitKey.path}
-        '';
-      };
-
-    provides.ksakura.homeManager = {
-      programs.git.enable = true;
-      programs.git.settings = {
-        user = {
-          name = "Herschel Pawar";
-          email = "pawarherschel@gmail.com";
-        };
-      };
-    };
+# git — portable configuration; identities and secrets belong to users.
+{ inputs, ... }:
+{
+  den.aspects.programs.git.homeManager = { config, lib, ... }: {
+    imports = [ inputs.wrappers.homeModules.git ];
+    wrappers.git.enable = true;
+    # gh contributes these without enabling Home Manager's Git config owner.
+    wrappers.git.settings.credential = lib.mkIf (
+      config.programs.gh.enable && config.programs.gh.gitCredentialHelper.enable
+    ) config.programs.git.settings.credential;
   };
 }

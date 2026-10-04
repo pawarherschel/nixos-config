@@ -1,32 +1,21 @@
 # jujutsu — VCS, replaces git.
-_: {
+{ inputs, ... }: {
   den.aspects.programs.jujutsu = {
-    nixos =
-      { pkgs, ... }:
-      {
-        environment.systemPackages = [
-          pkgs.jujutsu
-          pkgs.jj-starship
-          (pkgs.blazingjj.overrideAttrs (_: {
-            doCheck = false;
-          }))
-        ];
-      };
+    homeManager = { pkgs, ... }: {
+      imports = [ inputs.wrappers.homeModules.jujutsu ];
+      home.packages = [
+        pkgs.jj-starship
+      ];
 
-    provides.ksakura.homeManager = {
       programs.starship.settings.custom.jj = {
         when = "jj-starship detect";
         shell = [ "jj-starship" ];
         format = "$output ";
       };
 
-      programs.jujutsu = {
+      wrappers.jujutsu = {
         enable = true;
         settings = {
-          user = {
-            email = "pawarherschel@gmail.com";
-            name = "Herschel Pawar";
-          };
           # jj tug — move the closest ancestor bookmark to @- (the change under an empty @).
           # https://shaddy.dev/notes/jj-tug/
           # Caveats:

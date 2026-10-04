@@ -1,13 +1,7 @@
 # gh — GitHub CLI.
 _: {
   den.aspects.programs.gh = {
-    nixos =
-      { pkgs, ... }:
-      {
-        environment.systemPackages = [ pkgs.gh ];
-      };
-
-    provides.ksakura.homeManager = {
+    homeManager = {
       programs.gh = {
         enable = true;
         settings = {

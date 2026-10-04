@@ -1,11 +1,13 @@
 # networking.tailscale — VPN.
-_: {
+_:
+let
+  common = {
+    services.tailscale.enable = true;
+  };
+in
+{
   den.aspects.networking.tailscale = {
-    nixos =
-      { pkgs, ... }:
-      {
-        environment.systemPackages = [ pkgs.tailscale ];
-        services.tailscale.enable = true;
-      };
+    nixos = common;
+    darwin = common;
   };
 }

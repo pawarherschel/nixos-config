@@ -28,7 +28,7 @@
         nixfmt = lib.getExe pkgs.nixfmt;
       in
       {
-        programs.helix.languages = {
+        wrappers.helix.languages = {
           language-server.nil.command = nil;
           language-server.nixd.command = nixd;
 

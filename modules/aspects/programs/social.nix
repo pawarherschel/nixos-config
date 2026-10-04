@@ -1,6 +1,7 @@
-# programs.social — Discord and Signal.
-_: {
-  den.aspects.programs.social.nixos =
+# programs.social — shared messaging apps on Linux and Darwin.
+_:
+let
+  common =
     { pkgs, ... }:
     {
       environment.systemPackages = with pkgs; [
@@ -9,4 +10,10 @@ _: {
         slack
       ];
     };
+in
+{
+  den.aspects.programs.social = {
+    nixos = common;
+    darwin = common;
+  };
 }

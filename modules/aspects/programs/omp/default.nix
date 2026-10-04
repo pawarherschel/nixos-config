@@ -1,20 +1,10 @@
 { den, inputs, ... }:
-{
-  flake-file.inputs = {
-    llm-agents = {
-      url = "github:numtide/llm-agents.nix";
-      # Keep upstream's nixpkgs for compatible dependencies and binary cache reuse.
-    };
-    wrappers = {
-      url = "github:nix-community/nix-wrapper-modules";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-  };
-
-  perSystem =
+let
+  inherit (inputs) llm-agents wrappers;
+  ompModule =
     {
       pkgs,
-      inputs',
+      wlib,
       ...
     }:
     let
@@ -50,29 +40,40 @@
       );
     in
     {
-      packages.omp = inputs.wrappers.lib.wrapPackage (_: {
-        inherit pkgs;
-        package = inputs'.llm-agents.packages.omp;
-        runtimePkgs = [ pkgs.coreutils ];
-        env.OMP_PROFILE = profile;
-        flags = {
-          "--append-system-prompt" = ./AGENTS.md;
-          "--extension" = ./time-context.ts;
-        };
-        runShell = [
-          ''
-            mkdir -p "${profileDir}"
-            install -m 0644 '${mcpConfig}' "${profileDir}/mcp.json"
-          ''
-        ];
-      });
-    };
-
-  den.aspects.programs.omp.nixos =
-    { pkgs, ... }:
-    {
-      environment.systemPackages = [
-        inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.omp
+      imports = [ wlib.modules.default ];
+      package = llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.omp;
+      runtimePkgs = [ pkgs.coreutils ];
+      env.OMP_PROFILE = profile;
+      flags = {
+        "--append-system-prompt" = ./AGENTS.md;
+        "--extension" = ./time-context.ts;
+      };
+      runShell = [
+        ''
+          mkdir -p "${profileDir}"
+          install -m 0644 '${mcpConfig}' "${profileDir}/mcp.json"
+        ''
       ];
     };
+  ompInstallModule = wrappers.lib.getInstallModule {
+    name = "omp";
+    value = ompModule;
+  };
+in
+{
+  flake-file.inputs = {
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      # Keep upstream's nixpkgs for compatible dependencies and binary cache reuse.
+    };
+    wrappers = {
+      url = "github:nix-community/nix-wrapper-modules";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+
+  den.aspects.programs.omp.homeManager = {
+    imports = [ ompInstallModule ];
+    wrappers.omp.enable = true;
+  };
 }

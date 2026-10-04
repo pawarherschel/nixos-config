@@ -8,7 +8,6 @@
     ];
 
     nixos = {
-      nixpkgs.config.allowUnfree = true;
       hardware.enableRedistributableFirmware = lib.mkDefault true;
     };
   };

@@ -1,13 +1,7 @@
 # starship — prompt with jj integration.
 _: {
   den.aspects.programs.starship = {
-    nixos =
-      { pkgs, ... }:
-      {
-        environment.systemPackages = [ pkgs.starship ];
-      };
-
-    provides.ksakura.homeManager = {
+    homeManager = {
       programs.starship = {
         enable = true;
         settings = {

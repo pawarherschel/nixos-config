@@ -4,18 +4,23 @@
   imports = [
     (inputs.flake-file.flakeModules.dendritic or { })
     (inputs.den.flakeModules.dendritic or { })
+    inputs.den.flakeModule
     inputs.agenix-rekey.flakeModule
     inputs.home-manager.flakeModules.home-manager
   ];
-
   den.schema.user.includes = [ den._.mutual-provider ];
 
   systems = [
     "x86_64-linux"
     "aarch64-linux"
+    "aarch64-darwin"
   ];
 
   flake-file.inputs = {
+    darwin = {
+      url = "github:nix-darwin/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     den.url = "github:denful/den";
     flake-file.url = "github:vic/flake-file";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";

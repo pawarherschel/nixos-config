@@ -1,13 +1,7 @@
 # kitty — terminal emulator.
 _: {
   den.aspects.programs.kitty = {
-    nixos =
-      { pkgs, ... }:
-      {
-        environment.systemPackages = [ pkgs.kitty ];
-      };
-
-    provides.ksakura.homeManager = {
+    homeManager = {
       programs.kitty = {
         enable = true;
         # font = {

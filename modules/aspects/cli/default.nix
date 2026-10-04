@@ -19,16 +19,21 @@
       den.aspects.programs.syncthing
     ];
 
+    homeManager =
+      { pkgs, ... }:
+      {
+        home.packages = with pkgs; [
+          difftastic
+          ripgrep
+          zellij
+        ];
+      };
+
     nixos =
       { pkgs, ... }:
       {
         environment.systemPackages = with pkgs; [
-          difftastic
-          # kdiff3
-          # mergiraf
-          ripgrep
           waypipe
-          zellij
           libnotify
         ];
       };
