@@ -40,7 +40,8 @@
       home.packages = [ pkgs.zed-editor ];
     };
 
-    provides.to-hosts.darwin = {
+    provides.to-hosts.darwin = { config, ... }: {
+      age.rekey.masterIdentities = config.home-manager.users.bytebeam.age.identityPaths;
       users.users.bytebeam = {
         uid = 501;
         home = "/Users/bytebeam";
