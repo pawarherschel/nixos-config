@@ -26,14 +26,21 @@
         mode = "0400";
       };
       programs.ssh.enable = true;
-      programs.ssh.matchBlocks = {
-        github = {
-          host = "github.com";
-          identityFile = config.age.secrets.gitKey.path;
-        };
-        tangled = {
-          host = "tangled.org";
-          identityFile = config.age.secrets.gitKey.path;
+      programs.ssh.enableDefaultConfig = false;
+      programs.ssh.settings = {
+        "github.com".IdentityFile = config.age.secrets.gitKey.path;
+        "tangled.org".IdentityFile = config.age.secrets.gitKey.path;
+        "*" = {
+          ForwardAgent = false;
+          AddKeysToAgent = "no";
+          Compression = false;
+          ServerAliveInterval = 0;
+          ServerAliveCountMax = 3;
+          HashKnownHosts = false;
+          UserKnownHostsFile = "~/.ssh/known_hosts";
+          ControlMaster = "no";
+          ControlPath = "~/.ssh/master-%r@%n:%p";
+          ControlPersist = "no";
         };
       };
       home.stateVersion = "26.05";
