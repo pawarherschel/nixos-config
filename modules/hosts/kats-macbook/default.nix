@@ -5,6 +5,7 @@
       den.aspects.agenix
       den.aspects.programs.social
       den.aspects.networking.tailscale
+      den.aspects.system.cachix
     ];
 
     darwin = {
