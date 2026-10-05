@@ -9,6 +9,7 @@
     ];
 
     darwin = {
+      age.rekey.hostPubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEjtTkLNB/onegTTdczPrneMsZTzH4QclD9xpzhwc001";
       system.stateVersion = 7;
       system.primaryUser = "bytebeam";
     };

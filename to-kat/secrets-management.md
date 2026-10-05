@@ -32,6 +32,7 @@ This configuration uses **agenix** + **agenix-rekey** for secret management. Sec
 - Encrypted with your **master identity** (`~/.config/agenix/identity.txt`, converted from `~/.ssh/id_ed25519`)
 - **Host-specific rekeyed copies** live in `secrets/rekeyed/<hostname>/` (auto-generated, committed)
 - At boot, the agenix NixOS module decrypts using the **host's SSH key** (`/etc/ssh/ssh_host_ed25519_key`)
+- On `kats-macbook`, system rekeying targets the Mac's SSH host public key. Rekey master identities reuse bytebeam's Home Manager identities; Home Manager decrypts `gitKey` directly with those user identities, independently of the system host key.
 
 ## Key Files
 
