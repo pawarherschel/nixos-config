@@ -35,6 +35,10 @@ let
               type = "http";
               url = "https://mcp.linear.app/mcp";
             };
+            atmosphere = {
+              type = "http";
+              url = "https://aturi.to/api/mcp";
+            };
           };
         }
       );

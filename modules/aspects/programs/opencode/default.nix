@@ -51,6 +51,10 @@
               type = "remote";
               url = "https://mcp.linear.app/mcp";
             };
+            atmosphere = {
+              type = "remote";
+              url = "https://aturi.to/api/mcp";
+            };
           };
         };
         context = builtins.readFile ./AGENTS.md;
