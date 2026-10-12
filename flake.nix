@@ -1,7 +1,19 @@
 # DO-NOT-EDIT. This file was auto-generated using github:vic/flake-file.
 # Use `nix run .#write-flake` to regenerate it.
 {
-  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
+  outputs =
+    inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } (
+      (inputs.import-tree.filter (
+        path:
+        !(builtins.elem (builtins.baseNameOf path) [
+          "package.nix"
+          "bun.nix"
+        ])
+        || !(inputs.nixpkgs.lib.hasInfix "/overlays/connectome-host/" (toString path))
+      ))
+        ./modules
+    );
 
   inputs = {
     agenix = {
@@ -13,6 +25,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     base16.url = "github:SenchoPens/base16.nix";
+    connectome-host = {
+      url = "github:anima-research/connectome-host/6da6910fdba7a87dd409fcd34611503c1e7ab632";
+      flake = false;
+    };
     cosmic-ext-alternative-startup = {
       url = "github:Drakulix/cosmic-ext-alternative-startup";
       flake = false;

@@ -31,3 +31,20 @@ See [modules/vm.nix](modules/vm.nix)
 ```console
 nix run .#vm
 ```
+
+## connectome-host (kats-macbook)
+
+The Darwin host installs `connectome-host`, including its browser UI. The overlay
+is in `modules/overlays/connectome-host/`; source is pinned through `flake.lock`,
+and `bun.nix` vendors the matching dependency expressions. `references/` is not
+needed to evaluate, build, or run the package.
+
+Run `connectome-host path/to/recipe.json` from a writable working directory.
+The launcher preserves that directory: `.env`, MCP registries, and the default
+`./data` belong to it. No agent service or credentials are configured.
+
+To update, change `rev` in the overlay's `default.nix`, regenerate `bun.nix` from
+that revision's `bun.lock` using the flake's pinned bun2nix CLI, regenerate the
+flake with `nix run .#write-flake`, and update the source lock and web UI
+`npmDepsHash`. Build and run the shipped offline `recipes/mock-test.json` before
+switching the Darwin host.

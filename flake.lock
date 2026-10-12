@@ -237,6 +237,23 @@
         "type": "github"
       }
     },
+    "connectome-host": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791768732,
+        "narHash": "sha256-Pcq46hm9HeNwJpYiH0Zoqv1Npqbz12DR2E9t2grbmew=",
+        "owner": "anima-research",
+        "repo": "connectome-host",
+        "rev": "6da6910fdba7a87dd409fcd34611503c1e7ab632",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anima-research",
+        "repo": "connectome-host",
+        "rev": "6da6910fdba7a87dd409fcd34611503c1e7ab632",
+        "type": "github"
+      }
+    },
     "cosmic-ext-alternative-startup": {
       "flake": false,
       "locked": {
@@ -1562,6 +1579,7 @@
         "agenix": "agenix",
         "agenix-rekey": "agenix-rekey",
         "base16": "base16",
+        "connectome-host": "connectome-host",
         "cosmic-ext-alternative-startup": "cosmic-ext-alternative-startup",
         "cosmic-manager": "cosmic-manager",
         "darwin": "darwin_2",

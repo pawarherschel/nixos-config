@@ -6,9 +6,11 @@
       den.aspects.programs.social
       den.aspects.networking.tailscale
       den.aspects.system.cachix
+      den.aspects.overlays.connectome-host
     ];
 
-    darwin = {
+    darwin = { pkgs, ... }: {
+      environment.systemPackages = [ pkgs.connectome-host ];
       age.rekey.hostPubkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEjtTkLNB/onegTTdczPrneMsZTzH4QclD9xpzhwc001";
       system.stateVersion = 7;
       system.primaryUser = "bytebeam";
