@@ -1,12 +1,23 @@
 # helix — editor with per-language configs.
 { den, inputs, ... }:
 {
+  flake-file.inputs.nhx = {
+    url = "github:Ra77a3l3-jar/nhx";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   den.aspects.programs.helix = {
     homeManager = {
-      imports = [ inputs.wrappers.homeModules.helix ];
+      imports = [ inputs.nhx.homeManagerModules.default ];
       home.sessionVariables.EDITOR = "hx";
       home.sessionVariables.VISUAL = "hx";
-      wrappers.helix.enable = true;
+      programs.nhx = {
+        enable = true;
+        steel = {
+          enable = true;
+          lsp.enable = false;
+        };
+      };
     };
 
     development = {
@@ -21,7 +32,7 @@
       ];
 
       homeManager = _: {
-        wrappers.helix = {
+        programs.nhx = {
           settings = {
             # theme = "dracula";
             keys.normal.esc = [

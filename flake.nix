@@ -70,6 +70,10 @@
       url = "github:nix-community/naersk";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nhx = {
+      url = "github:Ra77a3l3-jar/nhx";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nil-src = {
       url = "github:oxalica/nil/504599f7e555a249d6754698473124018b80d121";
       flake = false;
@@ -80,6 +84,10 @@
     palapply = {
       url = "github:pawarherschel/palapply";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    steelix-src = {
+      url = "github:mattwparas/helix/16a26934f39152b5cd81bf2f6944e18e680314d0";
+      flake = false;
     };
     stylix = {
       url = "github:nix-community/stylix";

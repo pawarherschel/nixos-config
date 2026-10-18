@@ -10,7 +10,7 @@ _: {
     homeManager =
       { pkgs, lib, ... }:
       {
-        wrappers.helix.languages = {
+        programs.nhx.languages = {
           language-server.tinymist.config = {
             typstExtraArgs = [
               "--features"

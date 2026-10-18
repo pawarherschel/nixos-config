@@ -1130,6 +1130,26 @@
         "type": "github"
       }
     },
+    "nhx": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792029510,
+        "narHash": "sha256-flLj5nJmU+eFFc2DNkFjInj8lBJTpJKMJ9RHqbwAeic=",
+        "owner": "Ra77a3l3-jar",
+        "repo": "nhx",
+        "rev": "8ae289a674c4b952f62f63cbbcbb06d3fc632cf9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Ra77a3l3-jar",
+        "repo": "nhx",
+        "type": "github"
+      }
+    },
     "nil-src": {
       "flake": false,
       "locked": {
@@ -1594,11 +1614,13 @@
         "llm-agents": "llm-agents",
         "locker": "locker",
         "naersk": "naersk",
+        "nhx": "nhx",
         "nil-src": "nil-src",
         "niri": "niri",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_5",
         "palapply": "palapply",
+        "steelix-src": "steelix-src",
         "stylix": "stylix",
         "tt-schemes": "tt-schemes",
         "wallpapers": "wallpapers",
@@ -1679,6 +1701,23 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "steelix-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1792336814,
+        "narHash": "sha256-FU4WIMHhIyvEMxHeN8+Qgb3VHsU6DP74ylsyZACLzM8=",
+        "owner": "mattwparas",
+        "repo": "helix",
+        "rev": "16a26934f39152b5cd81bf2f6944e18e680314d0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mattwparas",
+        "repo": "helix",
+        "rev": "16a26934f39152b5cd81bf2f6944e18e680314d0",
         "type": "github"
       }
     },

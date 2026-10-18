@@ -58,3 +58,34 @@ both `/Applications/Nix Apps/Codiff.app` and the `codiff` terminal helper after
 
 Run `codiff /path/to/repository`. The upstream app is unpatched; jj revsets are
 not supported. To update, change the version and checksum in the overlay.
+
+## Helix Steel plugins
+
+`modules/aspects/programs/helix/` uses the pinned `nhx` Home Manager module.
+`steelix.nix` pins the plugin-enabled mattwparas editor separately from nixpkgs
+and keeps its grammar/query runtime paired. `references/` is research-only;
+it is not an evaluation, build, or runtime dependency.
+
+Enabled plugins: smooth-scroll, oil, forest, who, breadcrumbs, context, eval,
+juju, lsp-picker, scopeline, notify, paredit, and previously. Cliff and Vista
+require other editor forks; Scooter's native Steel ABI is incompatible with
+this editor. Those three are intentionally omitted.
+
+Invoke plugins with colon commands, including `:oil`, `:forest-open`,
+`:who-toggle`, `:breadcrumbs`, `:hx-eval-prompt`, `:juju-status`, `:lsp-picker`,
+`:previously`, and `:half-page-down-smooth`. Who starts disabled. Context and
+Scopeline activate during startup. No global plugin keybindings are added.
+Oil's buffer alone maps Enter to open, Backspace to parent, Ctrl-s to apply
+filesystem edits, and q to close.
+
+Plugin-specific files under `helix/plugins/` declare their executable
+dependencies in `programs.nhx.requiredPackages`; the editor wrapper scopes
+them to its own PATH. GNU coreutils supplies the `stat --printf` needed by Oil
+on macOS. Steel cogs live under `~/.local/share/steel`.
+`plugins/notify.nix` patches Notify's unfocused cursor callback to return
+`#false`, as required by the pinned editor's optional-position contract.
+
+After updating pins, regenerate with `nix run .#write-flake`, lock inputs, build
+the host's Home Manager activation package, and launch its actual `hx` binary
+to check plugin startup and commands before switching the host. A successful
+build or `hx --health` does not establish that Steel initialization succeeds.
