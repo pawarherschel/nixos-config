@@ -32,6 +32,24 @@ See [modules/vm.nix](modules/vm.nix)
 nix run .#vm
 ```
 
+## Phone-controlled idle sleep (kats-macbook)
+
+The `tailscale-awake` user agent prevents idle system sleep while
+`kats-phone-2a.tailc9942.ts.net.` is online. Display sleep and lid-close sleep
+are unchanged. It cannot wake an already sleeping Mac.
+
+`modules/hosts/kats-macbook/awake.nu` subscribes to Tailscale's `watch-ipn`
+event stream, with no steady-state polling. An offline event starts status
+confirmations after 15, 30, and 45 seconds; all three must remain offline before
+the sleep block is released. Online presence cancels the countdown. A broken
+event stream releases the block and launchd restarts the agent.
+
+The agent is enabled by the host's `launchd.user.agents.tailscale-awake` entry;
+apply it with `sudo darwin-rebuild switch --flake .#kats-macbook`. Logs go to
+`~/Library/Logs/tailscale-awake.log`. Change `PEER_DNS` in the script to select
+another phone, or remove the agent entry to disable it. Recheck the debug event
+stream interface when updating Tailscale through nixpkgs.
+
 ## connectome-host (kats-macbook)
 
 The Darwin host installs `connectome-host`, including its browser UI. The overlay
