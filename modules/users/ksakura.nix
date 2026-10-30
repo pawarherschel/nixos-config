@@ -13,7 +13,11 @@
         email = "pawarherschel@gmail.com";
         name = "Herschel Pawar";
       };
-      wrappers.jujutsu.settings.user = config.wrappers.git.settings.user;
+      wrappers.jujutsu.settings = {
+        user = config.wrappers.git.settings.user;
+        # NixOS agenix mounts secrets under /run/agenix/<name>.
+        signing.key = "/run/agenix/gitKey";
+      };
     };
 
     provides.to-hosts.nixos =

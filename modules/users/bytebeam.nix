@@ -14,11 +14,14 @@
         name = "Herschel Pawar";
         email = "pawarherschel@gmail.com";
       };
-      wrappers.jujutsu.settings.user = config.wrappers.git.settings.user;
+      wrappers.jujutsu.settings = {
+        user = config.wrappers.git.settings.user;
+        signing.key = config.age.secrets.gitKey.path;
+      };
 
       age.identityPaths = [
         "${config.home.homeDirectory}/.config/age/identity.txt"
-        "${config.home.homeDirectory}/.ssh/id_ed25519"
+        "${config.home.homeDirectory}/.config/age/laptop-master-identity.txt"
       ];
       age.secrets.gitKey = {
         file = ../aspects/programs/git/gitKey.age;

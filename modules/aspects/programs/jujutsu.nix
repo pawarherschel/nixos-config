@@ -71,6 +71,10 @@
               ];
             };
           };
+          signing = {
+            backend = "ssh";
+            behavior = "own";
+          };
         };
       };
     };
