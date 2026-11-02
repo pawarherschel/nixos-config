@@ -418,7 +418,9 @@ async function checkTraits(options, deps) {
 
 	// One batch per trait: each trait carries its own rule, verdict rubric, and
 	// judge options, so its questions/options differ. Batch grouping for
-	// identical schemas is intentionally not attempted.
+	// identical schemas is intentionally not attempted. Start every batch
+	// before draining so traits overlap instead of running in lockstep.
+	const runs = [];
 	for (const trait of traits) {
 		const config = traitCheckValidateConfig(trait);
 		report.traits.push(config.name);
@@ -523,6 +525,7 @@ async function checkTraits(options, deps) {
 			continue;
 		}
 
+		runs.push(async () => {
 		let wholesaleError = null;
 		try {
 			await traitCheckDrainBatch(batch, (key, item) => {
@@ -639,7 +642,9 @@ async function checkTraits(options, deps) {
 				report.counts.review += 1;
 			}
 		}
+		});
 	}
+	await Promise.all(runs.map((run) => run()));
 
 	traitCheckPrintReport(report, resolved.print);
 	return report;
