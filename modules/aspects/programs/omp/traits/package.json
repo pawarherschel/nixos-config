@@ -1,0 +1,8 @@
+{
+  "name": "omp-traits",
+  "private": true,
+  "type": "module",
+  "omp": {
+    "extensions": ["./index.ts"]
+  }
+}
