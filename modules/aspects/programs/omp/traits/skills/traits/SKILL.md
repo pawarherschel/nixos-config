@@ -43,7 +43,7 @@ Pass `judgeBatch` explicitly: Eval globals are not guaranteed to exist on `globa
 Options (only pass what applies):
 
 - `revset` — required jj revset string.
-- `files` — array of paths/globs to restrict units.
+- `files` — array of jj filesets passed after `--` to `jj diff`; restricts the diff before units are built. Example: `files: ["crates/*"]`. The literal `crates/*` is a valid jj fileset here; no shell expansion is involved.
 - `traitNames` — array of traits to run; default all loaded traits.
 - `overrides` — object merged over trait frontmatter and shared defaults for this run, e.g. `{ minConfidence: 0.85 }`.
 - `wholeFiles` — boolean; pass `true` only when the user explicitly asks to judge whole files/code instead of changed hunks. Trait `contextMode` configuration does not broaden judged scope.

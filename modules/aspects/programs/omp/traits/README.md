@@ -2,7 +2,7 @@
 
 Manual hunk reviews using OMP's builtin Eval `judgeBatch`; automatic agent-managed trait learning. The cached OMP package is unchanged. The plugin's Nix module declares its only external executable, `jj`; Bun and tree-sitter APIs are supplied by OMP's embedded runtime.
 
-Invoke `/traits <revset>` or ask the agent to use the traits skill with a revision selection. The skill loads `scripts/check.mjs` in Eval and invokes its deterministic runner. Review does not automatically fix code. Agents inspect only flagged hunks after judging; model verdicts are not proof.
+Invoke `/traits <revset> [trait names] [-- <fileset>...]` or ask the agent to use the traits skill with a revision selection. The optional fileset is passed to `jj diff` after `--`, so it restricts collection before trait scoping. The skill loads `scripts/check.mjs` in Eval and invokes its deterministic runner. Review does not automatically fix code. Agents inspect only flagged hunks after judging; model verdicts are not proof.
 
 Each zero-context diff hunk is a separate judgment unit. Its enclosing functions plus ten surrounding lines are evidence, not additional review scope. Context comes from the target snapshot (the source snapshot for a pure deletion); the diff retains both changed sides. Overlapping function context never merges units. Whole-file review requires an explicit `wholeFiles: true` invocation; `contextMode: file` only widens evidence.
 
