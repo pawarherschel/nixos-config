@@ -988,26 +988,6 @@
         "type": "github"
       }
     },
-    "kimi-code": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1792262314,
-        "narHash": "sha256-xnKPXUDhAZL2i8qO4Fc15QKN0jyYxRni/RLp2iMiCKI=",
-        "owner": "MoonshotAI",
-        "repo": "kimi-code",
-        "rev": "4a82a07f08d0b135c4349c20aae53a2d51e5c3fa",
-        "type": "github"
-      },
-      "original": {
-        "owner": "MoonshotAI",
-        "repo": "kimi-code",
-        "type": "github"
-      }
-    },
     "llm-agents": {
       "inputs": {
         "bun2nix": "bun2nix",
@@ -1562,7 +1542,6 @@
         "helium-browser": "helium-browser",
         "home-manager": "home-manager_2",
         "import-tree": "import-tree",
-        "kimi-code": "kimi-code",
         "llm-agents": "llm-agents",
         "locker": "locker",
         "naersk": "naersk",

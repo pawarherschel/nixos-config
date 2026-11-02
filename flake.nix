@@ -60,10 +60,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     import-tree.url = "github:denful/import-tree";
-    kimi-code = {
-      url = "github:MoonshotAI/kimi-code";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     llm-agents.url = "github:numtide/llm-agents.nix";
     locker.url = "github:tgirlcloud/locker";
     naersk = {
